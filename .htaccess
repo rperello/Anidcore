@@ -1,0 +1,212 @@
+AddDefaultCharset UTF-8
+
+##############################
+####     URL REWRITE      ####
+##############################
+
+RewriteEngine On
+RewriteRule ^(system) - [F,L]
+
+# Development assets (single theme)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*/?media/assets/(.*)$ /assets/$1 [QSA,L]
+
+# Development assets (multi-theme)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*/?themes/[0-9a-zA-Z_-]{1,}/media/assets/(.*)$ /assets/$1 [QSA,L]
+
+# App single theme
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^media/(.*)$ app/views/media/$1 [QSA,L]
+
+# App multi-theme
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^themes/([0-9a-zA-Z_-]{1,})/media/(.*)$ app/views/$1/media/$2 [QSA,L]
+
+# Module single theme
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([0-9a-zA-Z_-]{1,})/media/(.*)$ modules/$1/views/media/$2 [QSA,L]
+
+# Module multi-theme
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([0-9a-zA-Z_-]{1,})/themes/([0-9a-zA-Z_-]{1,})/media/(.*)$ modules/$1/views/$2/media/$3 [QSA,L]
+
+# index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php/$0 [QSA,L]
+
+
+######## ERROR DOCS
+ErrorDocument 400 '<html><body><h1>400 Bad Request</h1></body></html>'
+ErrorDocument 401 '<html><body><h1>401 Unauthorized</h1></body></html>'
+ErrorDocument 403 '<html><body><h1>403 Forbidden</h1></body></html>'
+ErrorDocument 404 '<html><body><h1>404 Not Found</h1></body></html>'
+ErrorDocument 405 '<html><body><h1>405 Method Not Allowed</h1></body></html>'
+ErrorDocument 500 '<html><body><h1>500 Internal Server Error</h1></body></html>'
+ErrorDocument 501 '<html><body><h1>501 Not Implemented</h1></body></html>'
+ErrorDocument 503 '<html><body><h1>503 Service Unavailable</h1></body></html>'
+
+
+######## DISABLE DIRECTORY BROWSING
+Options ExecCGI Includes IncludesNOEXEC SymLinksIfOwnerMatch -Indexes
+DirectoryIndex index.html index.php index.htm index.cgi index.pl default.htm default.html
+
+
+######## SERVER CONFIGURATION
+<IfModule mod_security.c>
+# disable POST processing to not break multiple image upload
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_php5.c>
+# adjust memory limit
+    php_value memory_limit 128M
+    php_value max_execution_time 120
+
+# disable magic quotes for php request vars
+    php_flag magic_quotes_gpc off
+
+# disable automatic session start before autoload was initialized
+    php_flag session.auto_start off
+
+# enable resulting html compression
+#    php_flag zlib.output_compression on
+
+# disable user agent verification to not break multiple image upload
+    php_flag suhosin.session.cryptua off
+
+# turn off compatibility with PHP4 when dealing with objects
+    php_flag zend.ze1_compatibility_mode Off
+
+# Do not use PHPSESSID in URLs:
+    php_value session.use_only_cookies 1
+    php_value session.use_trans_sid 0
+</IfModule>
+
+# BEGIN extra file handlers
+AddType application/x-httpd-php .ini .cfg .conf .phpt .tpl
+AddType image/webp webp
+AddType audio/ogg oga
+AddType video/webm webm vp8
+AddType video/ogg ogg ogv
+AddType video/mp4 mp4
+AddType video/quicktime mov
+AddType video/x-matroska mkv
+AddType image/svg+xml   svg svgz
+AddType application/vnd.ms-fontobject eot
+AddType font/ttf    ttf
+AddType font/otf    otf
+AddType font/x-woff woff
+AddType application/x-javascript .js
+AddType text/css .css
+AddType text/xml .xml
+# END extra file handlers
+
+# BEGIN Compress text files
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/xhtml+xml image/svg+xml
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType DEFLATE application/x-httpd-php application/x-httpd-php-source application/x-httpd-fastphp
+    <FilesMatch "\.(css|js|x?html?|php|ttf|otf|woff|eot|svgz?)$">
+        SetOutputFilter DEFLATE
+    </FilesMatch>
+
+# Netscape 4.x has some problems...
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+# Netscape 4.06-4.08 have some more problems
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+# MSIE masquerades as Netscape, but it is fine
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+# Don't compress images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|a?png|webp)$ no-gzip dont-vary
+
+# Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+</IfModule>
+# END Compress text files
+
+
+# BEGIN Expire headers
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 10 seconds"
+
+  ExpiresByType font/ttf "access plus 2592000 seconds"
+  ExpiresByType font/x-woff "access plus 2592000 seconds"
+  ExpiresByType font/otf "access plus 2592000 seconds"
+  ExpiresByType application/vnd.ms-fontobject "access plus 2592000 seconds"
+  ExpiresByType font/woff "access plus 2592000 seconds"
+
+  ExpiresByType image/x-icon "access plus 2592000 seconds"
+  ExpiresByType image/x-icon "access plus 2592000 seconds"
+  ExpiresByType image/jpeg "access plus 2592000 seconds"
+  ExpiresByType image/png "access plus 2592000 seconds"
+  ExpiresByType image/gif "access plus 2592000 seconds"
+  ExpiresByType image/webp "access plus 2592000 seconds"
+  ExpiresByType image/svg+xml "access plus 2592000 seconds"
+
+  ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+  ExpiresByType text/css "access plus 604800 seconds"
+  ExpiresByType text/javascript "access plus 216000 seconds"
+  ExpiresByType application/javascript "access plus 216000 seconds"
+  ExpiresByType application/x-javascript "access plus 216000 seconds"
+  ExpiresByType text/html "access plus 600 seconds"
+  ExpiresByType application/xhtml+xml "access plus 600 seconds"
+</IfModule>
+# END Expire headers
+ 
+# BEGIN Cache-Control Headers
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ico|jpe?g|png|gif|swf)$">
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
+  <FilesMatch "\.(css)$">
+    Header set Cache-Control "max-age=604800, public"
+  </FilesMatch>
+  <FilesMatch "\.(js)$">
+    Header set Cache-Control "max-age=216000, private"
+  </FilesMatch>
+  <FilesMatch "\.(x?html?|php)$">
+    Header set Cache-Control "max-age=600, private, must-revalidate"
+  </FilesMatch>
+</IfModule>
+# END Cache-Control Headers
+ 
+# BEGIN Turn ETags Off
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None
+# END Turn ETags Off
+ 
+# BEGIN Remove Last-Modified Header
+<IfModule mod_headers.c>
+  Header unset Last-Modified
+</IfModule>
+# END Remove Last-Modified Header
+
+
+######## FILE PROTECT & COMBINE
+# file combination i.e.  <!--#include file="jquery-1.7.js" -->
+<FilesMatch "\-inc\.(js|css)">
+    Options +Includes
+    SetOutputFilter INCLUDES
+</FilesMatch>
+
+# prevent direct access to templates and other files
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|cache|data)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

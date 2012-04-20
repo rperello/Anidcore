@@ -13,3 +13,15 @@ META.yml
 MYMETA.yml
 nytprof.out
 pm_to_blib
+/nbproject/private/
+*~
+.DS_Store
+.DS_Store*
+__TwigTemplate_*
+ehthumbs.db
+Thumbs.db
+*.log
+*.cache
+*.cache.html
+wp-config.php
+/todo.txt

@@ -1,4 +1,4 @@
-Pico
+Rino
 ====
 
-Pico is a PHP micro framework built using RESTFul and HMVC logic
+Rino is a PHP micro framework built using RESTFul and HMVC logic
