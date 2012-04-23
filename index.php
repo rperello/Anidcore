@@ -18,6 +18,9 @@ define("RI_START_MEMORY", memory_get_usage());
 error_reporting(-1);
 ini_set("display_errors", true);
 
+//Set locale to UTF-8 by default
+setlocale(LC_ALL, 'en_US.UTF8');
+
 //PHP Strict will show warnings if you don't set a timezone. This tells PHP to use UTC.
 //You can change this later using config.php
 if ( @date_default_timezone_set(date_default_timezone_get()) === false ) {
