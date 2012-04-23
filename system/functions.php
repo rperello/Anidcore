@@ -760,6 +760,10 @@ function ri_reflection_static_property($property, $class_name) {
 ## ri_is
 ####################
 
+function ri_is_empty($var) {
+    return empty($var);
+}
+
 function ri_is_html($str) {
     return (preg_match('/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|\'.*?\'|[^\'">\s]+))?)+\s*|\s*)\/?' . '>/i', $str) > 0);
 }
@@ -860,6 +864,50 @@ function ri_echo($var, $default = NULL, $return = false) {
     }
 }
 
+function ri_removecookie($name, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL) {
+    return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
+}
+
+function ri_add_include_path($path) {
+    return set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+}
+
+function ri_memory_available() {
+    return memory_get_limit() - memory_get_usage(true);
+}
+
+/**
+ * 
+ * @return int amount of bytes
+ */
+function ri_memory_limit() {
+    $memory_limit = ini_get("memory_limit");
+    if (strpos($memory_limit, "M")) {
+        $memory_limit = intval($memory_limit) * 1024 * 1024;
+    } elseif (strpos($memory_limit, "K")) {
+        $memory_limit = intval($memory_limit) * 1024;
+    } else {
+        $memory_limit = intval($memory_limit);
+    }
+    return $memory_limit;
+}
+
+/**
+ * Returns the results of preg_match_all()
+ * @param string $pattern
+ * @param string $subject
+ * @param int $flags
+ * @param int $offset
+ * @return array 
+ */
+function ri_preg_match_results($pattern, $subject, $flags = null, $offset = null) {
+    preg_match_all($pattern, $subject, $matchesarray, $flags, $offset);
+    if (!empty($matchesarray))
+        return array_pop($matchesarray);
+    else
+        return array();
+}
+
 function ri_ie_version() {
     $match = preg_match('/MSIE ([0-9]\.[0-9])/', $_SERVER['HTTP_USER_AGENT'], $reg);
     if ($match == 0)
@@ -895,7 +943,7 @@ function ri_ie_classes() {
 }
 
 ####################
-## other functions
+## compat functions
 ####################
 
 /**
@@ -1014,84 +1062,5 @@ if (!function_exists('get_called_class')) :
                 default: throw new Exception("Unknown backtrace method type");
             }
     }
-
-endif;
-
-// Possible future reserved functions:
-
-if (!function_exists("removecookie")) :
-
-    function removecookie($name, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL) {
-        return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
-    }
-
-endif;
-
-if (!function_exists("add_include_path")) :
-
-    function add_include_path($path) {
-        return set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-    }
-
-endif;
-
-
-if (!function_exists("is_empty")) :
-
-    function is_empty($var) {
-        return empty($var);
-    }
-
-endif;
-
-if (!function_exists("memory_get_avaiable")) :
-
-    function memory_get_avaiable() {
-        return memory_get_limit() - memory_get_usage(true);
-    }
-
-endif;
-
-if (!function_exists("memory_get_avaiable")) :
-
-    /**
-     * 
-     * @return int amount of bytes
-     */
-    function memory_get_limit() {
-        $memory_limit = ini_get("memory_limit");
-        if (strpos($memory_limit, "M")) {
-            $memory_limit = intval($memory_limit) * 1024 * 1024;
-        } elseif (strpos($memory_limit, "K")) {
-            $memory_limit = intval($memory_limit) * 1024;
-        } else {
-            $memory_limit = intval($memory_limit);
-        }
-        return $memory_limit;
-    }
-
-endif;
-
-
-if (!function_exists("preg_match_results")) :
-
-    /**
-     * Returns the results of preg_match_all()
-     * @param string $pattern
-     * @param string $subject
-     * @param int $flags
-     * @param int $offset
-     * @return array 
-     */
-    function preg_match_results($pattern, $subject, $flags = null, $offset = null) {
-        preg_match_all($pattern, $subject, $matchesarray, $flags, $offset);
-        if (!empty($matchesarray))
-            return array_pop($matchesarray);
-        else
-            return array();
-    }
-
-
-
 
 endif;
