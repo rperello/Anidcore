@@ -855,7 +855,6 @@ function ri_html_trim_br($str) {
 ####################
 ## other ri_*
 ####################
-
 function ri_echo($var, $default = NULL, $return = false) {
     if (empty($var))
         return print_r($default, $return);

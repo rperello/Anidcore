@@ -3,11 +3,15 @@
 spl_autoload_register(array('Ri', 'autoload'));
 
 class Ri{
+    const CHARS_ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const CHARS_SYMBOLS = "!%&/()=?*+[]{}-_.,:;<>|@#";
+
     /**
      * @var array[Ri]
      */
     protected static $apps = array();
     protected static $defaults;
+    protected static $timers=array();
 
     /**
      * @var string
@@ -98,11 +102,31 @@ class Ri{
                 "server.display_errors" => true,
                 "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
                 "server.error_log_file" => RI_PATH_LOGS . 'php_errors.log',
+                
+                
+                "session.cookie_path" => '/' . $this->request->baseDir,
+                "session.cookie_secure" => ($this->request->scheme == "https"),
+                "session.cookie_lifetime" => 0,
 
                 "default_file_mask"=>0775,
 
                 "log.class"=>"Ri_Log",
             );
+        }
+        
+        //Security Keys
+        $keys_file = RI_PATH_DATA . "keys.data";
+        if (!is_readable($keys_file)) {
+            $security_keys = array(
+                "key.GLOBAL_SALT" => ri_str_random(64, self::CHARS_ALPHANUMERIC.self::CHARS_SYMBOLS)
+            );
+            file_put_contents($keys_file, serialize($security_keys));
+        } else {
+            $security_keys = unserialize(file_get_contents($keys_file));
+        }
+        
+        foreach($security_keys as $k => $val){
+            self::$defaults[$k]=$val;
         }
         
         $this->config = array_merge(self::$defaults, $config);
@@ -139,7 +163,9 @@ class Ri{
             ini_set('error_log', $this->config("server.error_log_file"));
             ini_set("session.use_cookies", 1);
             ini_set("session.use_only_cookies", 1);
-            ini_set("session.cookie_path", '/'.$this->request->baseDir);
+            ini_set("session.cookie_path", $this->config("session.cookie_path"));
+            ini_set("session.cookie_secure", $this->config("session.cookie_secure"));
+            ini_set("session.cookie_lifetime", $this->config("session.cookie_lifetime"));
             ini_set("session.use_trans_sid", 0); # do not use PHPSESSID in urls
             ini_set("session.hash_function", 1); # use sha1 algorithm (160 bits)
         } else {
@@ -221,6 +247,35 @@ class Ri{
     public function run(){
         header("Content-Type: text/plain");
         print_r($this);
+    }
+
+
+
+    public static function timerStart() {
+        self::$timers[] = microtime(true);
+    }
+
+    public static function timerStop($start_time = NULL, $detailed_result = true) {
+        if ($start_time == NULL) {
+            if (!empty(self::$timers)) {
+                $start_time = ri_arr_last(self::$timers);
+                array_pop(self::$timers);
+            }else
+                return 0;
+        }
+
+        $end_time = round((microtime(true) - $start_time), 3);
+
+        if ($detailed_result) {
+            if ($end_time < 1) {
+                $end_time_str = ($end_time * 1000) . "ms";
+            }else
+                $end_time_str = $end_time . "s";
+
+            return $end_time_str;
+        }else {
+            return $end_time;
+        }
     }
 }
 

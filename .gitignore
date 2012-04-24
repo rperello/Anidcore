@@ -21,6 +21,7 @@ __TwigTemplate_*
 ehthumbs.db
 Thumbs.db
 *.log
+*.data
 *.cache
 *.cache.html
 wp-config.php
