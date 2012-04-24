@@ -2,7 +2,7 @@
 /**
  * AC Framework Version
  */
-define("RI_VERSION", "0.0.1.0-dev");
+define("RI_VERSION", "0.0.1.1-dev");
 
 /**
  * Define the start time of the application. Used for profiling.
@@ -36,6 +36,13 @@ define("RI_PATH_DATA", RI_PATH_APP .'data'._DS);
 define("RI_PATH_CONTENT", RI_PATH . "content" . _DS);
 define("RI_PATH_MODULES", RI_PATH . "modules" . _DS);
 define("RI_PATH_SYSTEM", RI_PATH . "system" . _DS);
+
+//Change dir to root dir
+chdir(RI_PATH);
+
+//Include RI_PATH in include path
+restore_include_path();
+set_include_path(get_include_path() . PATH_SEPARATOR . RI_PATH);
 
 //Load the application
 require_once RI_PATH_SYSTEM."loader.php";

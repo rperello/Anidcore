@@ -1,9 +1,9 @@
 <?php
 
-class Ri_Router {
+class Ri_Http_Router {
     /**
      *
-     * @var Ri_Router
+     * @var Ri_Http_Router
      */
     protected static $instance;
     
@@ -26,14 +26,14 @@ class Ri_Router {
 
     /**
      * Router for original request
-     * @return Ri_Router 
+     * @return Ri_Http_Router 
      */
     public static function getInstance($reset = false) {
         if ((!isset(self::$instance)) || $reset) {
             if($reset){
-                self::$instance = new Ri_Router(Ri_Http_Request::getInstance(true));
+                self::$instance = new Ri_Http_Router(Ri_Http_Request::getInstance(true));
             }else{
-                self::$instance = new Ri_Router();
+                self::$instance = new Ri_Http_Router();
             }
         }
         return self::$instance;
