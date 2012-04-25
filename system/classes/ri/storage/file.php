@@ -166,12 +166,6 @@ class Ri_Storage_File {
         }
     }
 
-//    public function fileName($id) {
-//        if (!is_dir($this->path))
-//            mkdir($this->path, 0755, true);
-//        return $this->path . $id;
-//    }
-
     public function fileName($id) {
         $subdir = explode("/", trim($id, "/ "));
         $filename = array_pop($subdir);
@@ -182,12 +176,6 @@ class Ri_Storage_File {
         if (!is_dir($path))
             mkdir($path, 0755, true);
         return $path . sha1($filename) . '.cache';
-    }
-
-    private function _fileHandle($fileName) {
-        if (!is_readable($fileName))
-            return false;
-        return fopen($fileName, 'r');
     }
 
     public function start($id = NULL, $lifetime = NULL) {
