@@ -9,7 +9,8 @@ define("RI_DB_EVENT_UPDATE", 3333);
 define("RI_DB_EVENT_DELETE", 3334);
 define("RI_DB_EVENT_TRUNCATE", 3335);
 
-class Ri_Storage_Db{
+class Ri_Storage_Db {
+
     /**
      *
      * @var PDO
@@ -57,16 +58,15 @@ class Ri_Storage_Db{
      * @var string or false
      */
     protected static $active_instance = false;
-    
-    protected static $log=array(array('#', 'Statement', 'Rows', 'Result', 'Time', 'Status', 'Instance'));
+    protected static $log = array(array('#', 'Statement', 'Rows', 'Result', 'Time', 'Status', 'Instance'));
 
     /**
      *
      * @var array
      */
     protected static $varcache = array();
-    
-    public static function init($dbconf){
+
+    public static function init($dbconf) {
         if (is_array($dbconf)) {
             if (isset($dbconf["schema"]) && $dbconf["enabled"]) { //single connection
                 new Ri_Storage_Db($dbconf["instance"], $dbconf, $dbconf["options"]);
@@ -100,16 +100,16 @@ class Ri_Storage_Db{
             $this->connect();
         }
     }
-    
-    public function prefix(){
+
+    public function prefix() {
         return isset($this->config["prefix"]) ? $this->config["prefix"] : NULL;
     }
-    
+
     /**
      * Connection DSN string
      * @return string 
      */
-    public function dsn(){
+    public function dsn() {
         return isset($this->config["dsn"]) ? $this->config["dsn"] : NULL;
     }
 
@@ -129,8 +129,8 @@ class Ri_Storage_Db{
         $this->connect();
         return call_user_func_array(array($this->pdo, $name), $arguments);
     }
-    
-    public function getLog(){
+
+    public function getLog() {
         return self::$log;
     }
 
@@ -267,51 +267,46 @@ class Ri_Storage_Db{
         return self::$queryCount;
     }
 
-
     /**
      *
      * @return bool
      */
-    public function beginTransaction(){
+    public function beginTransaction() {
         return $this->pdo->beginTransaction();
     }
 
-
     /**
      *
      * @return bool
      */
-    public function inTransaction(){
+    public function inTransaction() {
         return $this->pdo->inTransaction();
     }
 
-
     /**
      *
      * @return bool
      */
-    public function commit(){
+    public function commit() {
         return $this->pdo->commit();
     }
 
-
     /**
      *
      * @return bool
      */
-    public function rollback(){
+    public function rollback() {
         return $this->pdo->rollBack();
     }
-
 
     /**
      * 
      * @return PDO
      */
-    public function pdo(){
+    public function pdo() {
         return $this->pdo;
     }
-    
+
     /**
      *
      * @param string $statement
@@ -319,7 +314,7 @@ class Ri_Storage_Db{
      */
     public function exec($statement) {
         Ri::timerStart();
-        
+
         $this->lastRowCount = 0;
         $this->connect();
         $this->lastRowCount = $this->pdo->exec($statement);
@@ -351,7 +346,7 @@ class Ri_Storage_Db{
      */
     public function query($statement) {
         Ri::timerStart();
-        
+
         $statement = trim($statement);
         $this->lastRowCount = 0;
         $args = func_get_args();
@@ -401,16 +396,16 @@ class Ri_Storage_Db{
     }
 
     protected function _logSuccess($statement, $data = array()) {
-        self::$log[]=array(self::$queryCount." ", $statement, $this->lastRowCount()." ", $data, Ri::timerStop(), 'OK', $this->instance_name);
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri::timerStop(), 'OK', $this->instance_name);
     }
 
     protected function _logError($statement) {
-        self::$log[]=array(self::$queryCount." ", $statement, $this->lastRowCount()." ", NULL, Ri::timerStop(), 
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", NULL, Ri::timerStop(),
             $this->pdo->errorInfo(), $this->instance_name);
-        
+
         $content = "#" . self::$queryCount . " [ERROR]\n";
         $content .= print_r(array($statement, $this->pdo->errorInfo()), true);
-        
+
         //ri_log($content, "mysql_errors.log", "file");
     }
 
@@ -445,15 +440,14 @@ class Ri_Storage_Db{
                 $values[] = "null";
             }
         }
-        if(count($fields)==0){
+        if (count($fields) == 0) {
             $this->exec("INSERT INTO `{$into}` VALUES ()");
-        }else{
+        } else {
             $fields = implode(", ", $fields);
             $values = implode(", ", $values);
             $this->exec("INSERT INTO `{$into}` ({$fields}) VALUES ({$values})");
         }
         return $this->lastInsertId();
-
     }
 
     /**
@@ -694,4 +688,5 @@ class Ri_Storage_Db{
     public function findDuplicated($field, $table) {
         return $this->query("COUNT(*) as repeats, `$field` FROM `$table` GROUP BY `$field` HAVING COUNT(*) > 1");
     }
+
 }

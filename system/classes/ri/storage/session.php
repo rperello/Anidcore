@@ -1,13 +1,17 @@
 <?php
 
 class Ri_Storage_Session {
-    protected $fingerprint;
-    protected $sessidExpires=180;
 
-    public function __construct($sessidExpires=180) {
+    protected $name;
+    protected $fingerprint;
+    protected $sessidExpires = 180;
+
+    public function __construct($name, $sessidExpires = 180) {
+        $this->name = $name;
         $this->sessidExpires = $sessidExpires;
-        
-        if ($this->started()) {
+
+        if ($this->isStarted()) {
+            session_name($this->name);
             session_start();
         }
         $this->fingerprint = sha1(Ri_Http_Request::getInstance()->clientIp);
@@ -40,34 +44,37 @@ class Ri_Storage_Session {
     }
 
     public function set($name, $value) {
-        $_SESSION[$name]=$value;
+        $_SESSION[$name] = $value;
     }
 
     public function fetch($name) {
-        if ($this->exists()) {
+        if ($this->has($name)) {
             return $_SESSION[$name];
         }
         return NULL;
     }
 
     public function delete($name) {
-        if ($this->exists()) {
+        if ($this->has($name)) {
             unset($_SESSION[$name]);
             return true;
         }
         return false;
     }
 
-    public function started() {
+    public function isStarted() {
         return ri_is_empty(session_id()) != false;
     }
 
-    public function exists($name) {
-        return isset($_SESSION[$name]);
+    public function has($name) {
+        if (!$this->isStarted())
+            return false;
+        else
+            return isset($_SESSION[$name]);
     }
 
     public function clear() {
-        if ($this->started()) {
+        if ($this->isStarted()) {
             $last_id = session_id();
             session_unset();
             session_destroy();

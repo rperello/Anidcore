@@ -2,7 +2,7 @@
 /**
  * AC Framework Version
  */
-define("RI_VERSION", "0.0.1.1-dev");
+define("RI_VERSION", "0.0.1.2-dev");
 
 /**
  * Define the start time of the application. Used for profiling.

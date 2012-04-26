@@ -30,7 +30,7 @@ class Ri_Storage_File {
      */
     public function __construct($cachepath = NULL, $create = false) {
         if (empty($cachepath)) {
-            $cachepath = RI_PATH_DATA . "cache". _DS;
+            $cachepath = RI_PATH_DATA . "cache" . _DS;
         }
 
         if ($create) {

@@ -1,20 +1,22 @@
 <?php
 
 class Ri_Router {
+
     /**
      *
      * @var Ri_Router
      */
     protected static $instance;
-    
+
     /**
      *
      * @var Ri
      */
     public $app;
-    
-    public function __construct(Ri &$app=NULL) {
-        if(empty($app)) $app = Ri::getInstance();
+
+    public function __construct(Ri &$app = NULL) {
+        if (empty($app))
+            $app = Ri::getInstance();
         $this->app = $app;
     }
 
@@ -28,4 +30,5 @@ class Ri_Router {
         }
         return self::$instance;
     }
+
 }

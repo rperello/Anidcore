@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Var extends Ri_Cache {
+class Ri_Storage_Var {
 
     protected $cache = array();
 

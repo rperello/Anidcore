@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Memcache extends Ri_Cache{
+class Ri_Storage_Memcache extends Ri_Cache {
 
     /**
      *
@@ -66,7 +66,7 @@ class Ri_Storage_Memcache extends Ri_Cache{
         if (!$this->vcache->isValid($id)) {
             $this->vcache->store($id, $this->memcache->get($id));
         }
-        
+
         return $this->vcache->fetch($id);
     }
 
@@ -155,4 +155,5 @@ class Ri_Storage_Memcache extends Ri_Cache{
     public function isEnabled() {
         return ($this->config["enabled"] === true);
     }
+
 }
