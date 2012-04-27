@@ -42,6 +42,11 @@ class Ri {
     public $router;
 
     /**
+     * @var Ri_Module
+     */
+    public $module;
+
+    /**
      * @var Ri_View
      */
     public $view;
@@ -49,7 +54,7 @@ class Ri {
     /**
      * @var Ri_Log
      */
-    public $log;
+    protected $log;
 
     /**
      * @var array Key-value array of application settings
@@ -105,6 +110,8 @@ class Ri {
                 "server.display_errors" => true,
                 "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
                 "server.error_log_file" => RI_PATH_LOGS . 'php_errors.log',
+                "server.default_file_mask" => 0775,
+
                 
                 "session.name" => "phpsessid_" . strtolower(str_replace("/", "", $this->request->baseDir)),
                 "session.sessid_lifetime" => 180,
@@ -112,7 +119,7 @@ class Ri {
                 "session.cookie_secure" => ($this->request->scheme == "https"),
                 "session.cookie_lifetime" => 0,
                 
-                "default_file_mask" => 0775,
+                "log.enabled" => true,
                 "log.class" => "Ri_Log",
                 "key.names" => array("AUTH_SALT") //extra generated keys
             );
@@ -177,13 +184,18 @@ class Ri {
         return $default;
     }
 
+    public function setConfig($name, $value) {
+        $this->config[$name] = $value;
+    }
+
+
     /**
      * Gets / sets an application variable
      * @param string $varname (if empty, returns all vars)
      * @param mixed $new_value (if not empty, sets the value of a var)
      * @return mixed 
      */
-    public static function vars($varname = NULL) {
+    public function vars($varname = NULL) {
         if (empty($varname))
             return $this->vars;
 
@@ -205,7 +217,7 @@ class Ri {
      * @param mixed $new_value (if not empty, assings a value to a non-existing var)
      * @return mixed 
      */
-    public static function finals($varname = NULL) {
+    public function finals($varname = NULL) {
         if (empty($varname))
             return $this->finals;
 
@@ -221,11 +233,6 @@ class Ri {
                 return $this->finals[$varname];
         }
     }
-
-    public function setConfig($name, $value) {
-        $this->config[$name] = $value;
-    }
-
     /*     * *** HOOKS **** */
 
     /**
@@ -352,11 +359,11 @@ class Ri {
 
     protected static function configureServer($config) {
         if (!is_dir(RI_PATH_LOGS))
-            mkdir(RI_PATH_LOGS, $config["default_file_mask"]);
+            mkdir(RI_PATH_LOGS, $config["server.default_file_mask"]);
         if (!is_dir(RI_PATH_DATA))
-            mkdir(RI_PATH_DATA, $config["default_file_mask"]);
+            mkdir(RI_PATH_DATA, $config["server.default_file_mask"]);
         if (!is_dir(RI_PATH_CONTENT))
-            mkdir(RI_PATH_CONTENT, $config["default_file_mask"]);
+            mkdir(RI_PATH_CONTENT, $config["server.default_file_mask"]);
 
         //  Error reporting
         error_reporting($config["server.error_reporting"]);
