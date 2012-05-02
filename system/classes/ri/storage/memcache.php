@@ -34,10 +34,27 @@ class Ri_Storage_Memcache extends Ri_Cache {
         }
     }
 
+    public function has($id) {
+        if (!$this->isEnabled())
+            return false;
+
+        return $this->get($id) !== false;
+    }
+
+    public function get($id) {
+        if (!$this->isEnabled())
+            return false;
+        if (!$this->vcache->has($id)) {
+            $this->vcache->set($id, $this->memcache->get($id));
+        }
+
+        return $this->vcache->get($id);
+    }
+
     public function set($id, $value, $ttl = 0) {
         if (!$this->isEnabled())
             return false;
-        $this->vcache->store($id, $value);
+        $this->vcache->set($id, $value);
 
         if ($ttl === NULL)
             $ttl = $this->config["default_ttl"];
@@ -49,57 +66,29 @@ class Ri_Storage_Memcache extends Ri_Cache {
         return $stored;
     }
 
-    public function add($id, $value, $ttl = 0) {
-        if (!$this->isEnabled())
-            return false;
-        $this->vcache->store($id, $value);
-
-        if ($ttl === NULL)
-            $ttl = $this->config["default_ttl"];
-
-        return $this->memcache->set($id, $value, $flag = 0, $ttl);
-    }
-
-    public function fetch($id) {
-        if (!$this->isEnabled())
-            return false;
-        if (!$this->vcache->isValid($id)) {
-            $this->vcache->store($id, $this->memcache->get($id));
-        }
-
-        return $this->vcache->fetch($id);
-    }
-
     public function delete($id) {
         if (!$this->isEnabled())
             return false;
 
-        if ($this->vcache->isValid($id)) {
+        if ($this->vcache->has($id)) {
             $this->vcache->delete($id);
         }
-        if ($this->memcache->get($id)) {
+        if ($this->memcache->has($id)) {
             $this->memcache->delete($id);
         }
-    }
-
-    public function isValid($id) {
-        if (!$this->isEnabled())
-            return false;
-
-        return $this->fetch($id) !== false;
     }
 
     public function clear() {
         if (!$this->isEnabled())
             return false;
-        return $this->memcache->flush() && $this->clearVarCache();
+        return $this->memcache->flush() && $this->clearVarcache();
     }
 
     /**
      *
      * @return boolean 
      */
-    public function clearVarCache() {
+    public function clearVarcache() {
         if (!$this->isEnabled())
             return false;
         return $this->vcache->clear();

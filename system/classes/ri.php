@@ -118,6 +118,7 @@ class Ri {
                 "session.cookie_path" => '/' . $this->request->baseDir,
                 "session.cookie_secure" => ($this->request->scheme == "https"),
                 "session.cookie_lifetime" => 0,
+                "session.gc_maxlifetime" => 1440,
                 
                 "log.enabled" => true,
                 "log.class" => "Ri_Log",
@@ -323,7 +324,7 @@ class Ri {
     public function render() {
         $this->hookApply('ri.before.render');
         header("Content-Type: text/plain");
-        print_r($this);
+        include RI_PATH . "test.php";
         $this->hookApply('ri.after.render');
     }
 
@@ -332,9 +333,35 @@ class Ri {
      */
     public function run() {
         $this->hookApply('ri.before.run');
-        header("Content-Type: text/plain");
-        include RI_PATH . "test.php";
+        $this->render();
         $this->hookApply('ri.after.run');
+    }
+
+    public static function timerStart() {
+        self::$timers[] = microtime(true);
+    }
+
+    public static function timerStop($start_time = NULL, $detailed_result = true) {
+        if ($start_time == NULL) {
+            if (!empty(self::$timers)) {
+                $start_time = ri_arr_last(self::$timers);
+                array_pop(self::$timers);
+            }else
+                return 0;
+        }
+
+        $end_time = round((microtime(true) - $start_time), 3);
+
+        if ($detailed_result) {
+            if ($end_time < 1) {
+                $end_time_str = ($end_time * 1000) . "ms";
+            }else
+                $end_time_str = $end_time . "s";
+
+            return $end_time_str;
+        }else {
+            return $end_time;
+        }
     }
 
     protected static function generateKeys($config) {
@@ -391,37 +418,11 @@ class Ri {
             ini_set("session.cookie_path", $config["session.cookie_path"]);
             ini_set("session.cookie_secure", $config["session.cookie_secure"]);
             ini_set("session.cookie_lifetime", $config["session.cookie_lifetime"]);
+            ini_set('session.gc_maxlifetime', $config["session.gc_maxlifetime"]);
             ini_set("session.use_trans_sid", 0); # do not use PHPSESSID in urls
             ini_set("session.hash_function", 1); # use sha1 algorithm (160 bits)
         } else {
             throw new RuntimeException("Rino FATAL ERROR: Rino Framework cannot be executed under safe_mode");
-        }
-    }
-
-    public static function timerStart() {
-        self::$timers[] = microtime(true);
-    }
-
-    public static function timerStop($start_time = NULL, $detailed_result = true) {
-        if ($start_time == NULL) {
-            if (!empty(self::$timers)) {
-                $start_time = ri_arr_last(self::$timers);
-                array_pop(self::$timers);
-            }else
-                return 0;
-        }
-
-        $end_time = round((microtime(true) - $start_time), 3);
-
-        if ($detailed_result) {
-            if ($end_time < 1) {
-                $end_time_str = ($end_time * 1000) . "ms";
-            }else
-                $end_time_str = $end_time . "s";
-
-            return $end_time_str;
-        }else {
-            return $end_time;
         }
     }
 

@@ -2,6 +2,17 @@
 
 class Ri_Storage_Cookie {
 
+    public function has($name) {
+        return isset($_COOKIE[$name]);
+    }
+
+    public function get($name) {
+        if ($this->has($name)) {
+            return $_COOKIE[$name];
+        }
+        return NULL;
+    }
+
     /**
      * Send a cookie
      * @param string $name <p>
@@ -78,19 +89,8 @@ class Ri_Storage_Cookie {
         return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
-    public function fetch($name) {
-        if ($this->has($name)) {
-            return $_COOKIE[$name];
-        }
-        return NULL;
-    }
-
     public function delete($name, $path = NULL, $domain = NULL, $secure = false, $httponly = NULL) {
         return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
-    }
-
-    public function has($name) {
-        return isset($_COOKIE[$name]);
     }
 
     public function clear($path = NULL, $domain = NULL, $secure = false, $httponly = NULL) {

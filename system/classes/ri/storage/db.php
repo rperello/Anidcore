@@ -228,7 +228,7 @@ class Ri_Storage_Db {
     /**
      * 
      */
-    public static function clearVarCache($hash = NULL) {
+    public static function clearVarcache($hash = NULL) {
         if (!empty($hash)) {
             unset(self::$varcache[$hash]);
         }else
@@ -319,7 +319,7 @@ class Ri_Storage_Db {
         $this->connect();
         $this->lastRowCount = $this->pdo->exec($statement);
         if ($this->lastRowCount > 0)
-            self::clearVarCache();
+            self::clearVarcache();
         self::$queryCount++;
 
         if (!$this->isError()) {
@@ -515,7 +515,7 @@ class Ri_Storage_Db {
         }else
             $this->exec("TRUNCATE TABLE `{$table}`");
 
-        self::clearVarCache();
+        self::clearVarcache();
 
         return $this->lastRowCount();
     }
