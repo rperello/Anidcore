@@ -2,7 +2,7 @@
 /**
  * AC Framework Version
  */
-define("RI_VERSION", "0.0.1.2-dev");
+define("RI_VERSION", "0.0.1.3-dev");
 
 /**
  * Define the start time of the application. Used for profiling.
@@ -26,6 +26,10 @@ setlocale(LC_ALL, 'en_US.UTF8');
 if ( @date_default_timezone_set(date_default_timezone_get()) === false ) {
     date_default_timezone_set('UTC');
 }
+
+define("RI_ENV_CLI", php_sapi_name() == "cli");
+define("RI_ENV_PHP_5_3", function_exists("get_called_class"));
+define("RI_ENV_PHP_5_4", function_exists("class_uses"));
 
 //PATHS
 define("_DS", DIRECTORY_SEPARATOR);
