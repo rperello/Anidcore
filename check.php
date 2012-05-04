@@ -3,7 +3,7 @@ error_reporting(-1);
 ini_set("display_errors",true);
 ini_set("default_charset","utf8");
 
-class ServerChecker{
+class ServerTest{
     public $TITLE = "Rino Framework - Server compatibility test";
     public $REQUIRED_PHP_VERSION = "5.2.6";
     public $MYSQL_VERSION = NULL;
@@ -11,6 +11,7 @@ class ServerChecker{
     public $TESTS=array();
     public $ERROR_COUNT=0;
     public $WARNING_COUNT=0;
+    public $IMAGEMAGICK_PATH=NULL;
     
     public function __construct() {
         $this->ROOT_PATH=realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -167,7 +168,37 @@ class ServerChecker{
                 "result"=>$gdinfo["GD Version"],
                 "level"=>"warn"
             );
+        }else{
+            $tests["php.ext.gd2"]=array(
+                "title"=>"GD Version >= 2",
+                "passed"=>false,
+                "level"=>"warn"
+            );
         }
+        
+        $imagemagick = $this->test_imagemagick();
+        $tests["php.ext.imagemagick"]=array(
+            "title"=>"ImageMagick is installed on server",
+            "passed"=>!empty($imagemagick["version"]),
+            "level"=>(!$tests["php.ext.gd2"]["passed"]) ? "warn" : "info"
+        );
+        
+        if($tests["php.ext.imagemagick"]["passed"]){
+            $tests["php.ext.imagemagick"]["result"]="v".$imagemagick["version"]." @ ".$imagemagick["path"];
+        }
+        
+        $tests["php.ext.imagick"]=array(
+            "title"=>"Imagick PHP Extension for ImageMagick",
+            "passed"=>extension_loaded('imagemagick'),
+            "level"=>"info"
+        );
+        
+        $tests["php.ext.magicwand"]=array(
+            "title"=>"Magicwand PHP Extension for ImageMagick",
+            "passed"=>extension_loaded('magicwand'),
+            "level"=>"info"
+        );
+        
         $tests["php.ext.exif"]=array(
             "title"=>"EXIF Extension for Image metadata",
             "passed"=>extension_loaded('exif'),
@@ -231,6 +262,33 @@ class ServerChecker{
         } catch (Exception $exc) {
             return $err;
         }
+    }
+    
+    protected function test_imagemagick(){
+        $version = @shell_exec("convert --version");
+        $path = NULL;
+        
+        if(empty($version)) $version = @shell_exec("/usr/bin/convert --version");
+        else $path = "convert";
+        
+        if(empty($version)) $version = @shell_exec("/usr/sbin/convert --version");
+        elseif(empty($path)) $path = "/usr/bin/convert";
+        
+        if(empty($version)) $version = @shell_exec("/opt/local/bin/convert --version");
+        elseif(empty($path)) $path = "/usr/sbin/convert";
+        
+        if(empty($version)) $version = @shell_exec("/usr/local/imagemagick/bin/convert --version");
+        elseif(empty($path)) $path = "/opt/local/bin/convert";
+        
+        if(!empty($version)){
+            if(empty($path)) $path = "/usr/local/imagemagick/bin/convert";
+            if(preg_match("/ImageMagick ([0-9\.\-]{1,})/i", $version, $matches)){
+                $version = $matches[1];
+            }else $version=NULL;
+        }else $version=NULL;
+        
+        $this->IMAGEMAGICK_PATH = $path;
+        return array("version"=>$version, "path"=>$path);
     }
     
     protected function test_protocolExtensions(&$tests){
@@ -338,12 +396,12 @@ class ServerChecker{
     
 }
 
-$check = new ServerChecker();
+$servertest = new ServerTest();
 ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?php echo $check->TITLE; ?></title>
+        <title><?php echo $servertest->TITLE; ?></title>
         <meta charset="utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -374,16 +432,16 @@ css;
     </head>
     <body>
         <div id="wrapper" class="container" style="margin:20px auto;">
-            <h1 style="margin:0 0 20px 0;"><?php echo $check->TITLE; ?> <br />
+            <h1 style="margin:0 0 20px 0;"><?php echo $servertest->TITLE; ?> <br />
                 <small>TEST RESULT: <?php 
-                if($check->isSuccess()) {
+                if($servertest->isSuccess()) {
                     echo '<span style="font-size:14px" class="label label-success">PASSED';
                     //print_r($test);
-                    if($check->WARNING_COUNT > 0) echo ' (with '.$check->WARNING_COUNT." warnings)";
+                    if($servertest->WARNING_COUNT > 0) echo ' (with '.$servertest->WARNING_COUNT." warnings)";
                     echo '</span>';
                 }else{
-                    echo '<span style="font-size:14px"  class="label label-important">NOT PASSED: '.$check->ERROR_COUNT.' ERRORS';
-                    if($check->WARNING_COUNT > 0) echo ' (and '.$check->WARNING_COUNT." warnings)";
+                    echo '<span style="font-size:14px"  class="label label-important">NOT PASSED: '.$servertest->ERROR_COUNT.' ERRORS';
+                    if($servertest->WARNING_COUNT > 0) echo ' (and '.$servertest->WARNING_COUNT." warnings)";
                     echo ' FOUND</span>';
                 }?> </small> </h1>
             
@@ -397,7 +455,7 @@ css;
                 <tbody>
             <?php
             
-            foreach($check->TESTS as $key => $test){
+            foreach($servertest->TESTS as $key => $test){
                 ?>
                     <tr>
                         <td><?php echo $test["title"] ?></td>
@@ -444,8 +502,8 @@ css;
                     <tr>
                         <th>Current PHP process owner:</th>
                         <td><?php 
-                        $processUser = posix_getpwuid(posix_geteuid()); print_r($processUser);
-                        //echo "Name=".get_current_user(). '; ID='.getmyuid().'; Group='. getmygid() ; 
+                        $processUser = posix_getpwuid(posix_geteuid());
+                        echo "Name=".$processUser["name"]. '; ID='.$processUser["uid"].'; Group='. $processUser["gid"]; 
                         ?></td>
                     </tr>
                     <tr>
