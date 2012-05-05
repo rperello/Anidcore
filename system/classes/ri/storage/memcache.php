@@ -6,13 +6,13 @@ class Ri_Storage_Memcache extends Ri_Cache {
      *
      * @var MemCache 
      */
-    protected $memcache = NULL;
+    protected $memcache = null;
 
     /**
      *
      * @var Ri_Storage_Var 
      */
-    protected $vcache = NULL;
+    protected $vcache = null;
     protected $config = array(
         "enabled" => true,
         "host" => "127.0.0.1",
@@ -56,7 +56,7 @@ class Ri_Storage_Memcache extends Ri_Cache {
             return false;
         $this->vcache->set($id, $value);
 
-        if ($ttl === NULL)
+        if ($ttl === null)
             $ttl = $this->config["default_ttl"];
 
         $stored = $this->memcache->replace($id, $value, $flag = 0, $ttl);

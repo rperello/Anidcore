@@ -1,5 +1,5 @@
 <?php
 
-print_r($this);
-
+header('Content-Type: text/html');
+var_dump($this);
 ?>

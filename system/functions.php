@@ -12,11 +12,11 @@
  * @param mixed $filter FILTER_* constant value or regular expression
  * @return mixed
  */
-function ri_arr_value($arr, $key, $default = false, $filter = NULL) {
+function ri_arr_value($arr, $key, $default = false, $filter = null) {
     if (!is_array($arr))
         return $default;
     if (isset($arr[$key])) {
-        if ($filter != NULL) {
+        if ($filter != null) {
             if (is_string($filter) && ($filter{0} == "/")) {
                 //regexp
                 return (preg_match($filter, $arr[$key]) > 0) ? $arr[$key] : $default;
@@ -155,7 +155,7 @@ function ri_str_reduce_words($str, $length, $append = "") {
         return $str;
 }
 
-function ri_str_replace_repeated($str, $char, $replacement = NULL) {
+function ri_str_replace_repeated($str, $char, $replacement = null) {
     return preg_replace('/' . $char . $char . '+/', $replacement, $str);
 }
 
@@ -270,7 +270,7 @@ function ri_str_join($glue = ",") {
     unset($args[0]);
     foreach ($args as $i => $arg) {
         $arg = trim($arg);
-        if (($arg == NULL) || ($arg == "") || ($arg == " ")) {
+        if (($arg == null) || ($arg == "") || ($arg == " ")) {
             unset($args[$i]);
         }
     }
@@ -311,8 +311,8 @@ function ri_format_hex2bin($hexdata) {
 # ri_date
 ####################
 
-function ri_date_utc($time = NULL) {
-    if ($time == NULL)
+function ri_date_utc($time = null) {
+    if ($time == null)
         $time = time();
     return date('Y-m-d\\TH:i:s\\.000\\Z', $time - date("Z"));
 }
@@ -381,7 +381,7 @@ function ri_date_sec2hms($sec, $padHours = false) {
  * @param string $key The key with which the data will be encrypted.
  * @return string|false The encrypted and base64-safe-encoded string (safe for urls)
  */
-function ri_crypto_encrypt($text, $key = NULL) {
+function ri_crypto_encrypt($text, $key = null) {
     if (empty($text)) {
         return false;
     }
@@ -398,7 +398,7 @@ function ri_crypto_encrypt($text, $key = NULL) {
  * @param string $salt The key with which the data was encrypted.
  * @return string|false The decrypted string 
  */
-function ri_crypto_decrypt($encrypted, $key = NULL) {
+function ri_crypto_decrypt($encrypted, $key = null) {
     if (empty($encrypted)) {
         return false;
     }
@@ -448,7 +448,7 @@ function ri_base64_decode($string, $urlSafe = false) {
 ## ri_jsonrpc
 ####################
 
-function ri_jsonrpc_request($id, $method, $params = NULL, $version = "2.0") {
+function ri_jsonrpc_request($id, $method, $params = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "method" => $method,
@@ -458,7 +458,7 @@ function ri_jsonrpc_request($id, $method, $params = NULL, $version = "2.0") {
     return json_encode($message);
 }
 
-function ri_jsonrpc_notification($method = "", $params = NULL, $version = "2.0") {
+function ri_jsonrpc_notification($method = "", $params = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "method" => $method,
@@ -467,7 +467,7 @@ function ri_jsonrpc_notification($method = "", $params = NULL, $version = "2.0")
     return json_encode($message);
 }
 
-function ri_jsonrpc_result($id, $result = NULL, $version = "2.0") {
+function ri_jsonrpc_result($id, $result = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "result" => $result,
@@ -476,12 +476,12 @@ function ri_jsonrpc_result($id, $result = NULL, $version = "2.0") {
     return json_encode($message);
 }
 
-function ri_jsonrpc_error($id = NULL, $code = 1, $message = "", $data = NULL, $version = "2.0") {
+function ri_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $version = "2.0") {
     $error = array(
         "code" => $code,
         "message" => $message
     );
-    if ($data !== NULL)
+    if ($data !== null)
         $error["data"] = $data;
     $message = array(
         "jsonrpc" => $version,
@@ -654,7 +654,7 @@ function ri_download_from_url($url, $destinationFile, $method = 'GET') {
         ob_end_clean();
     }
     if (ri_is_url($url)) {
-        $binaryData = file_get_contents($url, NULL, stream_context_create(array(
+        $binaryData = file_get_contents($url, null, stream_context_create(array(
                     'http' => array(
                         'method' => $method,
                         'header' => "Referer: http://" . $_SERVER['SERVER_NAME'] . "/\r\n"
@@ -670,7 +670,7 @@ function ri_download_from_url($url, $destinationFile, $method = 'GET') {
     }
 }
 
-function ri_download_file($file, $contentType = NULL, $rename = NULL) {
+function ri_download_file($file, $contentType = null, $rename = null) {
     if (ob_get_length()) {
         ob_end_clean();
     }
@@ -752,7 +752,7 @@ function ri_reflection_static_property($property, $class_name) {
     } elseif (property_exists($class_name, $property)) {
         return eval("return {$class_name}::\${$property};");
     } else {
-        return NULL;
+        return null;
     }
 }
 
@@ -855,7 +855,7 @@ function ri_html_trim_br($str) {
 ####################
 ## other ri_*
 ####################
-function ri_echo($var, $default = NULL, $return = false) {
+function ri_echo($var, $default = null, $return = false) {
     if (empty($var))
         return print_r($default, $return);
     else {
@@ -863,7 +863,7 @@ function ri_echo($var, $default = NULL, $return = false) {
     }
 }
 
-function ri_removecookie($name, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL) {
+function ri_removecookie($name, $path = null, $domain = null, $secure = null, $httponly = null) {
     return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
 }
 

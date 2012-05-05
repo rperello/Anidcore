@@ -119,7 +119,7 @@ class Ri_Http_Request{
      */
     public $currentUri;
     
-    public function __construct($server=NULL) {
+    public function __construct($server=null) {
         if(!isset(self::$originals)){
             self::$originals = array(
                 "SERVER"=>$_SERVER,
@@ -138,23 +138,23 @@ class Ri_Http_Request{
         $this->https = ri_arr_value($this->server, "HTTPS", "off");
         $this->serverName = ri_arr_value($this->server, "SERVER_NAME", "localhost");
         
-        $this->scriptName = ri_arr_value($this->server, "SCRIPT_NAME", NULL);
-        $this->pathInfo = ri_arr_value($this->server, "PATH_INFO", NULL);
-        $this->phpSelf = ri_arr_value($this->server, "PHP_SELF", NULL);
+        $this->scriptName = ri_arr_value($this->server, "SCRIPT_NAME", null);
+        $this->pathInfo = ri_arr_value($this->server, "PATH_INFO", null);
+        $this->phpSelf = ri_arr_value($this->server, "PHP_SELF", null);
         
-        $this->requestUri = ri_arr_value($this->server, "REQUEST_URI", NULL);
-        $this->queryString = ri_arr_value($this->server, "QUERY_STRING", NULL);
+        $this->requestUri = ri_arr_value($this->server, "REQUEST_URI", null);
+        $this->queryString = ri_arr_value($this->server, "QUERY_STRING", null);
         $this->port = @parse_url($this->requestUri, PHP_URL_PORT);
         $this->port = !empty($this->port) ? $this->port : 80;
 
-        $this->authUser = ri_arr_value($this->server, "PHP_AUTH_USER", NULL);
-        $this->authPassword = ri_arr_value($this->server, "PHP_AUTH_PW", NULL);
-        $this->authDigest = ri_arr_value($this->server, "PHP_AUTH_DIGEST", NULL);
-        $this->authType = ri_arr_value($this->server, "AUTH_TYPE", NULL);
+        $this->authUser = ri_arr_value($this->server, "PHP_AUTH_USER", null);
+        $this->authPassword = ri_arr_value($this->server, "PHP_AUTH_PW", null);
+        $this->authDigest = ri_arr_value($this->server, "PHP_AUTH_DIGEST", null);
+        $this->authType = ri_arr_value($this->server, "AUTH_TYPE", null);
 
-        $this->referer = ri_arr_value($this->server, "HTTP_REFERER", NULL);
-        $this->userAgent = ri_arr_value($this->server, "HTTP_USER_AGENT", NULL);
-        $this->acceptLanguage = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", ri_arr_value($this->server, "HTTP_ACCEPT_LANGUAGE", NULL));
+        $this->referer = ri_arr_value($this->server, "HTTP_REFERER", null);
+        $this->userAgent = ri_arr_value($this->server, "HTTP_USER_AGENT", null);
+        $this->acceptLanguage = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", ri_arr_value($this->server, "HTTP_ACCEPT_LANGUAGE", null));
         
         $this->clientIp = $this->getClientIp();
 
@@ -170,7 +170,7 @@ class Ri_Http_Request{
 
         $this->contentType = $this->getContentType();
         $this->method=$this->getMethod();
-        $this->httpXRequestedWith=strtolower(ri_arr_value($this->server, "HTTP_X_REQUESTED_WITH", NULL));
+        $this->httpXRequestedWith=strtolower(ri_arr_value($this->server, "HTTP_X_REQUESTED_WITH", null));
 
         $this->put = $this->getPut();
         
@@ -264,12 +264,12 @@ class Ri_Http_Request{
         if (isset($this->post[self::METHOD_OVERRIDE])) {
             return $this->post[self::METHOD_OVERRIDE];
         } else {
-            return isset($this->server['REQUEST_METHOD']) ? $this->server['REQUEST_METHOD'] : NULL;
+            return isset($this->server['REQUEST_METHOD']) ? $this->server['REQUEST_METHOD'] : null;
         }
     }
 
     protected function getContentType() {
-        $contentType = isset($this->server["CONTENT_TYPE"]) ? $this->server["CONTENT_TYPE"] : isset($this->server["HTTP_CONTENT_TYPE"]) ? $this->server["HTTP_CONTENT_TYPE"] : NULL;
+        $contentType = isset($this->server["CONTENT_TYPE"]) ? $this->server["CONTENT_TYPE"] : isset($this->server["HTTP_CONTENT_TYPE"]) ? $this->server["HTTP_CONTENT_TYPE"] : null;
         if (!empty($contentType)) {
             $headerParts = preg_split('/\s*;\s*/', $contentType);
             $contentType = $headerParts[0];
@@ -300,7 +300,7 @@ class Ri_Http_Request{
             array_pop($urlbase); //script file, usually index.php
             $urlbase = implode("/", $urlbase);
 
-            $baseDir = (!empty($urlbase) ? $urlbase . "/" : NULL);
+            $baseDir = (!empty($urlbase) ? $urlbase . "/" : null);
         } else {
             $baseDir = "";
         }
@@ -326,53 +326,53 @@ class Ri_Http_Request{
         }
         $resource = trim($resource, '/ ');
         if (empty($resource))
-            $resource = NULL;
+            $resource = null;
 
         return $resource;
     }
 
-    public function get($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function get($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->get;
         } else {
             return ri_arr_value($this->get, $key, $default, $filter);
         }
     }
 
-    public function post($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function post($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->post;
         } else {
             return ri_arr_value($this->post, $key, $default, $filter);
         }
     }
 
-    public function request($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function request($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->request;
         } else {
             return ri_arr_value($this->request, $key, $default, $filter);
         }
     }
 
-    public function arg($index = NULL, $default = false, $filter = NULL) {
-        if ($index === NULL) {
+    public function arg($index = null, $default = false, $filter = null) {
+        if ($index === null) {
             return $this->arg;
         } else {
             return ri_arr_value($this->arg, $index, $default, $filter);
         }
     }
 
-    public function env($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function env($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->env;
         } else {
             return ri_arr_value($this->env, $key, $default, $filter);
         }
     }
 
-    public function put($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function put($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->put;
         } else {
             return ri_arr_value($this->put, $key, $default, $filter);
@@ -383,8 +383,8 @@ class Ri_Http_Request{
         return $this->files;
     }
 
-    public function cookie($key = NULL, $default = false, $filter = NULL) {
-        if ($key === NULL) {
+    public function cookie($key = null, $default = false, $filter = null) {
+        if ($key === null) {
             return $this->cookie;
         } else {
             return ri_arr_value($this->cookie, $key, $default, $filter);

@@ -1,5 +1,5 @@
 <?php
 
-class Ri_Module{
+class Ri_Module extends Ri_Environment {
     
 }

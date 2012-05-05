@@ -15,25 +15,25 @@ class Ri_Storage_Db {
      *
      * @var PDO
      */
-    protected $pdo = NULL;
+    protected $pdo = null;
 
     /**
      *
      * @var string
      */
-    protected $instance_name = NULL;
+    protected $instance_name = null;
 
     /**
      *
      * @var string
      */
-    protected $config = NULL;
+    protected $config = null;
 
     /**
      *
      * @var string
      */
-    protected $options = NULL;
+    protected $options = null;
 
     /**
      *
@@ -102,7 +102,7 @@ class Ri_Storage_Db {
     }
 
     public function prefix() {
-        return isset($this->config["prefix"]) ? $this->config["prefix"] : NULL;
+        return isset($this->config["prefix"]) ? $this->config["prefix"] : null;
     }
 
     /**
@@ -110,11 +110,11 @@ class Ri_Storage_Db {
      * @return string 
      */
     public function dsn() {
-        return isset($this->config["dsn"]) ? $this->config["dsn"] : NULL;
+        return isset($this->config["dsn"]) ? $this->config["dsn"] : null;
     }
 
     public function connect() {
-        if ($this->pdo == NULL) {
+        if ($this->pdo == null) {
             $this->pdo = new PDO($this->config["dsn"], $this->config["username"], $this->config["password"], $this->options);
 
             if (preg_match("/mysql/i", $this->config["driver"]) > 0) {
@@ -228,7 +228,7 @@ class Ri_Storage_Db {
     /**
      * 
      */
-    public static function clearVarcache($hash = NULL) {
+    public static function clearVarcache($hash = null) {
         if (!empty($hash)) {
             unset(self::$varcache[$hash]);
         }else
@@ -313,7 +313,7 @@ class Ri_Storage_Db {
      * @return int or boolean false
      */
     public function exec($statement) {
-        Ri::timerStart();
+        Ri_Application::timerStart();
 
         $this->lastRowCount = 0;
         $this->connect();
@@ -345,7 +345,7 @@ class Ri_Storage_Db {
      * @return mixed or boolean false
      */
     public function query($statement) {
-        Ri::timerStart();
+        Ri_Application::timerStart();
 
         $statement = trim($statement);
         $this->lastRowCount = 0;
@@ -396,11 +396,11 @@ class Ri_Storage_Db {
     }
 
     protected function _logSuccess($statement, $data = array()) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri::timerStop(), 'OK', $this->instance_name);
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri_Application::timerStop(), 'OK', $this->instance_name);
     }
 
     protected function _logError($statement) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", NULL, Ri::timerStop(),
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ri_Application::timerStop(),
             $this->pdo->errorInfo(), $this->instance_name);
 
         $content = "#" . self::$queryCount . " [ERROR]\n";
@@ -432,7 +432,7 @@ class Ri_Storage_Db {
         foreach ($data as $field => $value) {
             $value = str_escape(stripslashes($value));
 
-            if (($value !== NULL) && ($value !== "") && (strtoupper($value) != "NULL")) {
+            if (($value !== null) && ($value !== "") && (strtoupper($value) != "null")) {
                 $fields[] = "`" . $field . "`";
                 $values[] = "'" . $value . "'";
             } else {
@@ -458,7 +458,7 @@ class Ri_Storage_Db {
      * @param string $limit
      * @return bool
      */
-    public function update($table, array $data, $where = NULL, $limit = NULL) {
+    public function update($table, array $data, $where = null, $limit = null) {
         if (!empty($where)) {
             $where = "WHERE " . $where;
         }
@@ -469,7 +469,7 @@ class Ri_Storage_Db {
         $setters = array();
         foreach ($data as $field => $value) {
             $value = str_escape(stripslashes($value));
-            if (($value === NULL) || ($value === "") || (strtoupper($value) == "NULL")) {
+            if (($value === null) || ($value === "") || (strtoupper($value) == "null")) {
                 $setters[] = "`{$field}`=null ";
             }else
                 $setters[] = "`{$field}`='{$value}' ";
@@ -489,7 +489,7 @@ class Ri_Storage_Db {
      * @param string $limit
      * @return bool
      */
-    public function delete($from, $where = NULL, $limit = NULL) {
+    public function delete($from, $where = null, $limit = null) {
         if (!empty($where)) {
             $where = "WHERE " . $where;
         }
@@ -537,7 +537,7 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false
      */
-    public function findWhere($where, $from, $orderBy = NULL, $limit = NULL, $select = NULL) {
+    public function findWhere($where, $from, $orderBy = null, $limit = null, $select = null) {
         if (empty($select))
             $select = "SELECT *";
         if (!empty($where))
@@ -575,9 +575,9 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false 
      */
-    public function findAll($from, $orderBy = NULL, $limit = NULL, $select = NULL) {
+    public function findAll($from, $orderBy = null, $limit = null, $select = null) {
         $args = func_get_args();
-        array_unshift($args, NULL); //  where
+        array_unshift($args, null); //  where
         return call_user_func_array(array($this, "findWhere"), $args);
     }
 
@@ -596,17 +596,17 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false 
      */
-    public function findOne($where, $from, $select = NULL, $fetch_style = RI_DB_FETCH_ASSOC_FIRST) {
+    public function findOne($where, $from, $select = null, $fetch_style = RI_DB_FETCH_ASSOC_FIRST) {
         $args = array_slice(func_get_args(), 2);
 
         if (func_num_args() < 4)         //  fetch_style
             array_push($args, RI_DB_FETCH_ASSOC_FIRST);
 
         if (func_num_args() < 3) {
-            array_unshift($args, NULL); //  select
+            array_unshift($args, null); //  select
         }
         array_unshift($args, 1);  //limit
-        array_unshift($args, NULL); //orderBy
+        array_unshift($args, null); //orderBy
         array_unshift($args, $from);
         array_unshift($args, $where);
 
@@ -634,7 +634,7 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false
      */
-    public function findBy($field, $value, $from, $orderBy = NULL, $limit = NULL, $select = NULL) {
+    public function findBy($field, $value, $from, $orderBy = null, $limit = null, $select = null) {
         $args = array_slice(func_get_args(), 2);
         array_unshift($args, "`{$field}`='{$value}'");
         return call_user_func_array(array($this, "findWhere"), $args);
@@ -659,7 +659,7 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false
      */
-    public function search($value, $fields, $strict_compare = true, $from = NULL, $orderBy = NULL, $limit = NULL, $select = NULL) {
+    public function search($value, $fields, $strict_compare = true, $from = null, $orderBy = null, $limit = null, $select = null) {
         $where = array();
         if (is_string($fields))
             $fields = explode(",", $fields);

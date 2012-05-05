@@ -6,31 +6,31 @@
 final class Ri_Empty {
 
     public function __call($name, $arguments) {
-        return NULL;
+        return null;
     }
 
     public function __invoke() {
-        return NULL;
+        return null;
     }
 
     public function __set($name, $value) {
-        return NULL;
+        return null;
     }
 
     public function __get($name) {
-        return NULL;
+        return null;
     }
 
     public function __isset($name) {
-        return NULL;
+        return null;
     }
 
     public function __unset($name) {
-        return NULL;
+        return null;
     }
 
     public function __toString() {
-        return NULL;
+        return null;
     }
 
 }

@@ -6,7 +6,7 @@ class Ri_Storage_Session {
     protected $fingerprint;
     protected $sessid_ttl = 180;
 
-    public function __construct($name, $sessid_ttl = 180, $fingerprint_data = NULL) {
+    public function __construct($name, $sessid_ttl = 180, $fingerprint_data = null) {
         $this->name = $name;
         $this->sessid_ttl = $sessid_ttl;
 
@@ -26,7 +26,7 @@ class Ri_Storage_Session {
         if ($this->has($name)) {
             return $_SESSION[$name];
         }
-        return NULL;
+        return null;
     }
 
     public function set($name, $value) {

@@ -1,22 +1,12 @@
 <?php
 
-abstract class Ri_Controller {
+abstract class Ri_Controller extends Ri_Environment {
 
     /**
      * Supported HTTP methods
      * @var array 
      */
     protected $supports = array("GET", "POST");
-    
-    /**
-     *
-     * @var Ri 
-     */
-    protected $app;
-    
-    public function __construct(Ri &$app) {
-        $this->app = $app;
-    }
 
     /**
      * Default function 
@@ -32,4 +22,21 @@ abstract class Ri_Controller {
      * Request validation function
      */
     abstract public function __validate();
+
+    public function __set($name, $value) {
+        $this->app()->view->$name = $value;
+    }
+
+    public function __get($name) {
+        return $this->app()->view->$name;
+    }
+
+    public function setBody($body) {
+        $this->app()->response->body($body);
+    }
+
+    public function setStatus($status) {
+        $this->app()->response->status($status);
+    }
+
 }

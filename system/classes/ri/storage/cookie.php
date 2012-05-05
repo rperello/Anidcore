@@ -10,7 +10,7 @@ class Ri_Storage_Cookie {
         if ($this->has($name)) {
             return $_COOKIE[$name];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -85,15 +85,15 @@ class Ri_Storage_Cookie {
      * <b>setcookie</b> successfully runs, it will return true.
      * This does not indicate whether the user accepted the cookie.
      */
-    public function set($name, $value, $expire = 0, $path = NULL, $domain = NULL, $secure = false, $httponly = NULL) {
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = null) {
         return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
-    public function delete($name, $path = NULL, $domain = NULL, $secure = false, $httponly = NULL) {
+    public function delete($name, $path = null, $domain = null, $secure = false, $httponly = null) {
         return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
     }
 
-    public function clear($path = NULL, $domain = NULL, $secure = false, $httponly = NULL) {
+    public function clear($path = null, $domain = null, $secure = false, $httponly = null) {
         foreach ($_COOKIE as $key => $value) {
             $this->delete($key, $path, $domain, $secure, $httponly);
         }

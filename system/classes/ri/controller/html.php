@@ -1,0 +1,49 @@
+<?php
+
+class Ri_Controller_Html extends Ri_Controller {
+
+    public function __construct($appname) {
+        parent::__construct($appname);
+        $this->title = "Rino Framework v".Ri::VERSION;
+        $this->meta_description = "";
+        $this->meta_keywords = "";
+        $this->meta_robots = "INDEX,FOLLOW";
+        $this->link_canonical = $this->app()->request->currentUri;
+        
+        $this->setStatus(200);
+    }
+
+    public function __default() {
+        $this->setBody($this->title);
+    }
+
+    public function __handle() {
+        $this->error();
+    }
+    
+    public function __validate(){
+        if(!in_array($this->app()->request->method, $this->supports)){
+            $this->setStatus(405);
+            return false;
+        }
+        return true;
+    }
+
+    protected function error($body=null) {
+        $this->meta_robots = "NOINDEX,NOFOLLOW";
+        
+        if($this->app()->response->status()==405){
+            $this->setBody(($body===null) ? "<html><body><h1>405 Method Not Allowed</h1></body></html>" : $body);
+        }else{
+            $this->setBody(($body===null) ? "<html><body><h1>404 Not Found</h1></body></html>" : $body);
+            $this->setStatus(404);
+        }
+    }
+
+    final private function action_error() {
+        
+    }
+
+}
+
+?>

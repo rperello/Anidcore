@@ -6,12 +6,12 @@ ini_set("default_charset","utf8");
 class ServerTest{
     public $TITLE = "Rino Framework - Server compatibility test";
     public $REQUIRED_PHP_VERSION = "5.2.6";
-    public $MYSQL_VERSION = NULL;
-    public $ROOT_PATH = NULL;
+    public $MYSQL_VERSION = null;
+    public $ROOT_PATH = null;
     public $TESTS=array();
     public $ERROR_COUNT=0;
     public $WARNING_COUNT=0;
-    public $IMAGEMAGICK_PATH=NULL;
+    public $IMAGEMAGICK_PATH=null;
     
     public function __construct() {
         $this->ROOT_PATH=realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -34,7 +34,7 @@ class ServerTest{
         $tests["php.filesystem"]=array(
             "title"=>"PHP can create and remove directories and files",
             "passed"=>$test_fs===true,
-            "result"=>strlen($test_fs) > 1 ? "Errors: ".$test_fs : NULL,
+            "result"=>strlen($test_fs) > 1 ? "Errors: ".$test_fs : null,
             "level"=>"error"
         );
         
@@ -266,7 +266,7 @@ class ServerTest{
     
     protected function test_imagemagick(){
         $version = @shell_exec("convert --version");
-        $path = NULL;
+        $path = null;
         
         if(empty($version)) $version = @shell_exec("/usr/bin/convert --version");
         else $path = "convert";
@@ -284,8 +284,8 @@ class ServerTest{
             if(empty($path)) $path = "/usr/local/imagemagick/bin/convert";
             if(preg_match("/ImageMagick ([0-9\.\-]{1,})/i", $version, $matches)){
                 $version = $matches[1];
-            }else $version=NULL;
-        }else $version=NULL;
+            }else $version=null;
+        }else $version=null;
         
         $this->IMAGEMAGICK_PATH = $path;
         return array("version"=>$version, "path"=>$path);

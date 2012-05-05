@@ -1,12 +1,12 @@
 <?php
 
-class Ri_Storage{
+class Ri_Storage extends Ri_Environment {
 
     /**
      * @var Ri_Storage_Var
      */
     public $var;
-    
+
     /**
      * @var Ri_Storage_Session
      */
@@ -31,4 +31,5 @@ class Ri_Storage{
      * @var Ri_Storage_File
      */
     public $file;
+
 }

@@ -12,7 +12,7 @@ class Ri_Storage_File {
      *
      * @var Ri_Storage_Var
      */
-    protected $varcache = NULL;
+    protected $varcache = null;
     protected $buffer = array();
     protected $buffer_queue = array();
 
@@ -147,7 +147,7 @@ class Ri_Storage_File {
         return $path . sha1($filename) . '.cache';
     }
 
-    public function bufferStart($id = NULL, $lifetime = NULL) {
+    public function bufferStart($id = null, $lifetime = null) {
         $hash = sha1($id . $lifetime);
 
         if (!isset($this->buffer[$hash])) {
