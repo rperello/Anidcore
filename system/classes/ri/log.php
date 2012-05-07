@@ -3,33 +3,40 @@
 class Ri_Log {
 
     public function log($data, $label) {
-        $this->file("Rino LOG: " . $label . " : " . print_r($data, true), "log.log");
+        $this->file("LOG: " . $label . " : " . print_r($data, true), "debug.log", true, false);
     }
 
     public function warn($data, $label) {
-        $this->file("Rino WARN: " . $label . " : " . print_r($data, true), "warn.log");
+        $this->file($label . " : " . print_r($data, true), "warnings.log", true, false);
     }
 
     public function info($data, $label) {
-        $this->file("Rino INFO: " . $label . " : " . print_r($data, true), "info.log");
+        $this->file("INFO: " . $label . " : " . print_r($data, true), "debug.log", true, false);
     }
 
     public function error($data, $label, $file, $line) {
-        $this->file("Rino ERROR (File $file; Line $line): " . $label . " : " . print_r($data, true), "error.log");
+        $this->file("Rino ERROR: '" . $label . " : " . print_r($data, true). "' in $file on line $line", "errors.log", true, false);
     }
 
     public function fatal($data, $label, $file, $line) {
-        $this->file("Rino FATAL ERROR (File $file; Line $line): " . $label . " : " . print_r($data, true), "fatal.log");
-        throw new RuntimeException("Rino FATAL ERROR (File $file; Line $line): " . $label . " : " . print_r($data, true));
+        $this->file("Rino FATAL ERROR: '" . $label . " : " . print_r($data, true). "' in $file on line $line", "errors.log", true, false);
+        throw new RuntimeException($label . " : " . print_r($data, true));
     }
 
-    public function file($message, $filename = "console.log") {
-        $message = "[" . date("Y-m-d H:i:s") . "] " . $message . "\n";
-        $fname = RI_PATH_LOGS . $filename;
+    public function file($message, $filename = "debug.log", $use_timestamp = true, $use_monthly_folders=true) {
+        if ($use_timestamp)
+            $message = "[" . date("d-M-Y H:i:s") . "] " . $message;
+        
+        if($use_monthly_folders) $path = RI_PATH_LOGS.date("Y")._DS.strtolower(date("M"))._DS;
+        else $path = RI_PATH_LOGS;
+        
+        if(!is_dir($path)) mkdir($path, 0770, true);
+        
+        $fname = $path . $filename;
         if (!file_exists($fname)) {
-            return file_put_contents($fname, $message, 0);
+            return file_put_contents($fname, $message . "\n", 0);
         } else {
-            return file_put_contents($fname, $message, FILE_APPEND);
+            return file_put_contents($fname, $message . "\n", FILE_APPEND);
         }
     }
 

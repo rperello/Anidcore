@@ -7,6 +7,17 @@ abstract class Ri_Controller extends Ri_Environment {
      * @var array 
      */
     protected $supports = array("GET", "POST");
+    
+    /**
+     * 
+     * @var Ri_View 
+     */
+    protected $view;
+
+    public function __construct($contextName) {
+        parent::__construct($contextName);
+        $this->view = new Ri_View($contextName);
+    }
 
     /**
      * Default function 
@@ -24,19 +35,19 @@ abstract class Ri_Controller extends Ri_Environment {
     abstract public function __validate();
 
     public function __set($name, $value) {
-        $this->app()->view->$name = $value;
+        $this->view->$name = $value;
     }
 
     public function __get($name) {
-        return $this->app()->view->$name;
+        return $this->view->$name;
     }
 
     public function setBody($body) {
-        $this->app()->response->body($body);
+        $this->context()->response->body($body);
     }
 
     public function setStatus($status) {
-        $this->app()->response->status($status);
+        $this->context()->response->status($status);
     }
 
 }

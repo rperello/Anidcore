@@ -4,11 +4,11 @@ class Ri_Storage_Session {
 
     protected $name;
     protected $fingerprint;
-    protected $sessid_ttl = 180;
+    protected $sessid_lifetime = 180;
 
-    public function __construct($name, $sessid_ttl = 180, $fingerprint_data = null) {
+    public function __construct($name, $sessid_lifetime = 180, $fingerprint_data = null) {
         $this->name = $name;
-        $this->sessid_ttl = $sessid_ttl;
+        $this->sessid_lifetime = $sessid_lifetime;
 
         if (!empty($fingerprint_data)){
             $this->fingerprint = sha1($fingerprint_data);
@@ -79,7 +79,7 @@ class Ri_Storage_Session {
 
     /**
      * With this validation the session is validated against a fingerprint, an arbitrary string that could be the IP from which it was started,
-     * and the sessionid stored in the cookie is regenerated each sessid_ttl time.
+     * and the sessionid stored in the cookie is regenerated each sessid_lifetime time.
      * This way sessions are harder to hijack or stole
      * @return boolean 
      */
@@ -94,15 +94,15 @@ class Ri_Storage_Session {
         }
 
         //Regenerates the session ID if the current one is expired.
-        if (isset($this->sessid_ttl) && ($this->sessid_ttl > 0)) {
-            if (isset($_SESSION['PHPSESSID_TTL'])) {
-                if (time() >= $_SESSION['PHPSESSID_TTL']) {
+        if (isset($this->sessid_lifetime) && ($this->sessid_lifetime > 0)) {
+            if (isset($_SESSION['PHPsessid_lifetime'])) {
+                if (time() >= $_SESSION['PHPsessid_lifetime']) {
                     // Create new session without destroying the old one
                     session_regenerate_id(false);
-                    $_SESSION['PHPSESSID_TTL'] = time() + $this->sessid_ttl;
+                    $_SESSION['PHPsessid_lifetime'] = time() + $this->sessid_lifetime;
                 }
             } else {
-                $_SESSION['PHPSESSID_TTL'] = time() + $this->sessid_ttl;
+                $_SESSION['PHPsessid_lifetime'] = time() + $this->sessid_lifetime;
             }
         }
         return true;

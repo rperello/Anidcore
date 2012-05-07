@@ -313,7 +313,7 @@ class Ri_Storage_Db {
      * @return int or boolean false
      */
     public function exec($statement) {
-        Ri_Application::timerStart();
+        Ri::timerStart();
 
         $this->lastRowCount = 0;
         $this->connect();
@@ -345,7 +345,7 @@ class Ri_Storage_Db {
      * @return mixed or boolean false
      */
     public function query($statement) {
-        Ri_Application::timerStart();
+        Ri::timerStart();
 
         $statement = trim($statement);
         $this->lastRowCount = 0;
@@ -396,11 +396,11 @@ class Ri_Storage_Db {
     }
 
     protected function _logSuccess($statement, $data = array()) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri_Application::timerStop(), 'OK', $this->instance_name);
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri::timerStop(), 'OK', $this->instance_name);
     }
 
     protected function _logError($statement) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ri_Application::timerStop(),
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ri::timerStop(),
             $this->pdo->errorInfo(), $this->instance_name);
 
         $content = "#" . self::$queryCount . " [ERROR]\n";

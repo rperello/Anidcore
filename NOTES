@@ -1,0 +1,110 @@
+=DEVELOPER NOTES=
+(in spanish, sorry)
+
+    Este framework tiene que soportar la simulación de requests sin la necesidad de curl, a través de la posibilidad de instanciar varios Ri_Context
+    internamente y simular así diferentes contextos o llamadas.
+
+    El escenario más común de uso de esta feature del framework es cuando tenemos una API RESTFul que necesitamos usar también internamente, sin necesidad
+    de hacer HTTP Requests externos (evitaríamos la sobrecarga del servidor).
+
+    Por ello se evita programar con la idea de que existe una única información estática, aunque se proveerán métodos estáticos para acceder a esa información original.
+
+- Autoload de clases:
+    La prioridad para elegir qué clase se carga primero es la siguiente: primero se mira en app/classes, luego entre los módulos cargados, por su orden,
+    en sus carpetas de clases y finalmente en system/classes. De esta manera podemos sobreescribir fácilmente cualquier clase definida en system/classes o en otro
+    módulo. De esto se encargará el autoloader. Aquí es donde vemos toda la potencia del patrón HMVC.
+
+=CONCEPTOS=
+
+* Entry point :
+    Siempre será /index.php
+
+* Loader and exit point:
+    /system/loader.php
+    Carga la aplicación, la ejecuta e imprime el output final.
+    Los 'echo' intermedios deberían ser tratados mediante output buffers, ya que este debería ser el único punto de salida,
+    exceptuando los creados mediante die() o exit() o mediante algún error.
+
+* Application:
+    La aplicación hace referencia a la aplicación web en su totalidad.
+
+* Context:
+    - ¿Qué estoy pidiendo?
+    Un contexto representa una instancia de Ri_Context que se caracteriza por la atomicidad de sus datos. Esto quiere decir que una instancia puede funcionar independiente de otras
+    ya que dispone de sus propios datos (su $_SERVER o sus datos de entrada $_GET, $_POST, etc).
+    Un contexto consiste en sus parámetros, en un módulo principal (que está bajo la carpeta /app para diferenciarlo del resto) y otros módulos (en la carpeta /modules).
+    
+    La clase Ri_Environment expone un contexto a las clases que la extiendan, para no perder la referencia del contexto desde la que son instanciadas.
+    
+* Hook:
+    - ¿Tengo que hacer algo más cuando ocurra esto?
+    Son eventos (event handlers) de la aplicación que se disparan en un momento dado y llaman a funciones. De esta manera podemos ejecutar un código concreto sin tener que modificar
+    el código del framework u otros módulos que soporten hooks.
+
+* Module:
+    - ¿Qué funcionalidad tengo?
+    Un módulo es un conjunto de clases, funciones, etc que proveen una funcionalidad concreta en la aplicación. Un ejemplo sería un módulo 'admin', un módulo 'mailer', etc.
+    Puede ser accesible a través de url o no, eso depende de si tiene clases de controladores o no.
+
+* Controller:
+    - ¿Qué de qué parte me cargo?
+    Define una ruta de acceso HTTP (y también se pueden definir qué métodos RESTful soporta). Cada acción se define mediante funciones nombradas action_*. La acción por defecto
+    en un controlador se llama __default y cuando no se encuentra algo salta a __handle. También existe un sistema de validación mediante funciones __validate y
+    __validate_<nombre_de_accion>, que dependiendo si devuelven true o false ejecuta la acción o salta a __handle.
+
+* Action:
+    - ¿Qué datos necesito y qué hago con ellos?
+    Define una ruta de acceso HTTP, después del segmento que pertenece al controlador. Si se omite el controlador, se puede tratar de un action del controlador principal.
+    Dentro de una acción se ejecuta la lógica necesaria y se genera un mensaje (string, array, etc.) que será retornado al contexto para ser tratado en el view
+    correspondiente.
+
+* Model:
+    - ¿Cómo y de dónde obtengo los datos?
+    Son herramientas intermedias para abstraer el manejo de esquemas de datos de una manera más ágil, lo que vendrían a ser Abstraction Layers.
+    Un modelo típicamente puede representar una tabla en una base de datos, pero también un sistema de caché, un lector de RSS, etc
+
+* Template:
+    - ¿Cómo visualizo los datos?
+    Un template es la representación en sí de los datos. Puede tratarse del código XML, JSON, HTML, CSS, imágenes, etc
+    
+    Devuelven el resultado al View
+
+* View:
+    - ¿Cómo con qué formato genero los datos?
+    Un view es una manera de tratar las plantillas para diferentes propósitos como podrían ser: formato HTML, formato RSS, formato JSON, etc
+    Por lo tanto las views se encargan de cargar unos templates u otros en función del formato que representen.
+
+    También se encargan de parsear templates, es decir, pueden representar un sistema de plantillas (como Twig) que se encarga de cargarlas y generarlas.
+
+    Devuelven el resultado al contexto.
+
+
+=TO-DO=
+
+CORE:
+- Router resolver
+- Hacer funcionar los Storage classes
+- Views / templates / themes
+- documentation
+
+PLATFORM:
+- third party modules (swiftmailer, firephp, wideimage, twig, yaml, ...)
+- define database schema (documents, attachments, terms, ...)
+- cms / admin module
+- image editor / cropper // gallery & thumbnail manager
+- user login/register system (supporting Oauth)
+- user ACL system (users, groups, privileges)
+- setup, backup/restore and import/export modules
+- plugin and theme system
+- file browser + editor system
+- more logs (spiders, sql errors, not-found, auth access, actions)
+
+=OTRAS ANOTACIONES=
+
+- Las subllamadas internas podrán devolver el contenido en formato string, array, object, etc. Por ejemplo si hacemos una llamada interna a nuestra API, nos interesará
+    que nos devuelva por ejemplo los datos en formato array y no JSON como haría si fuera el request principal y tuviera que hacer echo de esos datos.
+
+- A diferencia de Slim, en el que se deben predefinir los diferentes patrones de URL y los REQUEST_METHOD por los que se puede acceder, Rino ofrece el patrón HMVC, con el
+    que en vez de definir a mano los patrones URL, creamos archivos de clases controladores con sus acciones, de manera jerárquica, dentro de los cuales se pueden definir reglas
+    para ejecutar una accion u otra y los REQUEST_METHOD soportados. Es una manera más estructurada de desarrollo,
+    aunque la otra es igual de válida y ofrece más customización de patrones de URL, pero está más 'harcodeada'.

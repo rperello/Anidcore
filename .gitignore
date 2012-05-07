@@ -25,7 +25,4 @@ Thumbs.db
 *.cache
 *.cache.html
 wp-config.php
-/todo.txt
-/app/data/lifecycle.txt
-/app/data/todo1.txt
-/app/data/todo2.txt
+/app/data/*.txt

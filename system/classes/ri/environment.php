@@ -1,23 +1,26 @@
 <?php
 
+/**
+ * Exposes a Ri_Context to the extended classes 
+ */
 class Ri_Environment {
 
     /**
-     * Ri_Application instance name
+     * Ri_Context instance name
      * @var string
      */
-    protected $appName;
+    protected $contextName;
 
-    public function __construct($appName) {
-        $this->appName = $appName;
+    public function __construct($contextName) {
+        $this->contextName = $contextName;
     }
 
     /**
-     * Ri_Application instance name
-     * @return Ri_Application 
+     * Ri_Context instance name
+     * @return Ri_Context 
      */
-    public function app() {
-        return Ri::app($this->appName);
+    public function context() {
+        return Ri_Context::getInstance($this->contextName);
     }
 
 }
