@@ -22,13 +22,13 @@ class Ri_Module extends Ri_Environment {
         } else {
             $defaults = array();
         }
-        
+
         $this->defaults = $defaults;
 
         $this->context()->setConfig(null, array_merge($defaults, $this->context()->config(null, array(), $moduleName)), $moduleName);
-        
+
         $this->context()->hookApply("ri.on.load_module", $this);
-        $this->context()->hookApply("ri.on.load_module.".$moduleName, $this);
+        $this->context()->hookApply("ri.on.load_module." . $moduleName, $this);
     }
 
     public function init() {
@@ -39,7 +39,7 @@ class Ri_Module extends Ri_Environment {
             include $this->path . "init.php";
         }
         $this->context()->hookApply("ri.on.init_module", $this);
-        $this->context()->hookApply("ri.on.init_module.".$this->name, $this);
+        $this->context()->hookApply("ri.on.init_module." . $this->name, $this);
     }
 
     public function isContext() {

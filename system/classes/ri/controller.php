@@ -7,7 +7,7 @@ abstract class Ri_Controller extends Ri_Environment {
      * @var array 
      */
     protected $supports = array("GET", "POST");
-    
+
     /**
      * 
      * @var Ri_View 
@@ -27,12 +27,18 @@ abstract class Ri_Controller extends Ri_Environment {
     /**
      * Error handler function 
      */
-    abstract public function __handle();
+    abstract public function __handle($body = null);
 
     /**
      * Request validation function
      */
-    abstract public function __validate();
+    public function __validate() {
+        if (!in_array($this->context()->request->method(), $this->supports)) {
+            $this->setStatus(405);
+            return false;
+        }
+        return true;
+    }
 
     public function __set($name, $value) {
         $this->view->$name = $value;

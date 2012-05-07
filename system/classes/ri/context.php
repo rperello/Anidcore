@@ -42,13 +42,13 @@ class Ri_Context {
      * @var array key-value pair array of context settings
      */
     protected $config;
-    
+
     /**
      *
      * @var array 
      */
     protected $loaded_modules = array();
-    
+
     /**
      *
      * @var string 
@@ -56,17 +56,27 @@ class Ri_Context {
     protected $current_module_name;
 
     /**
+     *  <b>Predefined hooks:</b><br>
+     *  ri.before.create,
+      ri.on.load_module,
+      ri.on.load_module.<modulename>,
+      ri.on.load_module,
+      ri.on.load_module.<modulename>
+      ri.before.router_resolve,
+      ri.on.router_resource,
+      ri.on.router_resolve,
+      ri.on.init_module,
+      ri.on.init_module.<modulename>,
+      ri.on.init_module,
+      ri.on.init_module.<modulename>,
+      ri.on.create,
+      ri.before.execute,
+      ri.before.router_call,
+      ri.on.router_call,
+      ri.on.execute
      * @var array Event hooks
      */
-    protected $hooks = array(
-        //Predefined hooks:
-        'ri.before.create' => array(array()),
-        'ri.on.create' => array(array()),
-        'ri.before.render' => array(array()),
-        'ri.on.render' => array(array()),
-        'ri.before.run' => array(array()),
-        'ri.on.run' => array(array()),
-    );
+    protected $hooks = array();
 
     public function __construct($config = array(), Ri_Http_Request $request = null, $name = null) {
         $hook = $this->hookApply("ri.before.create", array("config" => $config, "request" => $request));
@@ -74,8 +84,10 @@ class Ri_Context {
 
         spl_autoload_register(array($this, 'autoload'));
 
-        if (empty($name) || empty(self::$instances)) {
+        if (empty(self::$instances)) {
             $name = Ri::MAIN_CONTEXT_NAME;
+        } elseif (empty($name)) {
+            $name = "c_" . ri_str_random(12);
         }
 
         $this->name = $name;
@@ -105,7 +117,7 @@ class Ri_Context {
                 "session.name" => "phpsessid_" . strtolower(str_replace("/", "", $this->request->baseDir)),
                 "session.sessid_lifetime" => 180,
                 "session.cookie_path" => '/' . $this->request->baseDir,
-                "session.cookie_secure" => ($this->request->scheme == "https"),
+                "session.cookie_secure" => $this->request->isHttps(),
                 "session.cookie_lifetime" => 0,
                 "session.gc_maxlifetime" => 1440,
                 "session.cache_expire" => 180,
@@ -115,17 +127,14 @@ class Ri_Context {
                 "key.names" => array("AUTH_SALT"), //extra generated keys
                 "modules.config" => array(),
                 "modules.autoload" => array(),
+                "router.default_controller" => "index",
             );
         }
 
         $this->config = array_merge(self::$defaults, $config);
 
-        //Server and keys are only configured once
-        if (!Ri::finals("server_configured")) {
-            Ri::configureServer($this->config);
-            Ri::generateKeys($this->config);
-            Ri::finals("server_configured", true);
-        }
+        //The Ri class will be only initialized once
+        Ri::init($this->config);
 
         self::contextRegister($this);
 
@@ -160,40 +169,42 @@ class Ri_Context {
 
         $this->hookApply("ri.on.create", &$this);
     }
-    
-    public function autoload($class_name){
+
+    public function autoload($class_name) {
         $result = Ri::classFind($class_name, $this->loaded_modules);
-        
         // class loaded from /system
-        if($result === true){
+        if ($result === true) {
             return true;
-        }elseif($result instanceof Ri_Module){
+        } elseif ($result instanceof Ri_Module) {
             // class loaded from /app or /modules/*
             $this->current_module_name = $result->name;
             return true;
         }
-        
+
         // class not found
         return false;
     }
 
     /**
-     * Renders a view 
+     * Calls the router and returns the action return value
      */
-    public function render() {
-        $this->hookApply('ri.before.render');
-        header("Content-Type: text/plain");
-        include RI_PATH . "test.php";
-        $this->hookApply('ri.after.render');
+    public function execute() {
+        $this->hookApply('ri.before.execute');
+        $action_result = $this->router->call();
+        $action_result = $this->hookApply('ri.on.execute', $action_result);
+        Ri::globalsRestore();
+        return $action_result;
     }
 
     /**
-     * Runs the context 
+     * Prints the response
+     * @param string $ob Output buffer before call this function
      */
-    public function run() {
-        $this->hookApply('ri.before.run');
-        $this->render();
-        $this->hookApply('ri.after.run');
+    public function render($ob = "") {
+        $before_render = $this->hookApply('ri.before.render', array("body" => $this->response->body(), "ob" => $ob));
+        $this->response->body($before_render["body"]);
+        $this->response->send();
+        $this->hookApply('ri.on.render');
     }
 
     /**
@@ -412,8 +423,4 @@ class Ri_Context {
         self::$instances[$inst->name] = $inst;
     }
 
-    protected static function throwException($message, $exitCode = -1) {
-        throw new RuntimeException("Rino FATAL ERROR: " . $message);
-        exit($exitCode);
-    }
 }

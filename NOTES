@@ -1,6 +1,18 @@
 =DEVELOPER NOTES=
 (in spanish, sorry)
 
+
+- RESTFul Server (Slim based)
+- Central JSON-RPC / JSONP  API / Server (RedBean BeanCan based)
+    - Plain JSON & Plain JSON over JSONP
+    - JSON-RPC & JSON-RPC over JSONP
+- Internal requests / router calls
+- HMVC Pattern
+- NOSQL/SQL Hybrid? Abstaction Layer (RedBean based ?)
+- Library agnostic
+- Hooks (event triggers)
+- Progressive enhancement PHP 5.2 -> 5.3 -> 5.4
+
     Este framework tiene que soportar la simulación de requests sin la necesidad de curl, a través de la posibilidad de instanciar varios Ri_Context
     internamente y simular así diferentes contextos o llamadas.
 
@@ -50,13 +62,14 @@
     - ¿Qué de qué parte me cargo?
     Define una ruta de acceso HTTP (y también se pueden definir qué métodos RESTful soporta). Cada acción se define mediante funciones nombradas action_*. La acción por defecto
     en un controlador se llama __default y cuando no se encuentra algo salta a __handle. También existe un sistema de validación mediante funciones __validate y
-    __validate_<nombre_de_accion>, que dependiendo si devuelven true o false ejecuta la acción o salta a __handle.
+    validate_<nombre_de_accion>, que dependiendo si devuelven true o false ejecuta la acción o salta a __handle.
 
 * Action:
     - ¿Qué datos necesito y qué hago con ellos?
     Define una ruta de acceso HTTP, después del segmento que pertenece al controlador. Si se omite el controlador, se puede tratar de un action del controlador principal.
     Dentro de una acción se ejecuta la lógica necesaria y se genera un mensaje (string, array, etc.) que será retornado al contexto para ser tratado en el view
     correspondiente.
+    Los 'action' devuelven la información que se podría necesitar para los request internos.
 
 * Model:
     - ¿Cómo y de dónde obtengo los datos?
@@ -96,7 +109,7 @@ PLATFORM:
 - user ACL system (users, groups, privileges)
 - setup, backup/restore and import/export modules
 - plugin and theme system
-- file browser + editor system
+- file browser + editor system (elfinder + ACE Editor)
 - more logs (spiders, sql errors, not-found, auth access, actions)
 
 =OTRAS ANOTACIONES=

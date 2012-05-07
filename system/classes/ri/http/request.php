@@ -1,6 +1,7 @@
 <?php
 
-class Ri_Http_Request{
+class Ri_Http_Request {
+
     const METHOD_HEAD = 'HEAD';
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
@@ -8,190 +9,165 @@ class Ri_Http_Request{
     const METHOD_DELETE = 'DELETE';
     const METHOD_OPTIONS = 'OPTIONS';
     const METHOD_OVERRIDE = '_METHOD';
-    
     const CONTENT_TYPE_FORM_URLENCODED = 'application/x-www-form-urlencoded';
-    
-    /**
-     * Original Super Globals
-     * @var array
-     */
-    protected static $originals;
-    
+
     /**
      *
      * @var Ri_Http_Request 
      */
     protected static $instance;
-    
+
+    ## URL DATA:
     /**
      * $_SERVER variables
-     * @var array 
+     * @var Ri_Object 
      */
-    protected $server;
-    
-    /**
-     * Relative script path (from document root)
-     * @var type 
-     */
-    public $scriptName;
-    public $pathInfo;
-    public $phpSelf;
-    
-    public $requestUri;
-    public $queryString;
-    public $httpXRequestedWith;
-    public $referer;
-    public $userAgent;
-    
-    /**
-     * Language list formatted like 'es-es,es,en-us,en'
-     * @var string 
-     */
-    public $acceptLanguage;
+    public $server;
     public $clientIp;
-    
-    public $body;
-    public $get;
-    public $post;
-    public $request;
-    public $argv;
-    public $argc;
-    public $env;
-    public $put;
-    public $files;
-    public $cookie;
-    
-    public $authUser;
-    public $authPassword;
-    public $authDigest;
-    public $authType;
-    
-    public $contentType;
-    public $method;
-    public $serverProtocol;
-    /**
-     * Server protocol
-     * @var string 
-     */
-    public $scheme;
-    public $https;
-    
+
     /**
      * TCP/IP Server Port
      * @var int 
      */
     public $port;
-    
-    /**
-     * serverName alias
-     * @var string 
-     */
-    public $host;
-    public $serverName;
-    
-    /**
-     * Full domain URI
-     * @var string 
-     */
-    public $hostUri;
-    
+
     /**
      * Base directory
      * @var string 
      */
     public $baseDir;
-    
-    /**
-     * Base directory URI
-     * @var string 
-     */
-    public $baseUri;
-    
+
     /**
      * Requested resource path
      * @var string 
      */
     public $resource;
-    
+
+
+    ## INPUT DATA:
+
     /**
-     * Current full URI (without query string)
+     * Language list formatted like 'es-es,es,en-us,en'
      * @var string 
      */
-    public $currentUri;
-    
-    public function __construct($server=null) {
-        if(!isset(self::$originals)){
-            self::$originals = array(
-                "SERVER"=>$_SERVER,
-                "GET"=>$_GET,
-                "POST"=>$_POST,
-                "REQUEST"=>$_REQUEST,
-                "ENV"=>$_ENV,
-                "FILES"=>$_FILES,
-                "COOKIE"=>$_COOKIE
-            );
-        }
-        
-        $this->server = empty($server) ? $_SERVER : $server;
-            
-        $this->serverProtocol = ri_arr_value($this->server, "SERVER_PROTOCOL", "http");
-        $this->https = ri_arr_value($this->server, "HTTPS", "off");
-        $this->serverName = ri_arr_value($this->server, "SERVER_NAME", "localhost");
-        
-        $this->scriptName = ri_arr_value($this->server, "SCRIPT_NAME", null);
-        $this->pathInfo = ri_arr_value($this->server, "PATH_INFO", null);
-        $this->phpSelf = ri_arr_value($this->server, "PHP_SELF", null);
-        
-        $this->requestUri = ri_arr_value($this->server, "REQUEST_URI", null);
-        $this->queryString = ri_arr_value($this->server, "QUERY_STRING", null);
-        $this->port = @parse_url($this->requestUri, PHP_URL_PORT);
+    public $languages;
+    public $contentType;
+    public $body;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $get;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $post;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $request;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $args;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $env;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $put;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $cookie;
+
+    /**
+     *
+     * @var Ri_Object 
+     */
+    public $files;
+
+    public function __construct($server = null) {
+        $this->server = empty($server) ? new Ri_Object($_SERVER) : new Ri_Object($server);
+
+        if (!($this->server["SERVER_PROTOCOL"]))
+            $this->server["SERVER_PROTOCOL"] = "http";
+        if (!($this->server["HTTPS"]))
+            $this->server["HTTPS"] = "off";
+        if (!($this->server["SERVER_NAME"]))
+            $this->server["SERVER_NAME"] = "localhost";
+
+        if (!($this->server["SCRIPT_NAME"]))
+            $this->server["SCRIPT_NAME"] = null;
+        if (!($this->server["PATH_INFO"]))
+            $this->server["PATH_INFO"] = null;
+        if (!($this->server["PHP_SELF"]))
+            $this->server["PHP_SELF"] = null;
+
+        if (!($this->server["REQUEST_URI"]))
+            $this->server["REQUEST_URI"] = null;
+        if (!($this->server["QUERY_STRING"]))
+            $this->server["QUERY_STRING"] = null;
+
+        if (!($this->server["AUTH_TYPE"]))
+            $this->server["AUTH_TYPE"] = null;
+        if (!($this->server["PHP_AUTH_USER"]))
+            $this->server["PHP_AUTH_USER"] = null;
+        if (!($this->server["PHP_AUTH_PW"]))
+            $this->server["PHP_AUTH_PW"] = null;
+        if (!($this->server["PHP_AUTH_DIGEST"]))
+            $this->server["PHP_AUTH_DIGEST"] = null;
+
+        if (!($this->server["HTTP_REFERER"]))
+            $this->server["HTTP_REFERER"] = null;
+        if (!($this->server["HTTP_USER_AGENT"]))
+            $this->server["HTTP_USER_AGENT"] = null;
+        if (!($this->server["HTTP_ACCEPT_LANGUAGE"]))
+            $this->server["HTTP_ACCEPT_LANGUAGE"] = null;
+
+        if (!($this->server["HTTP_X_REQUESTED_WITH"]))
+            $this->server["HTTP_X_REQUESTED_WITH"] = null;
+
+        $this->port = @parse_url($this->server["REQUEST_URI"], PHP_URL_PORT);
         $this->port = !empty($this->port) ? $this->port : 80;
 
-        $this->authUser = ri_arr_value($this->server, "PHP_AUTH_USER", null);
-        $this->authPassword = ri_arr_value($this->server, "PHP_AUTH_PW", null);
-        $this->authDigest = ri_arr_value($this->server, "PHP_AUTH_DIGEST", null);
-        $this->authType = ri_arr_value($this->server, "AUTH_TYPE", null);
+        $this->languages = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", $this->server["HTTP_ACCEPT_LANGUAGE"]);
 
-        $this->referer = ri_arr_value($this->server, "HTTP_REFERER", null);
-        $this->userAgent = ri_arr_value($this->server, "HTTP_USER_AGENT", null);
-        $this->acceptLanguage = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", ri_arr_value($this->server, "HTTP_ACCEPT_LANGUAGE", null));
-        
         $this->clientIp = $this->getClientIp();
 
         $this->body = @file_get_contents('php://input');
-        $this->get = $_GET;
-        $this->post = $_POST;
-        $this->argv = ri_arr_value($this->server, "argv", array());
-        $this->argc = ri_arr_value($this->server, "argc", 0);
-        $this->env = $_ENV;
-        
-        $this->files = $_FILES;
-        $this->cookie = $_COOKIE;
+
+        $this->get = new Ri_Object($_GET);
+        $this->post = new Ri_Object($_POST);
+        $this->env = new Ri_Object($_ENV);
+        $this->cookie = new Ri_Object($_COOKIE);
+        $this->args = new Ri_Object($this->server->get("argv", null));
+
+        $this->files = new Ri_Object("files", $_FILES);
 
         $this->contentType = $this->getContentType();
-        $this->method=$this->getMethod();
-        $this->httpXRequestedWith=strtolower(ri_arr_value($this->server, "HTTP_X_REQUESTED_WITH", null));
 
-        $this->put = $this->getPut();
-        
-        $this->request = array_merge($this->cookie, $this->put, $this->post, $this->get);
-        
-        //scheme
-        if ($this->https=="on"){
-            $this->scheme = "https";
-        }else {
-            $this->scheme = ri_arr_first(explode("/",strtolower($this->serverProtocol), 2));
-        }
-        
-        $this->host = $this->serverName;
-        $this->hostUri = $this->scheme . "://" . $this->host . (($this->port == 80) ? "" : ":" . $this->port) . "/";
-        
+        $this->put = new Ri_Object($this->getPut());
+
+        $this->request = new Ri_Object(array_merge($this->cookie->toArray(), $this->put->toArray(), $this->post->toArray(), $this->get->toArray()));
+
         $this->baseDir = $this->getBaseDir();
-        $this->baseUri = $this->hostUri . $this->baseDir;
-        
-        $currentUri = explode("?", $this->requestUri, 2);
-        $this->currentUri = $this->hostUri . trim($currentUri[0], " /");
-        
+
         $this->resource = $this->getResource();
     }
 
@@ -206,33 +182,38 @@ class Ri_Http_Request{
         return self::$instance;
     }
 
-    public function superGlobalReplace() {
-        $_SERVER = $this->server;
-        $_GET = $this->get;
-        $_POST = $this->post;
-        $_REQUEST = $this->request;
-        $_ENV = $this->env;
-        $_FILES = $this->files;
-        $_COOKIE = $this->cookie;
+    /**
+     * Returns ["SERVER_PROTOCOL"]
+     * @return string 
+     */
+    public function protocol() {
+        return $this->isHttps() ? "https" : 'http';
     }
 
-    public static function superGlobals() {
-        return self::$originals;
+    /**
+     * Returns ["SERVER_NAME"]
+     * @return string 
+     */
+    public function domain() {
+        return $this->server["SERVER_NAME"];
     }
 
-    public static function superGlobalRestore() {
-        if (isset(self::$originals)) {
-            $_SERVER = self::$originals["SERVER"];
-            $_GET = self::$originals["GET"];
-            $_POST = self::$originals["POST"];
-            $_REQUEST = self::$originals["REQUEST"];
-            $_ENV = self::$originals["ENV"];
-            $_FILES = self::$originals["FILES"];
-            $_COOKIE = self::$originals["COOKIE"];
-        }
+    public function domainUri() {
+        return $this->protocol() . "://" . $this->domain() . (($this->port == 80) ? "" : ":" . $this->port) . "/";
     }
 
-    protected function getClientIp() {
+    public function baseUri() {
+        return $this->domainUri() . $this->baseDir;
+    }
+
+    public function currentUri($remove_querystring = false) {
+        if ($remove_querystring)
+            return $this->domainUri() . trim(ri_arr_first(explode('?', $this->server["REQUEST_URI"], 2)), " /");
+        else
+            return $this->domainUri() . trim($this->server["REQUEST_URI"], " /");
+    }
+
+    public function getClientIp() {
         $ip = FALSE;
         if (!empty($this->server["HTTP_CLIENT_IP"]))
             $ip = $this->server["HTTP_CLIENT_IP"];
@@ -260,7 +241,7 @@ class Ri_Http_Request{
         return $ip;
     }
 
-    protected function getMethod() {
+    public function method() {
         if (isset($this->post[self::METHOD_OVERRIDE])) {
             return $this->post[self::METHOD_OVERRIDE];
         } else {
@@ -268,7 +249,7 @@ class Ri_Http_Request{
         }
     }
 
-    protected function getContentType() {
+    public function getContentType() {
         $contentType = isset($this->server["CONTENT_TYPE"]) ? $this->server["CONTENT_TYPE"] : isset($this->server["HTTP_CONTENT_TYPE"]) ? $this->server["HTTP_CONTENT_TYPE"] : null;
         if (!empty($contentType)) {
             $headerParts = preg_split('/\s*;\s*/', $contentType);
@@ -277,7 +258,7 @@ class Ri_Http_Request{
         return $contentType;
     }
 
-    protected function getPut() {
+    public function getPut() {
         if ($this->contentType == self::CONTENT_TYPE_FORM_URLENCODED) {
             $input = is_string($this->body) ? $this->body : '';
             if (function_exists('mb_parse_str')) {
@@ -286,17 +267,17 @@ class Ri_Http_Request{
                 parse_str($input, $output);
             }
             $put = $output;
-        } elseif ($this->method == self::METHOD_PUT) {
-            $put = $this->post;
+        } elseif ($this->method() == self::METHOD_PUT) {
+            $put = $this->post->toArray();
         } else {
             $put = array();
         }
         return $put;
     }
 
-    protected function getBaseDir() {
-        if (isset($this->scriptName)) {
-            $urlbase = explode("/", trim($this->scriptName, "/ "));
+    public function getBaseDir() {
+        if (isset($this->server["SCRIPT_NAME"])) {
+            $urlbase = explode("/", trim($this->server["SCRIPT_NAME"], "/ "));
             array_pop($urlbase); //script file, usually index.php
             $urlbase = implode("/", $urlbase);
 
@@ -307,22 +288,22 @@ class Ri_Http_Request{
         return $baseDir;
     }
 
-    protected function getResource() {
+    public function getResource() {
         $resource = '';
-        if (isset($this->server["PATH_INFO"]) && (!empty($this->pathInfo))) {
-            $resource = $this->pathInfo;
+        if (isset($this->server["PATH_INFO"]) && (!empty($this->server["PATH_INFO"]))) {
+            $resource = $this->server["PATH_INFO"];
         } else {
             if (isset($this->server["REQUEST_URI"])) {
-                $currentUri = explode("?", $this->requestUri, 2);
+                $currentUri = explode("?", $this->server["REQUEST_URI"], 2);
                 $resource = substr(trim($currentUri[0], "/ "), strlen($this->baseDir));
             } elseif (isset($this->server["PHP_SELF"])) {
-                $resource = $this->phpSelf;
+                $resource = $this->server["PHP_SELF"];
             } else {
                 throw new RuntimeException('Unable to detect request URI');
             }
         }
-        if (($this->baseUri !== '') && (strpos($resource, $this->baseUri) === 0)) {
-            $resource = substr($resource, strlen($this->baseUri));
+        if (($this->baseUri() !== '') && (strpos($resource, $this->baseUri()) === 0)) {
+            $resource = substr($resource, strlen($this->baseUri()));
         }
         $resource = trim($resource, '/ ');
         if (empty($resource))
@@ -331,95 +312,69 @@ class Ri_Http_Request{
         return $resource;
     }
 
-    public function get($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->get;
-        } else {
-            return ri_arr_value($this->get, $key, $default, $filter);
-        }
-    }
-
-    public function post($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->post;
-        } else {
-            return ri_arr_value($this->post, $key, $default, $filter);
-        }
-    }
-
-    public function request($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->request;
-        } else {
-            return ri_arr_value($this->request, $key, $default, $filter);
-        }
-    }
-
-    public function arg($index = null, $default = false, $filter = null) {
-        if ($index === null) {
-            return $this->arg;
-        } else {
-            return ri_arr_value($this->arg, $index, $default, $filter);
-        }
-    }
-
-    public function env($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->env;
-        } else {
-            return ri_arr_value($this->env, $key, $default, $filter);
-        }
-    }
-
-    public function put($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->put;
-        } else {
-            return ri_arr_value($this->put, $key, $default, $filter);
-        }
-    }
-
-    public function files() {
-        return $this->files;
-    }
-
-    public function cookie($key = null, $default = false, $filter = null) {
-        if ($key === null) {
-            return $this->cookie;
-        } else {
-            return ri_arr_value($this->cookie, $key, $default, $filter);
-        }
+    /**
+     * Checks ["HTTPS"]
+     * @return boolean 
+     */
+    public function isHttps() {
+        return $this->server["HTTPS"] == "on";
     }
 
     public function isAjax() {
-        return ($this->httpXRequestedWith == 'xmlhttprequest');
+        return ($this->server["HTTP_X_REQUESTED_WITH"] == 'xmlhttprequest');
     }
 
     public function isUpload() {
-        return (!empty($this->files));
+        return (!ri_is_empty($this->files->toArray()));
     }
 
     public function isHead() {
-        return $this->method == self::METHOD_HEAD;
+        return $this->method() == self::METHOD_HEAD;
     }
 
     public function isGet() {
-        return $this->method == self::METHOD_GET;
+        return $this->method() == self::METHOD_GET;
     }
 
     public function isPost() {
-        return $this->method == self::METHOD_POST;
+        return $this->method() == self::METHOD_POST;
     }
 
     public function isPut() {
-        return $this->method == self::METHOD_PUT;
+        return $this->method() == self::METHOD_PUT;
     }
 
     public function isDelete() {
-        return $this->method == self::METHOD_DELETE;
+        return $this->method() == self::METHOD_DELETE;
     }
 
     public function isOptions() {
-        return $this->method == self::METHOD_OPTIONS;
+        return $this->method() == self::METHOD_OPTIONS;
     }
+
+    /**
+     *
+     * @param string $resource
+     * @param string $method
+     * @param array $get
+     * @param array $post
+     * @param array $server
+     * @return Ri_Http_Request 
+     */
+    public static function build($resource, $method = "GET", $get = null, $post = null, $server = NULL) {
+        $server = empty($server) ? $_SERVER : $server;
+        $get = empty($get) ? $_GET : $get;
+        $post = empty($post) ? $_POST : $post;
+
+        $server["REQUEST_METHOD"] = $method;
+        $server["PATH_INFO"] = $resource;
+        $server["REQUEST_URI"] = $resource . '?' . http_build_query($get);
+        $server["QUERY_STRING"] = http_build_query($get);
+
+        $_GET = $get;
+        $_POST = $post;
+
+        return new Ri_Http_Request($server);
+    }
+
 }

@@ -2,5 +2,5 @@
 
 return array(
     //module default configuration
-    "foo"=>"bar2",
+    "router.default_controller"=>"admin",
 );

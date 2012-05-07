@@ -15,23 +15,26 @@ class Ri_Log {
     }
 
     public function error($data, $label, $file, $line) {
-        $this->file("Rino ERROR: '" . $label . " : " . print_r($data, true). "' in $file on line $line", "errors.log", true, false);
+        $this->file("Rino ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
     }
 
     public function fatal($data, $label, $file, $line) {
-        $this->file("Rino FATAL ERROR: '" . $label . " : " . print_r($data, true). "' in $file on line $line", "errors.log", true, false);
+        $this->file("Rino FATAL ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
         throw new RuntimeException($label . " : " . print_r($data, true));
     }
 
-    public function file($message, $filename = "debug.log", $use_timestamp = true, $use_monthly_folders=true) {
+    public function file($message, $filename = "debug.log", $use_timestamp = true, $use_monthly_folders = true) {
         if ($use_timestamp)
             $message = "[" . date("d-M-Y H:i:s") . "] " . $message;
-        
-        if($use_monthly_folders) $path = RI_PATH_LOGS.date("Y")._DS.strtolower(date("M"))._DS;
-        else $path = RI_PATH_LOGS;
-        
-        if(!is_dir($path)) mkdir($path, 0770, true);
-        
+
+        if ($use_monthly_folders)
+            $path = RI_PATH_LOGS . date("Y") . _DS . strtolower(date("M")) . _DS;
+        else
+            $path = RI_PATH_LOGS;
+
+        if (!is_dir($path))
+            mkdir($path, 0770, true);
+
         $fname = $path . $filename;
         if (!file_exists($fname)) {
             return file_put_contents($fname, $message . "\n", 0);

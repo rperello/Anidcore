@@ -855,12 +855,22 @@ function ri_html_trim_br($str) {
 ####################
 ## other ri_*
 ####################
+
 function ri_echo($var, $default = null, $return = false) {
     if (empty($var))
         return print_r($default, $return);
     else {
         return print_r($var, $return);
     }
+}
+
+function ri_redirect($url, $status = 301, $httpVersion = "1.1") {
+    if (strpos(PHP_SAPI, 'cgi') === 0) {
+        header("Status: ", $status);
+    } else {
+        header("HTTP/{$httpVersion}: ", $status);
+    }
+    header("Location: ", $url);
 }
 
 function ri_removecookie($name, $path = null, $domain = null, $secure = null, $httponly = null) {
@@ -1061,5 +1071,6 @@ if (!function_exists('get_called_class')) :
                 default: throw new Exception("Unknown backtrace method type");
             }
     }
+
 
 endif;

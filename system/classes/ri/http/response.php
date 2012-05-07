@@ -186,8 +186,7 @@ class Ri_Http_Response {
         return array("body" => $this->body, "status" => $this->status, "headers" => $this->headers);
     }
 
-    public function send($status = 200, $contentType = "text/html") {
-        $this->prepare($status, $contentType);
+    public function send() {
         $this->sendHeaders();
         echo $this->body;
     }

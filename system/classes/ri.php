@@ -4,17 +4,24 @@ define("RI_CHARS_HEXADECIMAL", "abcdef0123456789");
 define("RI_CHARS_ALPHANUMERIC", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 define("RI_CHARS_SYMBOLS", "{}()[]<>!?|@#%&/=^*;,:.-_+");
 
+Ri::globalsGetOriginal();
+
 /**
  * Rino Framework main class
  */
 class Ri {
-    
     /**
      * Rino Framework Version 
      */
-    const VERSION = "0.1.0";
 
+    const VERSION = "0.2.0";
     const MAIN_CONTEXT_NAME = "main";
+
+    /**
+     * Original Super Globals
+     * @var array
+     */
+    protected static $origGlobals;
 
     /**
      * Registry variables
@@ -33,6 +40,76 @@ class Ri {
      * @var array 
      */
     protected static $timers = array();
+
+    public static function init($config) {
+        //Server and keys are only configured once
+        if (!self::finals("server_configured")) {
+            self::configureServer($config);
+            self::generateKeys($config);
+            self::finals("server_configured", true);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Performs an internal RESTFul call
+     * @param array $config
+     * @param Ri_Http_Request $httpRequest
+     * @param boolean $renderView
+     * @param string $contextName
+     * @return Ri_Object
+     */
+    public static function call(array $config, Ri_Http_Request $httpRequest, $contextName = null, $renderView = false) {
+        ob_start();
+        $context = new Ri_Context($config, $httpRequest, $contextName);
+        $result = $context->execute();
+        $buffer = ob_get_clean();
+        if ($renderView){
+            $context->render($buffer);
+        }
+        return new Ri_Object(array("context" => $context, "result" => $result, "buffer" => $buffer));
+    }
+
+    /**
+     *
+     * @param string $contextName
+     * @return Ri_Request 
+     */
+    public static function request($contextName = null) {
+        return self::context($contextName)->request;
+    }
+
+    /**
+     *
+     * @param string $contextName
+     * @return Ri_Router 
+     */
+    public static function router($contextName = null) {
+        return self::context($contextName)->router;
+    }
+
+    /**
+     *
+     * @param string $contextName
+     * @return Ri_Storage 
+     */
+    public static function storage($contextName = null) {
+        return self::context($contextName)->storage;
+    }
+
+    public static function config($name = null, $default = false, $module = null, $contextName = null) {
+        return self::context($contextName)->config($name, $default, $module);
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return Ri_Context 
+     */
+    public static function context($name = null) {
+        return Ri_Context::getInstance($name);
+    }
 
     /**
      * Gets / sets an application variable
@@ -107,7 +184,7 @@ class Ri {
         }
     }
 
-    public static function generateKeys($config) {
+    protected static function generateKeys($config) {
         //Security Keys
         $keys_file = RI_PATH_DATA . "keys.data";
         if (!is_readable($keys_file)) {
@@ -134,7 +211,7 @@ class Ri {
      * @param array $config
      * @throws RuntimeException 
      */
-    public static function configureServer($config) {
+    protected static function configureServer($config) {
         if (!is_dir(RI_PATH_LOGS))
             mkdir(RI_PATH_LOGS, 0770);
         if (!is_dir(RI_PATH_DATA))
@@ -184,21 +261,21 @@ class Ri {
         $class_name_dir = str_replace("_", _DS, strtolower($class_name));
 
         /* /modules/<module>/classes/ folder */
-        foreach($modules as $name => $module){
-            /*@var $module Ri_Module*/
+        foreach ($modules as $name => $module) {
+            /* @var $module Ri_Module */
             $class_file = $module->path . "classes" . _DS . $class_name_dir . ".php";
             $exists = self::classInclude($class_file, $class_name);
-            if($exists){
+            if ($exists) {
                 return $module;
             }
         }
 
         /* system/classes folder */
         $class_file = RI_PATH_SYSTEM . "classes" . _DS . $class_name_dir . ".php";
-        if(self::classInclude($class_file, $class_name)){
+        if (self::classInclude($class_file, $class_name)) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -214,6 +291,38 @@ class Ri {
             return class_exists($class_name, false);
         }
         return false;
+    }
+
+    public static function globalsGetOriginal() {
+        if (!isset(self::$origGlobals)) {
+            self::$origGlobals = array(
+                "SERVER" => $_SERVER,
+                "GET" => $_GET,
+                "POST" => $_POST,
+                "REQUEST" => $_REQUEST,
+                "ENV" => $_ENV,
+                "FILES" => $_FILES,
+                "COOKIE" => $_COOKIE
+            );
+        }
+        return self::$origGlobals;
+    }
+
+    public static function globalsRestore() {
+        if (isset(self::$origGlobals)) {
+            $_SERVER = self::$origGlobals["SERVER"];
+            $_GET = self::$origGlobals["GET"];
+            $_POST = self::$origGlobals["POST"];
+            $_REQUEST = self::$origGlobals["REQUEST"];
+            $_ENV = self::$origGlobals["ENV"];
+            $_FILES = self::$origGlobals["FILES"];
+            $_COOKIE = self::$origGlobals["COOKIE"];
+        }
+    }
+
+    public static function throwException($message, $exitCode = -1) {
+        throw new RuntimeException("Rino FATAL ERROR: " . $message);
+        exit($exitCode);
     }
 
 }
