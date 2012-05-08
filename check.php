@@ -4,7 +4,7 @@ ini_set("display_errors",true);
 ini_set("default_charset","utf8");
 
 class ServerTest{
-    public $TITLE = "Rino Framework - Server compatibility test";
+    public $TITLE = "Anidcore Framework - Server compatibility test";
     public $REQUIRED_PHP_VERSION = "5.2.6";
     public $MYSQL_VERSION = null;
     public $ROOT_PATH = null;

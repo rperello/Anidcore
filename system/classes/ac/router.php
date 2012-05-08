@@ -1,12 +1,12 @@
 <?php
 
-class Ri_Router extends Ri_Environment {
+class Ac_Router{
 
     protected $controller_name = NULL;
 
     /**
      *
-     * @var Ri_Controller 
+     * @var Ac_Controller 
      */
     protected $controller_instance = NULL;
     protected $action = NULL;
@@ -58,7 +58,7 @@ class Ri_Router extends Ri_Environment {
 
     public function segment($index, $default = false, $filter = NULL) {
         $this->resolve();
-        return ri_arr_value($this->resource, $index, $default, $filter);
+        return ac_arr_value($this->resource, $index, $default, $filter);
     }
 
     public function resolve() {
@@ -66,19 +66,19 @@ class Ri_Router extends Ri_Environment {
         if ($this->controller_name != NULL)
             return;
 
-        $this->context()->hookApply("ri.before.router_resolve", $this);
+        Ac::hookApply("ac.before.router_resolve", $this);
 
         if (empty($this->canonical_segments)) {
-            $this->canonical_segments = array(trim($this->context()->request->baseUri(), " /"));
+            $this->canonical_segments = array(trim(Ac::request()->baseUri, " /"));
         }
 
-        $rs = $this->context()->request->resource;
+        $rs = Ac::request()->resource;
         $this->resource = $rs = empty($rs) ? array() : explode("/", trim($rs, " /"));
 
-        $rs = $this->context()->hookApply("ri.on.router_resource", $rs);
+        $rs = Ac::hookApply("ac.on.router_resource", $rs);
 
         //Defaults
-        $default_app_controller = ucfirst($this->context()->config("router.default_controller", "index"));
+        $default_app_controller = ucfirst(Ac::config("router.default_controller", "index"));
         $this->controller_name = ucfirst($default_app_controller);
         $this->action = "__default";
 
@@ -88,17 +88,17 @@ class Ri_Router extends Ri_Environment {
         } else {
 
             //CONTROLLER
-            $part = strtolower(ri_str_slug($rs[0], "_"));
+            $part = strtolower(ac_str_slug($rs[0], "_"));
             if ($part == $default_app_controller) {
                 //prevent access to main app controller using /$default_app_controller/ segment
                 $this->action = "__handle";
                 $this->params = $rs;
-                $this->context()->hookApply("ri.on.router_resolve", $this);
+                Ac::hookApply("ac.on.router_resolve", $this);
                 return;
             }
 
             $controller_name = ucfirst($part); //Example: Pages
-            $controller_exists = $this->context()->autoload($this->controllerClassName($controller_name));
+            $controller_exists = Ac::autoload($this->controllerClassName($controller_name));
 
             if ($controller_exists) {
                 $this->controller_name = $controller_name;
@@ -113,8 +113,8 @@ class Ri_Router extends Ri_Environment {
             //ACTION
             if (!$controller_exists) {
                 //is action of $default_app_controller controller?
-                if (!$this->context()->autoload($this->controllerClassName($default_app_controller))) {
-                    $this->context()->log()->fatal($default_app_controller, "The controller cannot be loaded", __FILE__, __LINE__);
+                if (!Ac::autoload($this->controllerClassName($default_app_controller))) {
+                    Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", __FILE__, __LINE__);
                 } else {
                     if (method_exists($this->controllerClassName($this->controller_name), "action_{$part}")) {
                         $this->action = "action_{$part}";
@@ -130,7 +130,7 @@ class Ri_Router extends Ri_Environment {
                 $this->action_url = $this->canonicalUrl();
             }elseif (!empty($rs)) {
                 // Controller exists, check action in next part:
-                $part = strtolower(ri_str_slug($rs[0], "_"));
+                $part = strtolower(ac_str_slug($rs[0], "_"));
                 if (method_exists($this->controllerClassName($controller_name), "action_{$part}")) {
                     $this->action = "action_{$part}";
                     $this->canonicalAdd($part);
@@ -148,7 +148,7 @@ class Ri_Router extends Ri_Environment {
         //PARAMS
         $this->params = $rs;
 
-        $this->context()->hookApply("ri.on.router_resolve", $this);
+        Ac::hookApply("ac.on.router_resolve", $this);
     }
 
     public function controllerClassName($controllerName) {
@@ -156,7 +156,7 @@ class Ri_Router extends Ri_Environment {
     }
 
     public function call() {
-        $this->context()->hookApply("ri.before.router_call", $this);
+        Ac::hookApply("ac.before.router_call", $this);
         $klass = $this->controllerClassName($this->controller_name);
         $fn = $this->action;
         $result = NULL;
@@ -168,7 +168,7 @@ class Ri_Router extends Ri_Environment {
         else
             $validate_fn = str_replace("action_", "validate_", $this->action);
 
-        $this->controller_instance = new $klass($this->context()->name);
+        $this->controller_instance = new $klass();
         $is_valid = false;
 
         if (!is_callable(array($this->controller_instance, $fn))) {
@@ -190,7 +190,7 @@ class Ri_Router extends Ri_Environment {
                 $result = $this->controller_instance->__handle($fn);
             }
         }
-        $result = $this->context()->hookApply("ri.on.router_call", $result);
+        $result = Ac::hookApply("ac.on.router_call", $result);
         return $result;
     }
 

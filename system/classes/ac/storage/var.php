@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Var {
+class Ac_Storage_Var {
 
     protected $cache = array();
 

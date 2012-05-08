@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Http_Response {
+class Ac_Http_Response {
 
     /**
      * @var int HTTP status code

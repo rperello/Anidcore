@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Cookie {
+class Ac_Storage_Cookie {
 
     public function has($name) {
         return isset($_COOKIE[$name]);

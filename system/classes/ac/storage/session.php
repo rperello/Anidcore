@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Session {
+class Ac_Storage_Session {
 
     protected $name;
     protected $fingerprint;

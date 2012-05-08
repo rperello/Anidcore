@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Log {
+class Ac_Logger {
 
     public function log($data, $label) {
         $this->file("LOG: " . $label . " : " . print_r($data, true), "debug.log", true, false);
@@ -15,11 +15,11 @@ class Ri_Log {
     }
 
     public function error($data, $label, $file, $line) {
-        $this->file("Rino ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
+        $this->file("Anidcore ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
     }
 
     public function fatal($data, $label, $file, $line) {
-        $this->file("Rino FATAL ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
+        $this->file("Anidcore FATAL ERROR: '" . $label . " : " . print_r($data, true) . "' in $file on line $line", "errors.log", true, false);
         throw new RuntimeException($label . " : " . print_r($data, true));
     }
 
@@ -28,9 +28,9 @@ class Ri_Log {
             $message = "[" . date("d-M-Y H:i:s") . "] " . $message;
 
         if ($use_monthly_folders)
-            $path = RI_PATH_LOGS . date("Y") . _DS . strtolower(date("M")) . _DS;
+            $path = AC_PATH_LOGS . date("Y") . _DS . strtolower(date("M")) . _DS;
         else
-            $path = RI_PATH_LOGS;
+            $path = AC_PATH_LOGS;
 
         if (!is_dir($path))
             mkdir($path, 0770, true);

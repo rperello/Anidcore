@@ -13,7 +13,7 @@
 - Hooks (event triggers)
 - Progressive enhancement PHP 5.2 -> 5.3 -> 5.4
 
-    Este framework tiene que soportar la simulación de requests sin la necesidad de curl, a través de la posibilidad de instanciar varios Ri_Context
+    Este framework tiene que soportar la simulación de requests sin la necesidad de curl, a través de la posibilidad de instanciar varios Ac_Context
     internamente y simular así diferentes contextos o llamadas.
 
     El escenario más común de uso de esta feature del framework es cuando tenemos una API RESTFul que necesitamos usar también internamente, sin necesidad
@@ -42,11 +42,11 @@
 
 * Context:
     - ¿Qué estoy pidiendo?
-    Un contexto representa una instancia de Ri_Context que se caracteriza por la atomicidad de sus datos. Esto quiere decir que una instancia puede funcionar independiente de otras
+    Un contexto representa una instancia de Ac_Context que se caracteriza por la atomicidad de sus datos. Esto quiere decir que una instancia puede funcionar independiente de otras
     ya que dispone de sus propios datos (su $_SERVER o sus datos de entrada $_GET, $_POST, etc).
     Un contexto consiste en sus parámetros, en un módulo principal (que está bajo la carpeta /app para diferenciarlo del resto) y otros módulos (en la carpeta /modules).
     
-    La clase Ri_Environment expone un contexto a las clases que la extiendan, para no perder la referencia del contexto desde la que son instanciadas.
+    La clase Ac_Environment expone un contexto a las clases que la extiendan, para no perder la referencia del contexto desde la que son instanciadas.
     
 * Hook:
     - ¿Tengo que hacer algo más cuando ocurra esto?
@@ -117,7 +117,7 @@ PLATFORM:
 - Las subllamadas internas podrán devolver el contenido en formato string, array, object, etc. Por ejemplo si hacemos una llamada interna a nuestra API, nos interesará
     que nos devuelva por ejemplo los datos en formato array y no JSON como haría si fuera el request principal y tuviera que hacer echo de esos datos.
 
-- A diferencia de Slim, en el que se deben predefinir los diferentes patrones de URL y los REQUEST_METHOD por los que se puede acceder, Rino ofrece el patrón HMVC, con el
+- A diferencia de Slim, en el que se deben predefinir los diferentes patrones de URL y los REQUEST_METHOD por los que se puede acceder, Anidcore ofrece el patrón HMVC, con el
     que en vez de definir a mano los patrones URL, creamos archivos de clases controladores con sus acciones, de manera jerárquica, dentro de los cuales se pueden definir reglas
     para ejecutar una accion u otra y los REQUEST_METHOD soportados. Es una manera más estructurada de desarrollo,
     aunque la otra es igual de válida y ofrece más customización de patrones de URL, pero está más 'harcodeada'.

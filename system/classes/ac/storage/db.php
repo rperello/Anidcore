@@ -1,15 +1,15 @@
 <?php
 
-define("RI_DB_FETCH_ASSOC_FIRST", 2220);
-define("RI_DB_FETCH_OBJ_FIRST", 2221);
-define("RI_DB_EVENT_ERROR", 3330);
-define("RI_DB_EVENT_INSERT", 3331);
-define("RI_DB_EVENT_SELECT", 3332);
-define("RI_DB_EVENT_UPDATE", 3333);
-define("RI_DB_EVENT_DELETE", 3334);
-define("RI_DB_EVENT_TRUNCATE", 3335);
+define("AC_DB_FETCH_ASSOC_FIRST", 2220);
+define("AC_DB_FETCH_OBJ_FIRST", 2221);
+define("AC_DB_EVENT_ERROR", 3330);
+define("AC_DB_EVENT_INSERT", 3331);
+define("AC_DB_EVENT_SELECT", 3332);
+define("AC_DB_EVENT_UPDATE", 3333);
+define("AC_DB_EVENT_DELETE", 3334);
+define("AC_DB_EVENT_TRUNCATE", 3335);
 
-class Ri_Storage_Db {
+class Ac_Storage_Db {
 
     /**
      *
@@ -69,11 +69,11 @@ class Ri_Storage_Db {
     public static function init($dbconf) {
         if (is_array($dbconf)) {
             if (isset($dbconf["schema"]) && $dbconf["enabled"]) { //single connection
-                new Ri_Storage_Db($dbconf["instance"], $dbconf, $dbconf["options"]);
+                new Ac_Storage_Db($dbconf["instance"], $dbconf, $dbconf["options"]);
             } elseif (isset($dbconf[0])) { // multiple DBs
                 foreach ($dbconf as $i => $conf) {
                     if (isset($dbconf["enabled"]) && ($dbconf["enabled"] == true)) {
-                        new Ri_Storage_Db($conf["instance"], $conf, $conf["options"]);
+                        new Ac_Storage_Db($conf["instance"], $conf, $conf["options"]);
                     }
                 }
             }
@@ -169,7 +169,7 @@ class Ri_Storage_Db {
     /**
      *
      * @param string $name Instance name
-     * @return Ri_Storage_Db
+     * @return Ac_Storage_Db
      */
     public static function getConnection($name) {
         if (isset(self::$instances[$name])) {
@@ -182,16 +182,16 @@ class Ri_Storage_Db {
     /**
      *
      * @param string $name Instance name
-     * @param Ri_Storage_Db The instance
+     * @param Ac_Storage_Db The instance
      * @param array $options [Optional] PDO Connection Options
      */
-    public static function setConnection($name, Ri_Storage_Db $connection) {
+    public static function setConnection($name, Ac_Storage_Db $connection) {
         self::$instances[$name] = $connection;
     }
 
     /**
      *
-     * @return Ri_Storage_Db
+     * @return Ac_Storage_Db
      */
     public static function getActiveConnection() {
         if (self::$active_instance == false)
@@ -313,7 +313,7 @@ class Ri_Storage_Db {
      * @return int or boolean false
      */
     public function exec($statement) {
-        Ri::timerStart();
+        Ac::timerStart();
 
         $this->lastRowCount = 0;
         $this->connect();
@@ -345,7 +345,7 @@ class Ri_Storage_Db {
      * @return mixed or boolean false
      */
     public function query($statement) {
-        Ri::timerStart();
+        Ac::timerStart();
 
         $statement = trim($statement);
         $this->lastRowCount = 0;
@@ -354,11 +354,11 @@ class Ri_Storage_Db {
         $fetch_all = true;
 
         if (isset($args[1])) {
-            if (($args[1] == RI_DB_FETCH_ASSOC_FIRST) || ($args[1] == RI_DB_FETCH_OBJ_FIRST))
+            if (($args[1] == AC_DB_FETCH_ASSOC_FIRST) || ($args[1] == AC_DB_FETCH_OBJ_FIRST))
                 $fetch_all = false;
-            if ($args[1] == RI_DB_FETCH_ASSOC_FIRST)
+            if ($args[1] == AC_DB_FETCH_ASSOC_FIRST)
                 $args[1] = PDO::FETCH_ASSOC;
-            elseif ($args[1] == RI_DB_FETCH_OBJ_FIRST)
+            elseif ($args[1] == AC_DB_FETCH_OBJ_FIRST)
                 $args[1] = PDO::FETCH_OBJ;
         }else {
             $args[1] = $this->options[PDO::ATTR_DEFAULT_FETCH_MODE];
@@ -396,23 +396,23 @@ class Ri_Storage_Db {
     }
 
     protected function _logSuccess($statement, $data = array()) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ri::timerStop(), 'OK', $this->instance_name);
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ac::timerStop(), 'OK', $this->instance_name);
     }
 
     protected function _logError($statement) {
-        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ri::timerStop(),
+        self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ac::timerStop(),
             $this->pdo->errorInfo(), $this->instance_name);
 
         $content = "#" . self::$queryCount . " [ERROR]\n";
         $content .= print_r(array($statement, $this->pdo->errorInfo()), true);
 
-        //ri_log($content, "mysql_errors.log", "file");
+        //ac_log($content, "mysql_errors.log", "file");
     }
 
     public function uniqueStringFrom($table, $field, $andWhere = "", $length = 32, $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
         $str = false;
         while ($str == false) {
-            $str = ri_str_random($length, $chars);
+            $str = ac_str_random($length, $chars);
             if ($this->findOne("($field='$str') $andWhere", $table)) {
                 $str = false;
             }
@@ -586,7 +586,7 @@ class Ri_Storage_Db {
      * @param string $where
      * @param string $from Table name
      * @param string $select
-     * @param int $fetch_style Apricore_Db::FETCH_OBJ_FIRST or Apricore_Db::FETCH_FIRST_ARRAY
+     * @param int $fetch_style Anidcore_Db::FETCH_OBJ_FIRST or Anidcore_Db::FETCH_FIRST_ARRAY
      * @param mixed  $_arg,...
      * Extra args, like in PDOStatement::fetch or fetchAll
      * 
@@ -596,11 +596,11 @@ class Ri_Storage_Db {
      * 
      * @return mixed or boolean false 
      */
-    public function findOne($where, $from, $select = null, $fetch_style = RI_DB_FETCH_ASSOC_FIRST) {
+    public function findOne($where, $from, $select = null, $fetch_style = AC_DB_FETCH_ASSOC_FIRST) {
         $args = array_slice(func_get_args(), 2);
 
         if (func_num_args() < 4)         //  fetch_style
-            array_push($args, RI_DB_FETCH_ASSOC_FIRST);
+            array_push($args, AC_DB_FETCH_ASSOC_FIRST);
 
         if (func_num_args() < 3) {
             array_unshift($args, null); //  select
@@ -610,8 +610,8 @@ class Ri_Storage_Db {
         array_unshift($args, $from);
         array_unshift($args, $where);
 
-        if (!in_array($args[5], array(RI_DB_FETCH_ASSOC_FIRST, RI_DB_FETCH_OBJ_FIRST))) {
-            $args[5] = RI_DB_FETCH_ASSOC_FIRST;
+        if (!in_array($args[5], array(AC_DB_FETCH_ASSOC_FIRST, AC_DB_FETCH_OBJ_FIRST))) {
+            $args[5] = AC_DB_FETCH_ASSOC_FIRST;
         }
         return call_user_func_array(array($this, "findWhere"), $args);
     }

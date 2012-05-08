@@ -1,7 +1,11 @@
 <?php
 
+define("AC_CHARS_HEXADECIMAL", "abcdef0123456789");
+define("AC_CHARS_ALPHANUMERIC", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+define("AC_CHARS_SYMBOLS", "{}()[]<>!?|@#%&/=^*;,:.-_+");
+
 ####################
-## ri_arr
+## ac_arr
 ####################
 
 /**
@@ -12,7 +16,7 @@
  * @param mixed $filter FILTER_* constant value or regular expression
  * @return mixed
  */
-function ri_arr_value($arr, $key, $default = false, $filter = null) {
+function ac_arr_value($arr, $key, $default = false, $filter = null) {
     if (!is_array($arr))
         return $default;
     if (isset($arr[$key])) {
@@ -29,12 +33,12 @@ function ri_arr_value($arr, $key, $default = false, $filter = null) {
         return $default;
 }
 
-function ri_arr_first($arr) {
-    return array_shift($arr);
+function ac_arr_first($arr) {
+    return reset($arr);
 }
 
-function ri_arr_last($arr) {
-    return array_pop($arr);
+function ac_arr_last($arr) {
+    return end($arr);
 }
 
 /**
@@ -45,7 +49,7 @@ function ri_arr_last($arr) {
  * @param boolean $case_insensitive
  * @return boolean 
  */
-function ri_arr_sort_by($field, &$arr, $sorting = SORT_ASC, $case_insensitive = true) {
+function ac_arr_sort_by($field, &$arr, $sorting = SORT_ASC, $case_insensitive = true) {
     if (is_array($arr) && (count($arr) > 0)) {
         if ($case_insensitive == true)
             $strcmp_fn = "strnatcasecmp";
@@ -82,7 +86,7 @@ function ri_arr_sort_by($field, &$arr, $sorting = SORT_ASC, $case_insensitive = 
  * @param string $field
  * @return array
  */
-function ri_arr_field_values($arr, $fieldName) {
+function ac_arr_field_values($arr, $fieldName) {
     if (empty($arr) || (!is_array($arr)))
         return array();
 
@@ -98,7 +102,7 @@ function ri_arr_field_values($arr, $fieldName) {
 }
 
 ####################
-## ri_str
+## ac_str
 ####################
 
 /**
@@ -108,8 +112,8 @@ function ri_arr_field_values($arr, $fieldName) {
  * @param array $replacements
  * @return string
  */
-function ri_str_camelize($str) {
-    $str = ri_str_slug($str, ' ');
+function ac_str_camelize($str) {
+    $str = ac_str_slug($str, ' ');
     $str = trim(implode('', explode(' ', ucwords(strtolower($str)))));
     return lcfirst($str);
 }
@@ -119,7 +123,7 @@ function ri_str_camelize($str) {
  * @param string $delimiter Used for separating words
  * @return string 
  */
-function ri_str_uncamelize($str, $delimiter = " ") {
+function ac_str_uncamelize($str, $delimiter = " ") {
     $str = preg_replace('/(?!^)[[:upper:]][[:lower:]]/', '$0', preg_replace('/(?!^)[[:upper:]]+/', $delimiter . '$0', $str));
     return strtolower($str);
 }
@@ -131,7 +135,7 @@ function ri_str_uncamelize($str, $delimiter = " ") {
  * @param string $append String that will be appended if the original string exceeds $length
  * @return string 
  */
-function ri_str_reduce($str, $length, $append = "") {
+function ac_str_reduce($str, $length, $append = "") {
     if (($length > 0) && (strlen($str) > $length)) {
         return substr($str, 0, $length) . $append;
     }else
@@ -145,7 +149,7 @@ function ri_str_reduce($str, $length, $append = "") {
  * @param string $append String that will be appended if the original string exceeds $length
  * @return string 
  */
-function ri_str_reduce_words($str, $length, $append = "") {
+function ac_str_reduce_words($str, $length, $append = "") {
     $str2 = preg_replace('/\s\s+/', ' ', $str);
     $words = explode(" ", $str2);
     if (($length > 0) && (count($words) > $length)) {
@@ -155,7 +159,7 @@ function ri_str_reduce_words($str, $length, $append = "") {
         return $str;
 }
 
-function ri_str_replace_repeated($str, $char, $replacement = null) {
+function ac_str_replace_repeated($str, $char, $replacement = null) {
     return preg_replace('/' . $char . $char . '+/', $replacement, $str);
 }
 
@@ -166,7 +170,7 @@ function ri_str_replace_repeated($str, $char, $replacement = null) {
  * @param array $replace Characters to be replaced with delimiter
  * @return string
  */
-function ri_str_slug($str, $delimiter = '-', $replace = array()) {
+function ac_str_slug($str, $delimiter = '-', $replace = array()) {
     if (!empty($replace)) {
         $str = str_replace((array) $replace, ' ', $str);
     }
@@ -186,7 +190,7 @@ function ri_str_slug($str, $delimiter = '-', $replace = array()) {
  * @param string $delimiter
  * @return string
  */
-function ri_str_unslug($str, $delimiter = "-") {
+function ac_str_unslug($str, $delimiter = "-") {
     $str = str_replace($delimiter, " ", $str);
     return ucfirst($str);
 }
@@ -197,7 +201,7 @@ function ri_str_unslug($str, $delimiter = "-") {
  * @param string $chars
  * @return string
  */
-function ri_str_random($length = 32, $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") {
+function ac_str_random($length = 32, $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") {
     $plength = strlen($chars);
     mt_srand((double) microtime() * 10000000);
     $str = "";
@@ -216,7 +220,7 @@ function ri_str_random($length = 32, $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg
  * @param bool $remove_whitespace
  * @return string 
  */
-function ri_str_clean($str, $remove_quotes = true, $remove_html = true, $remove_backslashes = true, $remove_whitespace = true) {
+function ac_str_clean($str, $remove_quotes = true, $remove_html = true, $remove_backslashes = true, $remove_whitespace = true) {
     if ($remove_html) {
         $str = strip_tags($str);
     }
@@ -232,11 +236,11 @@ function ri_str_clean($str, $remove_quotes = true, $remove_html = true, $remove_
     return $str;
 }
 
-function ri_str_latin1_to_utf8($str) {
+function ac_str_latin1_to_utf8($str) {
     return utf8_encode(utf8_decode($str));
 }
 
-function ri_str_remove_fontstyles($str) {
+function ac_str_remove_fontstyles($str) {
     $patterns = array();
 
     //CSS attributes
@@ -264,7 +268,7 @@ function ri_str_remove_fontstyles($str) {
  * @param string $str1, $str2, $str3, ...
  * @return string 
  */
-function ri_str_join($glue = ",") {
+function ac_str_join($glue = ",") {
     $args = func_get_args();
     $glue = $args[0];
     unset($args[0]);
@@ -278,7 +282,7 @@ function ri_str_join($glue = ",") {
 }
 
 ####################
-# ri_format
+# ac_format
 ####################
 
 /**
@@ -288,7 +292,7 @@ function ri_str_join($glue = ",") {
  * @param string $thousands_sep
  * @return string 
  */
-function ri_format_currency($price, $dec_point = ",", $thousands_sep = "") {
+function ac_format_currency($price, $dec_point = ",", $thousands_sep = "") {
     return number_format($price / 100, 2, $dec_point, $thousands_sep);
 }
 
@@ -297,7 +301,7 @@ function ri_format_currency($price, $dec_point = ",", $thousands_sep = "") {
  * @param string $hexdata
  * @return string
  */
-function ri_format_hex2bin($hexdata) {
+function ac_format_hex2bin($hexdata) {
     $bindata = "";
 
     for ($i = 0; $i < strlen($hexdata); $i+=2) {
@@ -308,20 +312,20 @@ function ri_format_hex2bin($hexdata) {
 }
 
 ####################
-# ri_date
+# ac_date
 ####################
 
-function ri_date_utc($time = null) {
+function ac_date_utc($time = null) {
     if ($time == null)
         $time = time();
     return date('Y-m-d\\TH:i:s\\.000\\Z', $time - date("Z"));
 }
 
-function ri_date_from_ts($timestamp, $format = "d.m.Y") {
+function ac_date_from_ts($timestamp, $format = "d.m.Y") {
     return date($format, strtotime($timestamp));
 }
 
-function ri_date_daysbetween($from, $to) {
+function ac_date_daysbetween($from, $to) {
     $start = strtotime($from);
     $end = strtotime($to);
     $num_days = round(($end - $start) / 86400 /* day in seconds */) + 1;
@@ -333,12 +337,12 @@ function ri_date_daysbetween($from, $to) {
     return $days;
 }
 
-function ri_date_in_range($date, $from, $to) {
-    $times = ri_date_daysbetween($from, $to);
+function ac_date_in_range($date, $from, $to) {
+    $times = ac_date_daysbetween($from, $to);
     return in_array(strtotime($date), $times);
 }
 
-function ri_date_sec2hms($sec, $padHours = false) {
+function ac_date_sec2hms($sec, $padHours = false) {
 
 // start with a blank string
     $hms = "";
@@ -371,7 +375,7 @@ function ri_date_sec2hms($sec, $padHours = false) {
 }
 
 ####################
-## ri_crypto
+## ac_crypto
 ####################
 
 /**
@@ -381,34 +385,34 @@ function ri_date_sec2hms($sec, $padHours = false) {
  * @param string $key The key with which the data will be encrypted.
  * @return string|false The encrypted and base64-safe-encoded string (safe for urls)
  */
-function ri_crypto_encrypt($text, $key = null) {
+function ac_crypto_encrypt($text, $key = null) {
     if (empty($text)) {
         return false;
     }
     if (empty($key))
         $key = ac_config("salt");
 
-    return ri_base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $text, MCRYPT_MODE_CBC, md5(md5($key))), true);
+    return ac_base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $text, MCRYPT_MODE_CBC, md5(md5($key))), true);
 }
 
 /**
- * Decrypts an string previously encrypted using ri_crypto_encrypt
+ * Decrypts an string previously encrypted using ac_crypto_encrypt
  * 
  * @param string $encrypted The RAW encrypted string
  * @param string $salt The key with which the data was encrypted.
  * @return string|false The decrypted string 
  */
-function ri_crypto_decrypt($encrypted, $key = null) {
+function ac_crypto_decrypt($encrypted, $key = null) {
     if (empty($encrypted)) {
         return false;
     }
     if (empty($key))
         $key = ac_config("salt");
-    return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), ri_base64_decode($encrypted, true), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
+    return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), ac_base64_decode($encrypted, true), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
 }
 
 ####################
-## ri_base64
+## ac_base64
 ####################
 
 /**
@@ -417,7 +421,7 @@ function ri_crypto_decrypt($encrypted, $key = null) {
  * @param bool $urlSafe
  * @return string 
  */
-function ri_base64_encode($string, $urlSafe = false) {
+function ac_base64_encode($string, $urlSafe = false) {
     $data = base64_encode($string);
     if ($urlSafe) {
         $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
@@ -431,7 +435,7 @@ function ri_base64_encode($string, $urlSafe = false) {
  * @param bool $urlSafe
  * @return string 
  */
-function ri_base64_decode($string, $urlSafe = false) {
+function ac_base64_decode($string, $urlSafe = false) {
     if ($urlSafe) {
         $data = str_replace(array('-', '_'), array('+', '/'), $string);
         $mod4 = strlen($data) % 4;
@@ -445,10 +449,10 @@ function ri_base64_decode($string, $urlSafe = false) {
 }
 
 ####################
-## ri_jsonrpc
+## ac_jsonrpc
 ####################
 
-function ri_jsonrpc_request($id, $method, $params = null, $version = "2.0") {
+function ac_jsonrpc_request($id, $method, $params = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "method" => $method,
@@ -458,7 +462,7 @@ function ri_jsonrpc_request($id, $method, $params = null, $version = "2.0") {
     return json_encode($message);
 }
 
-function ri_jsonrpc_notification($method = "", $params = null, $version = "2.0") {
+function ac_jsonrpc_notification($method = "", $params = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "method" => $method,
@@ -467,7 +471,7 @@ function ri_jsonrpc_notification($method = "", $params = null, $version = "2.0")
     return json_encode($message);
 }
 
-function ri_jsonrpc_result($id, $result = null, $version = "2.0") {
+function ac_jsonrpc_result($id, $result = null, $version = "2.0") {
     $message = array(
         "jsonrpc" => $version,
         "result" => $result,
@@ -476,7 +480,7 @@ function ri_jsonrpc_result($id, $result = null, $version = "2.0") {
     return json_encode($message);
 }
 
-function ri_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $version = "2.0") {
+function ac_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $version = "2.0") {
     $error = array(
         "code" => $code,
         "message" => $message
@@ -492,7 +496,7 @@ function ri_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $v
 }
 
 ####################
-## ri_dir
+## ac_dir
 ####################
 
 /**
@@ -500,7 +504,7 @@ function ri_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $v
  * @param directory $directory
  * @return integer
  */
-function ri_dir_size($directory) {
+function ac_dir_size($directory) {
     $size = 0;
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file) {
         $size+=$file->getSize();
@@ -512,11 +516,11 @@ function ri_dir_size($directory) {
  * Removes a directory recursively
  * @param string $dir 
  */
-function ri_dir_rm($dir) {
+function ac_dir_rm($dir) {
     $files = glob($dir . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (substr($file, -1) == '/')
-            ri_dir_rm($file);
+            ac_dir_rm($file);
         else
             unlink($file);
     }
@@ -531,7 +535,7 @@ function ri_dir_rm($dir) {
  * @param       string   $permissions New folder creation permissions
  * @return      bool     Returns TRUE on success, FALSE on failure
  */
-function ri_dir_copy($source, $dest, $permissions = 0775) {
+function ac_dir_copy($source, $dest, $permissions = 0775) {
     // Check for symlinks
     if (is_link($source)) {
         return symlink(readlink($source), $dest);
@@ -569,7 +573,7 @@ function ri_dir_copy($source, $dest, $permissions = 0775) {
  * @param string $folderPath The folder path
  * @return array The full paths of the files
  */
-function ri_dir_files($folder_path) {
+function ac_dir_files($folder_path) {
     $files = array();
     if (is_dir($folder_path)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folder_path), RecursiveIteratorIterator::SELF_FIRST);
@@ -587,7 +591,7 @@ function ri_dir_files($folder_path) {
  * @param string $folder_path
  * @return array 
  */
-function ri_dir_folders($folder_path) {
+function ac_dir_folders($folder_path) {
     $folders = array();
     if (is_dir($folder_path)) {
         $iterator = scandir($folder_path);
@@ -601,7 +605,7 @@ function ri_dir_folders($folder_path) {
 }
 
 ####################
-## ri_file
+## ac_file
 ####################
 
 /**
@@ -611,7 +615,7 @@ function ri_dir_folders($folder_path) {
  * @param string $separator Separator text. Default: line break
  * @param array $vars Variables to expose
  */
-function ri_file_join($source_files, $destination_file, $separator = "\n", $vars = array()) {
+function ac_file_join($source_files, $destination_file, $separator = "\n", $vars = array()) {
     ob_start();
     extract($vars);
     foreach ($source_files as $f) {
@@ -624,7 +628,7 @@ function ri_file_join($source_files, $destination_file, $separator = "\n", $vars
     file_put_contents($destination_file, $data);
 }
 
-function ri_file_mimetype($file) {
+function ac_file_mimetype($file) {
     if (function_exists('finfo_file')) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $file);
@@ -641,19 +645,19 @@ function ri_file_mimetype($file) {
     return $type;
 }
 
-function ri_file_extension($filename) {
-    return ri_arr_last(explode(".", $filename));
+function ac_file_extension($filename) {
+    return ac_arr_last(explode(".", $filename));
 }
 
 ####################
-## ri_download
+## ac_download
 ####################
 
-function ri_download_from_url($url, $destinationFile, $method = 'GET') {
+function ac_download_from_url($url, $destinationFile, $method = 'GET') {
     if (ob_get_length()) {
         ob_end_clean();
     }
-    if (ri_is_url($url)) {
+    if (ac_is_url($url)) {
         $binaryData = file_get_contents($url, null, stream_context_create(array(
                     'http' => array(
                         'method' => $method,
@@ -670,7 +674,7 @@ function ri_download_from_url($url, $destinationFile, $method = 'GET') {
     }
 }
 
-function ri_download_file($file, $contentType = null, $rename = null) {
+function ac_download_file($file, $contentType = null, $rename = null) {
     if (ob_get_length()) {
         ob_end_clean();
     }
@@ -693,7 +697,7 @@ function ri_download_file($file, $contentType = null, $rename = null) {
     }
 }
 
-function ri_download_content($binaryContent, $filename = "untitled", $contentType = "application/octet-stream") {
+function ac_download_content($binaryContent, $filename = "untitled", $contentType = "application/octet-stream") {
     if (ob_get_length()) {
         ob_end_clean();
     }
@@ -712,7 +716,7 @@ function ri_download_content($binaryContent, $filename = "untitled", $contentTyp
 }
 
 ####################
-## ri_reflection
+## ac_reflection
 ####################
 
 /**
@@ -721,7 +725,7 @@ function ri_download_content($binaryContent, $filename = "untitled", $contentTyp
  * @param string $constant_name
  * @return mixed
  */
-function ri_reflection_class_constant($class_name, $constant_name) {
+function ac_reflection_class_constant($class_name, $constant_name) {
     $reflect = new ReflectionClass($class_name);
     $constants = $reflect->getConstants();
 
@@ -733,7 +737,7 @@ function ri_reflection_class_constant($class_name, $constant_name) {
  * @param string $class_name
  * @return mixed
  */
-function ri_reflection_class_constants($class_name) {
+function ac_reflection_class_constants($class_name) {
     $reflect = new ReflectionClass($class_name);
     $constants = $reflect->getConstants();
 
@@ -746,7 +750,7 @@ function ri_reflection_class_constants($class_name) {
  * @param string $class_name
  * @return mixed
  */
-function ri_reflection_static_property($property, $class_name) {
+function ac_reflection_static_property($property, $class_name) {
     if (defined($class_name . '::' . $property)) {
         return eval("return {$class_name}::{$property};");
     } elseif (property_exists($class_name, $property)) {
@@ -757,30 +761,30 @@ function ri_reflection_static_property($property, $class_name) {
 }
 
 ####################
-## ri_is
+## ac_is
 ####################
 
-function ri_is_empty($var) {
+function ac_is_empty($var) {
     return empty($var);
 }
 
-function ri_is_html($str) {
+function ac_is_html($str) {
     return (preg_match('/<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|\'.*?\'|[^\'">\s]+))?)+\s*|\s*)\/?' . '>/i', $str) > 0);
 }
 
-function ri_is_msword($str) {
+function ac_is_msword($str) {
     return preg_replace('/class="?Mso|style="[^"]*\bmso-|w:WordDocument/i');
 }
 
-function ri_is_url($str) {
+function ac_is_url($str) {
     return filter_var($str, FILTER_VALIDATE_URL) !== false;
 }
 
-function ri_is_email($str) {
+function ac_is_email($str) {
     return filter_var($str, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function ri_is_webfile($str) {
+function ac_is_webfile($str) {
     $exts = 'xml|json|less|css|js|j|jpg|png|apng|gif|swf|svg|svgz|otf|eot|woff|' .
             'ttf|avi|mp3|mp4|mpg|mov|mpeg|mkv|ogg|ogv|oga|aac|wmv|wma|rm|' .
             'webm|webp|pdf|zip|gz|tar|rar|7z';
@@ -788,7 +792,7 @@ function ri_is_webfile($str) {
 }
 
 ####################
-## ri_html
+## ac_html
 ####################
 
 /**
@@ -797,7 +801,7 @@ function ri_is_webfile($str) {
  * @param array|string $words Word(s) to mark
  * @return string 
  */
-function ri_html_mark($string, $words) {
+function ac_html_mark($string, $words) {
     if (!is_array($words))
         $words = array($words);
     foreach ($words as $word) {
@@ -806,7 +810,7 @@ function ri_html_mark($string, $words) {
     return $string;
 }
 
-function ri_html_trim_br($str) {
+function ac_html_trim_br($str) {
     if (!is_string($str))
         return $str;
 
@@ -853,10 +857,10 @@ function ri_html_trim_br($str) {
 }
 
 ####################
-## other ri_*
+## other ac_*
 ####################
 
-function ri_echo($var, $default = null, $return = false) {
+function ac_echo($var, $default = null, $return = false) {
     if (empty($var))
         return print_r($default, $return);
     else {
@@ -864,7 +868,7 @@ function ri_echo($var, $default = null, $return = false) {
     }
 }
 
-function ri_redirect($url, $status = 301, $httpVersion = "1.1") {
+function ac_redirect($url, $status = 301, $httpVersion = "1.1") {
     if (strpos(PHP_SAPI, 'cgi') === 0) {
         header("Status: ", $status);
     } else {
@@ -873,15 +877,15 @@ function ri_redirect($url, $status = 301, $httpVersion = "1.1") {
     header("Location: ", $url);
 }
 
-function ri_removecookie($name, $path = null, $domain = null, $secure = null, $httponly = null) {
+function ac_removecookie($name, $path = null, $domain = null, $secure = null, $httponly = null) {
     return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
 }
 
-function ri_add_include_path($path) {
+function ac_add_include_path($path) {
     return set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 }
 
-function ri_memory_available() {
+function ac_memory_available() {
     return memory_get_limit() - memory_get_usage(true);
 }
 
@@ -889,7 +893,7 @@ function ri_memory_available() {
  * 
  * @return int amount of bytes
  */
-function ri_memory_limit() {
+function ac_memory_limit() {
     $memory_limit = ini_get("memory_limit");
     if (strpos($memory_limit, "M")) {
         $memory_limit = intval($memory_limit) * 1024 * 1024;
@@ -909,7 +913,7 @@ function ri_memory_limit() {
  * @param int $offset
  * @return array 
  */
-function ri_preg_match_results($pattern, $subject, $flags = null, $offset = null) {
+function ac_preg_match_results($pattern, $subject, $flags = null, $offset = null) {
     preg_match_all($pattern, $subject, $matchesarray, $flags, $offset);
     if (!empty($matchesarray))
         return array_pop($matchesarray);
@@ -917,7 +921,7 @@ function ri_preg_match_results($pattern, $subject, $flags = null, $offset = null
         return array();
 }
 
-function ri_ie_version() {
+function ac_ie_version() {
     $match = preg_match('/MSIE ([0-9]\.[0-9])/', $_SERVER['HTTP_USER_AGENT'], $reg);
     if ($match == 0)
         return -1;
@@ -925,8 +929,8 @@ function ri_ie_version() {
         return floatval($reg[1]);
 }
 
-function ri_ie_classes() {
-    $v = intval(ri_ie_version());
+function ac_ie_classes() {
+    $v = intval(ac_ie_version());
     if ($v == -1)
         return "no-ie";
     switch ($v) {

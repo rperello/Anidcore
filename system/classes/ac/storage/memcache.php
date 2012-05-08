@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_Memcache extends Ri_Cache {
+class Ac_Storage_Memcache extends Ac_Cache {
 
     /**
      *
@@ -10,7 +10,7 @@ class Ri_Storage_Memcache extends Ri_Cache {
 
     /**
      *
-     * @var Ri_Storage_Var 
+     * @var Ac_Storage_Var 
      */
     protected $vcache = null;
     protected $config = array(
@@ -26,7 +26,7 @@ class Ri_Storage_Memcache extends Ri_Cache {
         $this->config = array_merge($this->config, $config);
         if ($this->isEnabled()) {
             $this->memcache = new Memcache;
-            $this->vcache = new Ri_Storage_Var();
+            $this->vcache = new Ac_Storage_Var();
 
             if ($config["autoconnect"] == true) {
                 $this->connect();

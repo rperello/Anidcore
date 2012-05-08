@@ -3,7 +3,7 @@
 /**
  * Empty object that always returns null 
  */
-final class Ri_Empty {
+final class Ac_Empty {
 
     public function __call($name, $arguments) {
         return null;

@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Object implements ArrayAccess {
+class Ac_Object implements ArrayAccess {
 
     /**
      * @var array 
@@ -11,27 +11,43 @@ class Ri_Object implements ArrayAccess {
         $this->vars = (array) $vars;
     }
 
-    public function get($key = null, $default = false, $filter = null) {
-        if ($key === null) {
+    public function val($name = null, $default = false, $filter = null) {
+        if ($name === null) {
             return $this->vars;
         } else {
-            return ri_arr_value($this->vars, $key, $default, $filter);
+            return ac_arr_value($this->vars, $name, $default, $filter);
         }
     }
 
-    public function __get($name) {
-        return $this->get($name);
-    }
-
     public function __isset($name) {
+        $method_name = __FUNCTION__."_$name";
+        if (method_exists($this, $method_name)) {
+            return $this->$method_name();
+        }
         return isset($this->vars[$name]);
     }
 
+    public function __get($name) {
+        $method_name = __FUNCTION__."_$name";
+        if (method_exists($this, $method_name)) {
+            return $this->$method_name();
+        }
+        return $this->val($name);
+    }
+
     public function __set($name, $value) {
+        $method_name = __FUNCTION__."_$name";
+        if (method_exists($this, $method_name)) {
+            return $this->$method_name($value);
+        }
         $this->vars[$name] = $value;
     }
 
     public function __unset($name) {
+        $method_name = __FUNCTION__."_$name";
+        if (method_exists($this, $method_name)) {
+            return $this->$method_name();
+        }
         if (isset($this->vars[$name])) {
             unset($this->vars[$name]);
             return true;
@@ -53,18 +69,6 @@ class Ri_Object implements ArrayAccess {
 
     public function offsetUnset($offset) {
         return $this->__unset($offset);
-    }
-
-    public function toArray() {
-        return $this->vars;
-    }
-
-    public function toObject() {
-        return (object) $this->vars;
-    }
-
-    public function replace($vars) {
-        $this->vars = (array) $vars;
     }
 
 }

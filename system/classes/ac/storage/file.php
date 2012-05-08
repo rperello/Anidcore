@@ -1,6 +1,6 @@
 <?php
 
-class Ri_Storage_File {
+class Ac_Storage_File {
 
     /**
      * Cache path
@@ -10,7 +10,7 @@ class Ri_Storage_File {
 
     /**
      *
-     * @var Ri_Storage_Var
+     * @var Ac_Storage_Var
      */
     protected $varcache = null;
     protected $buffer = array();
@@ -29,7 +29,7 @@ class Ri_Storage_File {
         }
 
         $this->path = $cache_path;
-        $this->varcache = new Ri_Storage_Var();
+        $this->varcache = new Ac_Storage_Var();
     }
 
     public function has($id) {

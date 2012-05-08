@@ -26,4 +26,3 @@ Thumbs.db
 *.cache.html
 wp-config.php
 /app/data/*.txt
-/system/classes/ac/*

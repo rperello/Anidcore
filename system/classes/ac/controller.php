@@ -1,6 +1,6 @@
 <?php
 
-abstract class Ri_Controller extends Ri_Environment {
+abstract class Ac_Controller {
 
     /**
      * Supported HTTP methods
@@ -10,13 +10,12 @@ abstract class Ri_Controller extends Ri_Environment {
 
     /**
      * 
-     * @var Ri_View 
+     * @var Ac_View 
      */
     protected $view;
 
-    public function __construct($contextName) {
-        parent::__construct($contextName);
-        $this->view = new Ri_View($contextName);
+    public function __construct() {
+        $this->view = new Ac_View();
     }
 
     /**
@@ -27,13 +26,13 @@ abstract class Ri_Controller extends Ri_Environment {
     /**
      * Error handler function 
      */
-    abstract public function __handle($body = null);
+    abstract public function __handle();
 
     /**
      * Request validation function
      */
     public function __validate() {
-        if (!in_array($this->context()->request->method(), $this->supports)) {
+        if (!in_array(Ac::request()->requestMethod, $this->supports)) {
             $this->setStatus(405);
             return false;
         }
@@ -49,11 +48,11 @@ abstract class Ri_Controller extends Ri_Environment {
     }
 
     public function setBody($body) {
-        $this->context()->response->body($body);
+        Ac::response()->body($body);
     }
 
     public function setStatus($status) {
-        $this->context()->response->status($status);
+        Ac::response()->status($status);
     }
 
 }
