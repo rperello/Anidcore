@@ -4,7 +4,7 @@ spl_autoload_register(array('Ac', 'autoload'));
 
 class Ac {
 
-    const VERSION = "0.4.5";
+    const VERSION = "0.4.6";
     /**
      *  1. Triggered before initializing Anidcore (through Ac::init).
      * 
@@ -32,7 +32,7 @@ class Ac {
 
     /**
      *  4. Triggered everytime a module is initialized
-     *     (when its functions.php and init.php files are included).
+     *     (when init.php file is included).
      * 
      *  <b>Parameters</b>: Ac_Module <i>$module</i> The module instance
      */
@@ -42,13 +42,16 @@ class Ac {
     /**
      *  5. Triggered before the router resolves the controller and the action.
      * 
-     *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
+     *  <b>Parameters</b>: <i>array</i> <b>$request</b> Array containing the
+     *      current request 'baseUri' and 'resource'
+     *  <b>Replaces</b>: The request resource and baseUri used inside the
+     *      resolve() function (it won't modify the Ac::request() ones)
      */
     const HOOK_BEFORE_ROUTER_RESOLVE = 'ac.before_router_resolve';
 
     /**
      *  6. Triggered when the 'app' module is initialized
-     *     (when its functions.php and init.php files are included).
+     *     (when init.php file is included).
      * 
      *     Each module will trigger its own 'ac.on_init_module_<modulename>' hook.
      * 
@@ -58,17 +61,7 @@ class Ac {
 
 
     /**
-     *  7. Triggered only once, at the beginning of Ac::init.
-     * 
-     *  <b>Parameters</b>: string <i>$resource</i> The requested resource<br>
-     *  <b>Replaces</b>: The return value will replace the requested resource
-     *  the router will use to resolve controller and action.
-     */
-    const HOOK_ON_ROUTER_RESOURCE = 'ac.before_router_resource';
-
-
-    /**
-     *  8. Triggered when the router resolves the controller and the action.
+     *  7. Triggered when the router resolves the controller and the action.
      * 
      *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
      */
@@ -76,19 +69,19 @@ class Ac {
 
 
     /**
-     *  9. Triggered when Anidcore has been initializated (through Ac::init).
+     *  8. Triggered when Anidcore has been initializated (through Ac::init).
      */
     const HOOK_ON_INIT = 'ac.on_init';
 
 
     /**
-     *  10. Triggered before the action is called and/or the response sent
+     *  9. Triggered before the action is called and/or the response sent
      */
     const HOOK_BEFORE_RUN = 'ac.before_run';
 
 
     /**
-     *  11. Triggered before the controller is created and action called
+     *  10. Triggered before the controller is created and action called
      * 
      *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
      */
@@ -96,7 +89,7 @@ class Ac {
 
 
     /**
-     *  12. Triggered when the controller is created and action called.
+     *  11. Triggered when the controller is created and action called.
      * 
      *  <b>Parameters</b>: <i>mixed</i> <b>$result</b> The result returned by the action call
      *  <b>Replaces</b>: The return value will replace the action result
@@ -105,7 +98,7 @@ class Ac {
 
 
     /**
-     *  13. Triggered before the response is printed and before response headers are sent.
+     *  12. Triggered before the response is printed and before response headers are sent.
      *      The output buffer is cleaned here using ob_get_clean()
      * 
      *  <b>Parameters</b>: <i>array</i> array containing <i>'responseBody'</i> and <i>'outputBuffer'</i> data<br>
@@ -117,7 +110,7 @@ class Ac {
 
 
     /**
-     *  14. Triggered when the response is printed and response headers are sent.
+     *  13. Triggered when the response is printed and response headers are sent.
      * 
      *  <b>Parameters</b>: <i>string</i> the output buffer before the response was sent.<br>
      */
@@ -125,7 +118,7 @@ class Ac {
 
 
     /**
-     *  15. Triggered when the run function terminates (on router call and response sent)
+     *  14. Triggered when the run function terminates (on router call and response sent)
      */
     const HOOK_ON_RUN = 'ac.on_run';
 
@@ -159,16 +152,10 @@ class Ac {
             self::router();
 
 
-            //load all modules defined in modules.autoload
+            //load and initialize all modules defined in modules.autoload
             foreach (self::config("modules.autoload") as $moduleName) {
                 if ($moduleName != "app") {
-                    self::module($moduleName);
-                }
-            }
-
-            //initialize all modules defined in modules.autoload
-            foreach (self::$env["loaded_modules"] as $moduleName => $mod) {
-                if ($moduleName != "app") {
+                    $mod = self::module($moduleName);
                     $mod->init();
                 }
             }
@@ -416,6 +403,127 @@ class Ac {
         }
     }
 
+    /**
+     * Returns the specified url
+     * @param string $of Possible values: media, assets, virtual, action, controller, domain, current, resource, base, module (default)
+     * @return string 
+     */
+    public static function url($of = "module") {
+        switch ($of) {
+            case "media":
+            case "MEDIA": {
+                    return self::module()->mediaUrl();
+                }break;
+
+            case "assets":
+            case "ASSETS": {
+                    return defined("AC_CONTENT_URL") ? AC_CONTENT_URL : self::request()->baseUri . "content/assets/";
+                }break;
+
+            case "virtual":
+            case "VIRTUAL": {
+                    return self::router()->virtualBaseUri;
+                }break;
+
+            case "action":
+            case "ACTION": {
+                    return self::router()->actionUrl();
+                }break;
+
+            case "controller":
+            case "CONTROLLER": {
+                    return self::router()->controllerUrl();
+                }break;
+
+            case "domain":
+            case "DOMAIN": {
+                    return self::request()->domainUri;
+                }break;
+
+            case "current":
+            case "CURRENT": {
+                    return self::request()->requestUri;
+                }break;
+
+            case "resource":
+            case "RESOURCE": {
+                    return self::request()->resourceUri;
+                }break;
+
+            case "base":
+            case "BASE": {
+                    return self::request()->baseUri;
+                }break;
+
+            case "module":
+            case "MODULE":
+            default: {
+                    return self::module()->url();
+                }break;
+        }
+    }
+
+    /**
+     * Returns the specified path (filesystem)
+     * @param string $of Possible values are: view, assets, media, app, system, content, modules, base, module (default)
+     * @return string 
+     */
+    public static function path($of = "module") {
+        switch ($of) {
+            case "view":
+            case "VIEW": {
+                    return self::module()->viewsPath();
+                }break;
+
+            case "assets":
+            case "ASSETS": {
+                    return AC_PATH_CONTENT . "assets" . _DS;
+                }break;
+
+            case "media":
+            case "MEDIA": {
+                    return self::module()->mediaPath();
+                }break;
+
+            case "app":
+            case "APP": {
+                    return AC_PATH_APP;
+                }break;
+
+            case "system":
+            case "SYSTEM": {
+                    return AC_PATH_SYSTEM;
+                }break;
+
+            case "content":
+            case "CONTENT": {
+                    return AC_PATH_CONTENT;
+                }break;
+
+            case "modules":
+            case "MODULES": {
+                    return AC_PATH_MODULES;
+                }break;
+
+            case "base":
+            case "BASE": {
+                    return AC_PATH;
+                }break;
+
+            case "module":
+            case "MODULE":
+            default: {
+                    return self::module()->path;
+                }break;
+        }
+    }
+
+    public static function redirect($url, $status = 302) {
+        self::response()->redirect($url, $status);
+        self::response()->send();
+        exit();
+    }
+
     ## MODULES
 
     /**
@@ -427,7 +535,7 @@ class Ac {
         if (empty($moduleName))
             return self::moduleGetCurrent();
         if (!isset(self::$env["loaded_modules"][$moduleName])) {
-            self::$env["loaded_modules"][$moduleName] = new Ac_Module($moduleName);
+            self::$env["loaded_modules"][$moduleName] = Ac_Module::factory($moduleName);
         }
         return self::$env["loaded_modules"][$moduleName];
     }
@@ -511,7 +619,7 @@ class Ac {
                 if (!empty($priority)) {
                     foreach ($priority as $callable) {
                         //hook functions should return the (modified?) $hookArg
-                        $hookArg = call_user_func_array($callable, $hookArg);
+                        $hookArg = call_user_func($callable, $hookArg);
                     }
                 }
             }
@@ -565,7 +673,7 @@ class Ac {
     public static function timerStop($start_time = null, $detailed_result = true) {
         if ($start_time == null) {
             if (!empty(self::$env["timers"])) {
-                $start_time = end(array_values(self::$env["timers"]));
+                $start_time = ac_arr_last(self::$env["timers"]);
                 array_pop(self::$env["timers"]);
             }else
                 return 0;
@@ -710,16 +818,22 @@ class Ac {
     }
 
     public static function classFind($class_name) {
+        if (class_exists($class_name))
+            return true;
+
         $class_file = null;
         $class_name_dir = str_replace("_", _DS, strtolower($class_name));
 
         /* /modules/<module>/classes/ folder */
-        foreach (self::$env["loaded_modules"] as $name => $module) {
-            /* @var $module Ac_Module */
-            $class_file = $module->path . "classes" . _DS . $class_name_dir . ".php";
-            $exists = self::classInclude($class_file, $class_name);
-            if ($exists) {
-                return $module;
+        if (isset(self::$env["loaded_modules"])) {
+            foreach (self::$env["loaded_modules"] as $name => $module) {
+                if ($module->hasClasses()) {
+                    $class_file = $module->path . "classes" . _DS . $class_name_dir . ".php";
+                    $exists = self::classInclude($class_file, $class_name);
+                    if ($exists) {
+                        return $module;
+                    }
+                }
             }
         }
 

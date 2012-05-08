@@ -1,12 +1,16 @@
 <?php
 
-class Ac_Module{
+class Ac_Module {
 
     public $name;
     public $path;
     protected $defaults;
+    protected $hasClasses = false;
+    protected $hasViews = false;
+    protected $isMultiTheme = false;
+    protected $currentTheme = null;
 
-    public function __construct($moduleName) {
+    public function __construct($moduleName, $defaults = array()) {
 
         $this->name = $moduleName;
         $this->path = $this->isMain() ? AC_PATH_APP : AC_PATH_MODULES . $moduleName . _DS;
@@ -15,34 +19,133 @@ class Ac_Module{
             Ac::$logger->fatal($this->path, "Module not found at given path", __FILE__, __LINE__);
         }
 
-        //default config
-        if (is_readable($this->path . "defaults.php")) {
-            $defaults = include $this->path . "defaults.php";
-        } else {
-            $defaults = array();
-        }
-
         $this->defaults = $defaults;
 
-        Ac::setConfig(null, array_merge($defaults, Ac::config(null, array(), $moduleName)), $moduleName);
+        $this->setConfig(null, array_merge($defaults, $this->config(null, array())));
+
+        if (is_dir($this->path . "classes")) {
+            $this->hasClasses = true;
+        }
+
+        if (is_dir($this->path . "views")) {
+            $this->hasViews = true;
+        }
+
+        $theme = $this->config("theme", null);
+        if (!empty($theme) && is_dir($this->viewsPath() . $theme)) {
+            $this->isMultiTheme = true;
+            $this->currentTheme = $theme;
+        }
 
         Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE, $this);
-        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE. "_" . $moduleName, $this);
+        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE . "_" . $moduleName, $this);
+    }
+
+    /**
+     *
+     * @param string $moduleName
+     * @param array $defaults
+     * @return Ac_Module
+     */
+    public static function factory($moduleName, $defaults = array()) {
+        $path = ($moduleName == "app") ? AC_PATH_APP : AC_PATH_MODULES . $moduleName . _DS;
+
+        if (!is_dir($path)) {
+            Ac::$logger->fatal($path, "Module not found at given path", __FILE__, __LINE__);
+        }
+
+        $moduleClass = 'Module_' . ucfirst($moduleName);
+        $classFound = false;
+
+        //Try to load the moduleClass using the HMVC power
+        if (Ac::classFind($moduleClass)) {
+            $classFound = true;
+        } else {
+            //Lookup under the module /classes dir
+            $moduleFile = $path . 'classes' . _DS . 'module' . _DS . strtolower($moduleName) . '.php';
+            if (is_readable($moduleFile)) {
+                include_once $moduleFile;
+                if (class_exists($moduleClass, false)) {
+                    $classFound = true;
+                }
+            }
+        }
+
+        if ($classFound) {
+            return new $moduleClass($defaults);
+        }else
+            return new Ac_Module($moduleName, $defaults);
     }
 
     public function init() {
-        if (is_readable($this->path . "functions.php")) {
-            include_once $this->path . "functions.php";
-        }
         if (is_readable($this->path . "init.php")) {
             include $this->path . "init.php";
         }
         Ac::hookApply(Ac::HOOK_ON_INIT_MODULE, $this);
-        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE. "_" . $this->name, $this);
+        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE . "_" . $this->name, $this);
     }
 
     public function isMain() {
         return $this->name == "app";
+    }
+
+    public function hasClasses() {
+        return $this->hasClasses;
+    }
+
+    public function hasViews() {
+        return $this->hasViews;
+    }
+
+    public function isMultiTheme() {
+        return $this->isMultiTheme;
+    }
+
+    public function theme($newTheme = null) {
+        if (!empty($newTheme))
+            $this->currentTheme = $newTheme;
+        return $this->currentTheme;
+    }
+
+    public function url() {
+        if ($this->name == "app") {
+            return Ac::url("virtual");
+        } else {
+            return Ac::url("virtual").$this->config('default_controller', $this->name).'/';
+        }
+    }
+
+    public function viewsPath() {
+        if ($this->isMultiTheme) {
+            return $this->path . "views" . _DS . $this->currentTheme . _DS;
+        } else {
+            return $this->path . "views" . _DS;
+        }
+    }
+
+    public function mediaPath() {
+        return $this->viewsPath() . "media" . _DS;
+    }
+
+    public function mediaUrl() {
+        $url = Ac::url("base");
+        if (!$this->isMain()) {
+            $url .= $this->name . "/";
+        }
+
+        if ($this->isMultiTheme) {
+            return $url . "themes/" . $this->currentTheme . "/media/";
+        } else {
+            return $url . "media/";
+        }
+    }
+
+    public function config($name = null, $default = false) {
+        return Ac::config($name, $default, $this->name);
+    }
+
+    public function setConfig($name, $value) {
+        return Ac::setConfig($name, $value, $this->name);
     }
 
 }

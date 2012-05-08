@@ -15,10 +15,6 @@ class Controller_Index extends Ac_Controller_Html {
         return isset($_GET["msg"]);
     }
 
-    public function action_test() {
-        $this->setBody('<pre>' . htmlspecialchars(print_r(array("ac_documents table"=>Ac::dbc()->findAll("ac_documents"), "environment"=>Ac::environment()), true)) . '</pre>');
-    }
-
     public function test2() {
         $this->setBody("action unreachable");
     }

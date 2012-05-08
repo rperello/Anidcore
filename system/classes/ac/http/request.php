@@ -18,6 +18,7 @@
  * @property-read string $resource
  * @property-read string $resourceUri
  * @property-read string $requestUri
+ * @property-read string $virtualUri
  */
 class Ac_Http_Request {
     /**
@@ -104,10 +105,16 @@ class Ac_Http_Request {
         else
             $this->resource = trim(ac_arr_first(explode('?', $resource, 2)), " /");
 
-        $this->resourceUri = $this->domainUri . trim($this->resource, " /");
+        $this->resourceUri = $this->baseUri . trim($this->resource, " /");
         $this->requestUri = !empty($_GET) ? $this->resourceUri . '?' . http_build_query($_GET) : $this->resourceUri;
 
         $this->findPutDelete();
+    }
+    
+    public function setResource($resource){
+        $this->resource = trim($resource, " /");
+        $this->resourceUri = $this->domainUri . $this->resource;
+        $this->requestUri = !empty($_GET) ? $this->resourceUri . '?' . http_build_query($_GET) : $this->resourceUri;
     }
 
     protected function findServerPort() {

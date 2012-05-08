@@ -441,18 +441,16 @@ class Ac_Dbc {
         return $result;
     }
 
-    protected function _logSuccess($statement, $data = array()) {
+    protected function logSuccess($statement, $data = array()) {
         self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", $data, Ac::timerStop(), 'OK', $this->instance_name);
     }
 
-    protected function _logError($statement) {
+    protected function logError($statement) {
         self::$log[] = array(self::$queryCount . " ", $statement, $this->lastRowCount() . " ", null, Ac::timerStop(),
             $this->pdo->errorInfo(), $this->instance_name);
 
         $content = "#" . self::$queryCount . " [ERROR]\n";
         $content .= print_r(array($statement, $this->pdo->errorInfo()), true);
-
-        //ac_log($content, "mysql_errors.log", "file");
     }
 
     public function uniqueStringFrom($table, $field, $andWhere = "", $length = 32, $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") {

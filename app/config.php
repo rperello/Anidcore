@@ -5,14 +5,11 @@ return array(
     "logger.enabled" => true,
     "logger.class" => "Ac_Logger",
     "modules.autoload" => array(
-        "admin", //"firephp"
+        'i18n', "admin", //"firephp"
     ),
     "modules.config" => array(
         "admin" => array(
         //override module config. here
-        ),
-        "i18n" => array(
-            'autocreate' => true, //When a new lang is created, all i18n texts will be automatically copied from first available / default lang
         )
     ),
     "database" => array(

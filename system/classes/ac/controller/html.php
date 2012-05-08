@@ -32,6 +32,18 @@ class Ac_Controller_Html extends Ac_Controller {
         }
     }
 
+    public function action_test() {
+        $this->setBody('<pre>' . htmlspecialchars(print_r(
+                                array(
+                            "module" => Ac::module()->name,
+                            "controller" => Ac::router()->controller(),
+                            "action" => Ac::router()->action(),
+                            "module_url" => Ac::url(),
+                            "ac_documents table" => Ac::dbc()->findAll("ac_documents"),
+                            "environment" => Ac::environment()), true)
+                ) . '</pre>');
+    }
+
     final private function action_error() {
         
     }

@@ -1,32 +1,21 @@
 <?php
 
-class Ac_Router{
+class Ac_Router {
 
-    protected $controller_name = null;
+    public $controllerName = null;
 
     /**
      *
      * @var Ac_Controller 
      */
-    protected $controller_instance = null;
-    protected $action = null;
-    protected $controller_url = null;
-    protected $action_url = null;
-    protected $resource = null;
-    protected $params = null; //remaining resource from action
-    protected $canonical_segments = array();
-
-    public function info() {
-        return array(
-            "controller_name" => $this->controller_name,
-            "action" => $this->action,
-            "resource" => $this->resource,
-            "params" => $this->params,
-            "canonical_url" => $this->canonicalUrl(),
-            "controller_url" => $this->controllerUrl(),
-            "action_url" => $this->actionUrl()
-        );
-    }
+    public $controllerInstance = null;
+    public $action = null;
+    public $controllerUrl = null;
+    public $actionUrl = null;
+    public $resource = null;
+    public $params = null; //remaining resource from action
+    public $virtualBaseUri;
+    public $actionUriParts = array();
 
     public function resource() {
         $this->resolve();
@@ -35,7 +24,7 @@ class Ac_Router{
 
     public function controller() {
         $this->resolve();
-        return $this->controller_name;
+        return $this->controllerName;
     }
 
     public function action() {
@@ -48,43 +37,32 @@ class Ac_Router{
         return $this->params;
     }
 
-    public function canonicalUrl() {
-        return trim(implode("/", $this->canonical_segments), "/") . "/";
-    }
-
-    public function canonicalAdd($segment) {
-        $this->canonical_segments[] = $segment;
-    }
-
-    public function segment($index, $default = false, $filter = null) {
-        $this->resolve();
-        return ac_arr_value($this->resource, $index, $default, $filter);
+    protected function virtualUrl() {
+        return trim(implode("/", $this->actionUriParts), "/") . "/";
     }
 
     public function resolve() {
         //Yet initialized
-        if ($this->controller_name != null)
+        if ($this->controllerName != null)
             return;
 
-        Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, $this);
+        $request = Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, array('baseUri' => Ac::request()->baseUri, 'resource' => Ac::request()->resource));
+        $this->virtualBaseUri = $request["baseUri"];
 
-        if (empty($this->canonical_segments)) {
-            $this->canonical_segments = array(trim(Ac::request()->baseUri, " /"));
+        if (empty($this->actionUriParts)) {
+            $this->actionUriParts = array(trim($this->virtualBaseUri, ' /'));
         }
 
-        $rs = Ac::request()->resource;
-        $this->resource = $rs = empty($rs) ? array() : explode("/", trim($rs, " /"));
-
-        $rs = Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOURCE, $rs);
+        $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
 
         //Defaults
         $default_app_controller = ucfirst(Ac::config("router.default_controller", "index"));
-        $this->controller_name = ucfirst($default_app_controller);
+        $this->controllerName = ucfirst($default_app_controller);
         $this->action = "__default";
 
 
         if (empty($rs)) {
-            $this->controller_url = $this->action_url = $this->canonicalUrl();
+            $this->controllerUrl = $this->actionUrl = $this->virtualUrl();
         } else {
 
             //CONTROLLER
@@ -97,18 +75,18 @@ class Ac_Router{
                 return;
             }
 
-            $controller_name = ucfirst($part); //Example: Pages
-            $controller_exists = Ac::autoload($this->controllerClassName($controller_name));
+            $controllerName = ucfirst($part); //Example: Pages
+            $controller_exists = Ac::autoload($this->controllerClassName($controllerName));
 
             if ($controller_exists) {
-                $this->controller_name = $controller_name;
+                $this->controllerName = $controllerName;
                 if (!empty($part)) {
-                    $this->canonicalAdd($part);
+                    $this->actionUriParts[] = $part;
                 }
                 array_shift($rs);
             }
 
-            $this->controller_url = $this->action_url = $this->canonicalUrl();
+            $this->controllerUrl = $this->actionUrl = $this->virtualUrl();
 
             //ACTION
             if (!$controller_exists) {
@@ -116,9 +94,9 @@ class Ac_Router{
                 if (!Ac::autoload($this->controllerClassName($default_app_controller))) {
                     Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", __FILE__, __LINE__);
                 } else {
-                    if (method_exists($this->controllerClassName($this->controller_name), "action_{$part}")) {
+                    if (method_exists($this->controllerClassName($this->controllerName), "action_{$part}")) {
                         $this->action = "action_{$part}";
-                        $this->canonicalAdd($part);
+                        $this->actionUriParts[] = $part;
                         array_shift($rs);
                     } else {
                         if (empty($part))
@@ -127,13 +105,13 @@ class Ac_Router{
                             $this->action = "__handle";
                     }
                 }
-                $this->action_url = $this->canonicalUrl();
+                $this->actionUrl = $this->virtualUrl();
             }elseif (!empty($rs)) {
                 // Controller exists, check action in next part:
                 $part = strtolower(ac_str_slug($rs[0], "_"));
-                if (method_exists($this->controllerClassName($controller_name), "action_{$part}")) {
+                if (method_exists($this->controllerClassName($controllerName), "action_{$part}")) {
                     $this->action = "action_{$part}";
-                    $this->canonicalAdd($part);
+                    $this->actionUriParts[] = $part;
                     array_shift($rs);
                 } else {
                     if (empty($part))
@@ -141,7 +119,7 @@ class Ac_Router{
                     else
                         $this->action = "__handle";
                 }
-                $this->action_url = $this->canonicalUrl();
+                $this->actionUrl = $this->virtualUrl();
             }
         }
 
@@ -157,7 +135,7 @@ class Ac_Router{
 
     public function call() {
         Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_CALL, $this);
-        $klass = $this->controllerClassName($this->controller_name);
+        $klass = $this->controllerClassName($this->controllerName);
         $fn = $this->action;
         $result = null;
 
@@ -168,26 +146,26 @@ class Ac_Router{
         else
             $validate_fn = str_replace("action_", "validate_", $this->action);
 
-        $this->controller_instance = new $klass();
+        $this->controllerInstance = new $klass();
         $is_valid = false;
 
-        if (!is_callable(array($this->controller_instance, $fn))) {
+        if (!is_callable(array($this->controllerInstance, $fn))) {
             $fn = "__handle";
         }
 
         if (method_exists($klass, $validate_fn)) {
-            if ($this->controller_instance->$validate_fn($fn)) {
+            if ($this->controllerInstance->$validate_fn($fn)) {
                 $is_valid = true;
-                $result = $this->controller_instance->$fn();
+                $result = $this->controllerInstance->$fn();
             } else {
-                $result = $this->controller_instance->__handle($fn);
+                $result = $this->controllerInstance->__handle($fn);
             }
         } else {
-            if ($this->controller_instance->__validate($fn)) {
+            if ($this->controllerInstance->__validate($fn)) {
                 $is_valid = true;
-                $result = $this->controller_instance->$fn();
+                $result = $this->controllerInstance->$fn();
             } else {
-                $result = $this->controller_instance->__handle($fn);
+                $result = $this->controllerInstance->__handle($fn);
             }
         }
         $result = Ac::hookApply(Ac::HOOK_ON_ROUTER_CALL, $result);
@@ -196,12 +174,12 @@ class Ac_Router{
 
     public function controllerUrl() {
         $this->resolve();
-        return $this->controller_url;
+        return $this->controllerUrl;
     }
 
     public function actionUrl() {
         $this->resolve();
-        return $this->action_url;
+        return $this->actionUrl;
     }
 
 }
