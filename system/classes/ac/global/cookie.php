@@ -1,16 +1,8 @@
 <?php
 
-class Ac_Storage_Cookie {
-
-    public function has($name) {
-        return isset($_COOKIE[$name]);
-    }
-
-    public function get($name) {
-        if ($this->has($name)) {
-            return $_COOKIE[$name];
-        }
-        return null;
+class Ac_Global_Cookie extends Ac_Global{
+    public function __construct() {
+        parent::__construct("_COOKIE");
     }
 
     /**
@@ -88,15 +80,16 @@ class Ac_Storage_Cookie {
     public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = null) {
         return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
+    
+    public function __set($name, $value) {
+        $this->set($name, $value);
+    }
 
     public function delete($name, $path = null, $domain = null, $secure = false, $httponly = null) {
         return setcookie($name, "", time() - 3600, $path, $domain, $secure, $httponly);
     }
-
-    public function clear($path = null, $domain = null, $secure = false, $httponly = null) {
-        foreach ($_COOKIE as $key => $value) {
-            $this->delete($key, $path, $domain, $secure, $httponly);
-        }
+    
+    public function __unset($name) {
+        $this->delete($name);
     }
-
 }

@@ -16,7 +16,7 @@ class Controller_Index extends Ac_Controller_Html {
     }
 
     public function action_test() {
-        $this->setBody('<pre>' . htmlspecialchars(print_r(Ac::environment(), true)) . '</pre>');
+        $this->setBody('<pre>' . htmlspecialchars(print_r(array("ac_documents table"=>Ac::dbc()->findAll("ac_documents"), "environment"=>Ac::environment()), true)) . '</pre>');
     }
 
     public function test2() {

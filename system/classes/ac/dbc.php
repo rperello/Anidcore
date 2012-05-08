@@ -1,15 +1,19 @@
 <?php
 
-define("AC_DB_FETCH_ASSOC_FIRST", 2220);
-define("AC_DB_FETCH_OBJ_FIRST", 2221);
-define("AC_DB_EVENT_ERROR", 3330);
-define("AC_DB_EVENT_INSERT", 3331);
-define("AC_DB_EVENT_SELECT", 3332);
-define("AC_DB_EVENT_UPDATE", 3333);
-define("AC_DB_EVENT_DELETE", 3334);
-define("AC_DB_EVENT_TRUNCATE", 3335);
+class Ac_Dbc {
 
-class Ac_Storage_Db {
+    const FETCH_ASSOC_FIRST = 3000;
+    const FETCH_OBJ_FIRST = 3001;
+    const HOOK_BEFORE_CONNECT = "ac.db_before_connect";
+    const HOOK_BEFORE_SUCCESS = "ac.db_before_success";
+    const HOOK_BEFORE_ERROR = "ac.db_before_error";
+    const HOOK_BEFORE_EXECUTE = "ac.db_before_execute";
+    const HOOK_BEFORE_SELECT = "ac.db_before_select";
+    const HOOK_ON_CONNECT = "ac.db_on_connect";
+    const HOOK_ON_SUCCESS = "ac.db_on_success";
+    const HOOK_ON_ERROR = "ac.db_on_error";
+    const HOOK_ON_EXECUTE = "ac.db_on_execute";
+    const HOOK_ON_SELECT = "ac.db_on_select";
 
     /**
      *
@@ -66,14 +70,33 @@ class Ac_Storage_Db {
      */
     protected static $varcache = array();
 
-    public static function init($dbconf) {
-        if (is_array($dbconf)) {
-            if (isset($dbconf["schema"]) && $dbconf["enabled"]) { //single connection
-                new Ac_Storage_Db($dbconf["instance"], $dbconf, $dbconf["options"]);
-            } elseif (isset($dbconf[0])) { // multiple DBs
-                foreach ($dbconf as $i => $conf) {
-                    if (isset($dbconf["enabled"]) && ($dbconf["enabled"] == true)) {
-                        new Ac_Storage_Db($conf["instance"], $conf, $conf["options"]);
+    /**
+     *
+     * @param array $config Single or multiple database configurations. Each one
+     * containing:
+     * 
+     * [enabled] boolean <i>Whether connection is enabled or not</i> <br>
+     * [instance] string  <i>Instance name (informational, for identifying it later)</i><br>
+     * [driver] string  <i>PDO driver</i><br>
+     * [host] string  <i>DB connection host</i><br>
+     * [port] string  <i>DB connection port</i><br>
+     * [schema] string  <i>DB name</i><br>
+     * [prefix] string  <i>DB prefix (informational only)</i><br>
+     * [username] string  <i>DB username</i><br>
+     * [password] string  <i>DB password</i><br>
+     * [charset] string  <i>DB connection charset</i><br>
+     * [collate] string  <i>DB database collation</i><br>
+     * [options] array  <i>PDO options</i><br>
+     * [autoconnect] boolean <i>If false, lazy connection will be used (recommended)</i><br>
+     */
+    public static function init($config) {
+        if (is_array($config)) {
+            if (isset($config["schema"]) && $config["enabled"]) { //single connection
+                new self($config["instance"], $config, $config["options"]);
+            } elseif (isset($config[0])) { // multiple DBs
+                foreach ($config as $i => $conf) {
+                    if (isset($config["enabled"]) && ($config["enabled"] == true)) {
+                        new self($conf["instance"], $conf, $conf["options"]);
                     }
                 }
             }
@@ -115,11 +138,13 @@ class Ac_Storage_Db {
 
     public function connect() {
         if ($this->pdo == null) {
+            $this->config = Ac::hookApply(self::HOOK_BEFORE_CONNECT, $this->config);
             $this->pdo = new PDO($this->config["dsn"], $this->config["username"], $this->config["password"], $this->options);
 
             if (preg_match("/mysql/i", $this->config["driver"]) > 0) {
                 $this->pdo->exec("SET NAMES '{$this->config["charset"]}' COLLATE '{$this->config["collate"]}'");
             }
+            Ac::hookApply(self::HOOK_ON_CONNECT, $this);
             return true;
         }
         return false;
@@ -169,9 +194,12 @@ class Ac_Storage_Db {
     /**
      *
      * @param string $name Instance name
-     * @return Ac_Storage_Db
+     * @return Ac_Dbc
      */
-    public static function getConnection($name) {
+    public static function getConnection($name = null) {
+        if (empty($name))
+            return self::getActiveConnection();
+
         if (isset(self::$instances[$name])) {
             return self::$instances[$name];
         } else {
@@ -182,16 +210,16 @@ class Ac_Storage_Db {
     /**
      *
      * @param string $name Instance name
-     * @param Ac_Storage_Db The instance
+     * @param Ac_Dbc The instance
      * @param array $options [Optional] PDO Connection Options
      */
-    public static function setConnection($name, Ac_Storage_Db $connection) {
+    public static function setConnection($name, Ac_Dbc $connection) {
         self::$instances[$name] = $connection;
     }
 
     /**
      *
-     * @return Ac_Storage_Db
+     * @return Ac_Dbc
      */
     public static function getActiveConnection() {
         if (self::$active_instance == false)
@@ -314,19 +342,29 @@ class Ac_Storage_Db {
      */
     public function exec($statement) {
         Ac::timerStart();
+        $statement = Ac::hookApply(self::HOOK_BEFORE_EXECUTE, array($this, $statement));
+        $statement = $statement[1];
 
         $this->lastRowCount = 0;
         $this->connect();
+        $this->beginTransaction();
         $this->lastRowCount = $this->pdo->exec($statement);
         if ($this->lastRowCount > 0)
             self::clearVarcache();
         self::$queryCount++;
 
         if (!$this->isError()) {
+            $this->commit();
+            Ac::hookApply(self::HOOK_ON_SUCCESS, array('exec', $this, $statement));
             $this->logSuccess($statement);
         } else {
+            $this->rollback();
+            Ac::hookApply(self::HOOK_ON_ERROR, array('exec', $this, $statement));
             $this->logError($statement);
         }
+
+
+        Ac::hookApply(self::HOOK_ON_EXECUTE, array($this, $statement, $this->lastRowCount));
 
         return $this->lastRowCount;
     }
@@ -346,6 +384,9 @@ class Ac_Storage_Db {
      */
     public function query($statement) {
         Ac::timerStart();
+        $result = false;
+        $statement = Ac::hookApply(self::HOOK_BEFORE_SELECT, array($this, $statement));
+        $statement = $statement[1];
 
         $statement = trim($statement);
         $this->lastRowCount = 0;
@@ -354,11 +395,11 @@ class Ac_Storage_Db {
         $fetch_all = true;
 
         if (isset($args[1])) {
-            if (($args[1] == AC_DB_FETCH_ASSOC_FIRST) || ($args[1] == AC_DB_FETCH_OBJ_FIRST))
+            if (($args[1] == self::FETCH_ASSOC_FIRST) || ($args[1] == self::FETCH_OBJ_FIRST))
                 $fetch_all = false;
-            if ($args[1] == AC_DB_FETCH_ASSOC_FIRST)
+            if ($args[1] == self::FETCH_ASSOC_FIRST)
                 $args[1] = PDO::FETCH_ASSOC;
-            elseif ($args[1] == AC_DB_FETCH_OBJ_FIRST)
+            elseif ($args[1] == self::FETCH_OBJ_FIRST)
                 $args[1] = PDO::FETCH_OBJ;
         }else {
             $args[1] = $this->options[PDO::ATTR_DEFAULT_FETCH_MODE];
@@ -388,11 +429,16 @@ class Ac_Storage_Db {
                 self::$varcache[$hash] = $records;
                 $this->logSuccess($statement, $records);
             }
-            return self::$varcache[$hash];
+            Ac::hookApply(self::HOOK_ON_SUCCESS, array('select', $this, $statement));
+            $result = self::$varcache[$hash];
         } else {
+            Ac::hookApply(self::HOOK_ON_ERROR, array('select', $this, $statement));
             $this->logError($statement);
         }
-        return false;
+
+        Ac::hookApply(self::HOOK_ON_SELECT, array($this, $statement, $result));
+
+        return $result;
     }
 
     protected function _logSuccess($statement, $data = array()) {
@@ -596,11 +642,11 @@ class Ac_Storage_Db {
      * 
      * @return mixed or boolean false 
      */
-    public function findOne($where, $from, $select = null, $fetch_style = AC_DB_FETCH_ASSOC_FIRST) {
+    public function findOne($where, $from, $select = null, $fetch_style = self::FETCH_ASSOC_FIRST) {
         $args = array_slice(func_get_args(), 2);
 
         if (func_num_args() < 4)         //  fetch_style
-            array_push($args, AC_DB_FETCH_ASSOC_FIRST);
+            array_push($args, self::FETCH_ASSOC_FIRST);
 
         if (func_num_args() < 3) {
             array_unshift($args, null); //  select
@@ -610,8 +656,8 @@ class Ac_Storage_Db {
         array_unshift($args, $from);
         array_unshift($args, $where);
 
-        if (!in_array($args[5], array(AC_DB_FETCH_ASSOC_FIRST, AC_DB_FETCH_OBJ_FIRST))) {
-            $args[5] = AC_DB_FETCH_ASSOC_FIRST;
+        if (!in_array($args[5], array(self::FETCH_ASSOC_FIRST, self::FETCH_OBJ_FIRST))) {
+            $args[5] = self::FETCH_ASSOC_FIRST;
         }
         return call_user_func_array(array($this, "findWhere"), $args);
     }

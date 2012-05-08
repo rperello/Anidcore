@@ -4,37 +4,155 @@ spl_autoload_register(array('Ac', 'autoload'));
 
 class Ac {
 
-    const VERSION = "0.4.4";
+    const VERSION = "0.4.5";
+    /**
+     *  1. Triggered before initializing Anidcore (through Ac::init).
+     * 
+     *  <b>Parameters</b>: array <i>$config</i> The merged config<br>
+     *  <b>Replaces</b>: The return value will replace the site config
+     */
+    const HOOK_BEFORE_INIT = 'ac.before_init';
+
+    /**
+     *  2. Triggered everytime a module is created.
+     * 
+     *  <b>Parameters</b>: Ac_Module <i>$module</i> The module instance
+     */
+    const HOOK_ON_LOAD_MODULE = 'ac.on_load_module';
+
+    /**
+     *  3. Triggered when the 'app' module is created.
+     * 
+     *     Each module will trigger its own 'ac.on_load_module_<modulename>' hook.
+     * 
+     *  <b>Parameters</b>: Ac_Module <i>$module</i> The module instance
+     */
+    const HOOK_ON_LOAD_MODULE_APP = 'ac.on_load_module_app';
+
+
+    /**
+     *  4. Triggered everytime a module is initialized
+     *     (when its functions.php and init.php files are included).
+     * 
+     *  <b>Parameters</b>: Ac_Module <i>$module</i> The module instance
+     */
+    const HOOK_ON_INIT_MODULE = 'ac.on_init_module';
+
+
+    /**
+     *  5. Triggered before the router resolves the controller and the action.
+     * 
+     *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
+     */
+    const HOOK_BEFORE_ROUTER_RESOLVE = 'ac.before_router_resolve';
+
+    /**
+     *  6. Triggered when the 'app' module is initialized
+     *     (when its functions.php and init.php files are included).
+     * 
+     *     Each module will trigger its own 'ac.on_init_module_<modulename>' hook.
+     * 
+     *  <b>Parameters</b>: Ac_Module <i>$module</i> The module instance
+     */
+    const HOOK_ON_INIT_MODULE_APP = 'ac.on_init_module_app';
+
+
+    /**
+     *  7. Triggered only once, at the beginning of Ac::init.
+     * 
+     *  <b>Parameters</b>: string <i>$resource</i> The requested resource<br>
+     *  <b>Replaces</b>: The return value will replace the requested resource
+     *  the router will use to resolve controller and action.
+     */
+    const HOOK_ON_ROUTER_RESOURCE = 'ac.before_router_resource';
+
+
+    /**
+     *  8. Triggered when the router resolves the controller and the action.
+     * 
+     *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
+     */
+    const HOOK_ON_ROUTER_RESOLVE = 'ac.on_router_resolve';
+
+
+    /**
+     *  9. Triggered when Anidcore has been initializated (through Ac::init).
+     */
+    const HOOK_ON_INIT = 'ac.on_init';
+
+
+    /**
+     *  10. Triggered before the action is called and/or the response sent
+     */
+    const HOOK_BEFORE_RUN = 'ac.before_run';
+
+
+    /**
+     *  11. Triggered before the controller is created and action called
+     * 
+     *  <b>Parameters</b>: <i>Ac_Router</i> <b>$router</b> The router instance
+     */
+    const HOOK_BEFORE_ROUTER_CALL = 'ac.before_router_call';
+
+
+    /**
+     *  12. Triggered when the controller is created and action called.
+     * 
+     *  <b>Parameters</b>: <i>mixed</i> <b>$result</b> The result returned by the action call
+     *  <b>Replaces</b>: The return value will replace the action result
+     */
+    const HOOK_ON_ROUTER_CALL = 'ac.on_router_call';
+
+
+    /**
+     *  13. Triggered before the response is printed and before response headers are sent.
+     *      The output buffer is cleaned here using ob_get_clean()
+     * 
+     *  <b>Parameters</b>: <i>array</i> array containing <i>'responseBody'</i> and <i>'outputBuffer'</i> data<br>
+     *  <b>Replaces</b>: The return value must be an array with the same keys, and it will replace
+     *  the main response body returned in $return['responseBody']. The 'outputBuffer' will be passed
+     *  to HOOK_ON_SEND_RESPONSE too.
+     */
+    const HOOK_BEFORE_SEND_RESPONSE = 'ac.before_send_response';
+
+
+    /**
+     *  14. Triggered when the response is printed and response headers are sent.
+     * 
+     *  <b>Parameters</b>: <i>string</i> the output buffer before the response was sent.<br>
+     */
+    const HOOK_ON_SEND_RESPONSE = 'ac.on_send_response';
+
+
+    /**
+     *  15. Triggered when the run function terminates (on router call and response sent)
+     */
+    const HOOK_ON_RUN = 'ac.on_run';
 
     /**
      * Ac environment variables
      * @var array 
      */
-    protected static $env = array(
-        "defaults" => array(),
-        "config" => null,
-        "vars" => array(),
-        "finals" => array(),
-        "hooks" => array(),
-        "timers" => array(),
-        "loaded_modules" => array(),
-        "current_module_name" => null,
-        "request" => null,
-        "router" => null,
-        "response" => null,
-        "storage" => null,
-        "logger" => null,
-    );
+    protected static $env = null;
+
+    /**
+     * Anidcore Registry
+     * @var Ac_Array
+     */
+    public static $reg;
 
     public static function init() {
-        if (self::$env["config"] === null) {
-            self::$env["config"] = self::hookApply("ac.before.init", array_merge(self::defaults(), include AC_PATH_APP . "config.php"));
+        ob_start(); //start capturing buffer to prevent undesired echo
+        if (self::$env === null) {
+            self::$env = array();
+            self::$reg = array();
+            self::$env["config"] = self::hookApply(self::HOOK_BEFORE_INIT, array_merge(self::defaults(), include AC_PATH_APP . "config.php"));
             self::configureServer();
             self::generateKeys();
 
             self::request();
             self::response();
-            self::storage();
+            self::dbc();
 
             self::module("app");
 
@@ -61,13 +179,13 @@ class Ac {
             //resolve request resource
             self::router()->resolve();
 
-            self::hookApply("ac.on.init");
+            self::hookApply(self::HOOK_ON_INIT);
         }
     }
 
-    public static function environment($newEnv = null) {
-        if (!empty($newEnv)) {
-            self::$env = $newEnv;
+    public static function environment(array $env = null) {
+        if (!empty($env)) {
+            self::$env = $env;
         }
         return self::$env;
     }
@@ -76,17 +194,19 @@ class Ac {
      * Calls the router and returns the action return value
      */
     public static function run($sendResponse = false) {
-        self::hookApply('ac.before.run');
+        self::hookApply(self::HOOK_BEFORE_RUN);
         $action_result = self::router()->call();
 
         if ($sendResponse) {
-            $before_render = self::hookApply('ac.before.response', array("body" => self::response()->body(), "ob" => ob_get_clean()));
-            self::response()->body($before_render["body"]);
+            // get and clean output buffer previously started to capture in Ac::init
+            $ob = ob_get_clean();
+            $data = self::hookApply(self::HOOK_BEFORE_SEND_RESPONSE, array("responseBody" => self::response()->body(), "outputBuffer" => $ob));
+            self::response()->body($data["responseBody"]);
             self::response()->send();
-            self::hookApply('ac.on.response', $before_render['ob']);
+            self::hookApply(self::HOOK_ON_SEND_RESPONSE, $data['outputBuffer']);
         }
 
-        self::hookApply('ac.on.run');
+        self::hookApply(self::HOOK_ON_RUN);
         return $action_result;
     }
 
@@ -125,13 +245,82 @@ class Ac {
 
     /**
      *
-     * @return Ac_Storage 
+     * @return Ac_Global_Server 
      */
-    public static function storage() {
-        if (empty(self::$env["storage"])) {
-            self::$env["storage"] = new Ac_Storage();
+    public static function server() {
+        if (empty(self::$env["_server"])) {
+            self::$env["_server"] = new Ac_Global_Server();
         }
-        return self::$env["storage"];
+        return self::$env["_server"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Get
+     */
+    public static function get() {
+        if (empty(self::$env["_get"])) {
+            self::$env["_get"] = new Ac_Global_Get();
+        }
+        return self::$env["_get"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Post 
+     */
+    public static function post() {
+        if (empty(self::$env["_post"])) {
+            self::$env["_post"] = new Ac_Global_Post();
+        }
+        return self::$env["_post"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Cookie 
+     */
+    public static function cookie() {
+        if (empty(self::$env["_cookie"])) {
+            self::$env["_cookie"] = new Ac_Global_Cookie();
+        }
+        return self::$env["_cookie"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Session 
+     */
+    public static function session() {
+        if (empty(self::$env["_session"])) {
+            self::$env["_session"] = new Ac_Global_Session(self::config("session.name"),
+                            self::config("session.sessid_lifetime"), self::request()->clientIP);
+        }
+        return self::$env["_session"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Env 
+     */
+    public static function env() {
+        if (empty(self::$env["_env"])) {
+            self::$env["_env"] = new Ac_Global_Env();
+        }
+        return self::$env["_env"];
+    }
+
+    /**
+     * 
+     * @return Ac_Dbc Returns a database connection and initializes them if needed
+     */
+    public static function dbc($instanceName = null) {
+        if (Ac_Dbc::hasConnections()) {
+            return Ac_Dbc::getConnection($instanceName);
+        } else {
+            Ac_Dbc::init(self::config("database"));
+            return Ac_Dbc::getConnection($instanceName);
+        }
     }
 
     /**
@@ -148,6 +337,22 @@ class Ac {
             }
         }
         return self::$env["logger"];
+    }
+
+    /**
+     *
+     * @return Ac_Cache
+     * @throws RuntimeException
+     */
+    public static function cache() {
+        if (empty(self::$env["cache"])) {
+            $cache_class = self::config("cache.class", "Ac_Cache_File");
+            self::$env["cache"] = new $cache_class();
+            if (!(self::$env["cache"] instanceof Ac_Cache)) {
+                self::exception("The cache.class must be Ac_Cache or extended from it");
+            }
+        }
+        return self::$env["cache"];
     }
 
     public static function config($name = null, $default = false, $module = null) {
@@ -184,28 +389,6 @@ class Ac {
                 self::$env["config"]["modules.config"][$module][$name] = $value;
             else
                 self::$env["config"]["modules.config"][$module] = $value;
-        }
-    }
-
-    /**
-     * Gets / sets a registry variable
-     * @param string $varname (if empty, returns all vars)
-     * @param mixed $new_value (if not empty, sets the value of a var)
-     * @return mixed 
-     */
-    public static function vars($varname = null) {
-        if (empty($varname))
-            return self::$env["vars"];
-
-        $args = func_get_args();
-        if (count($args) == 2) {
-            self::$env["vars"][$varname] = $args[1];
-            return null;
-        } else {
-            if (!isset(self::$env["vars"][$varname]))
-                return false;
-            else
-                return self::$env["vars"][$varname];
         }
     }
 
@@ -499,10 +682,28 @@ class Ac {
                 "session.cache_limiter" => "nocache",
                 "logger.enabled" => true,
                 "logger.class" => "Ac_Logger",
-                "key.names" => array("AUTH_SALT"), //extra generated keys
+                "cache.enabled" => false,
+                "cache.class" => "Ac_Cache_File",
+                "key.names" => array(), //extra generated keys
                 "modules.config" => array(),
                 "modules.autoload" => array(),
                 "router.default_controller" => "index",
+                //Request extensions that will cause a '404 Not Found' header
+                "media_extensions" => array(
+                    //scripts and styles
+                    "js", "j", "css", "less",
+                    //images
+                    "gif", "jpg", "jpeg", "png", "webp", "svg", "svgz",
+                    //fonts
+                    "woff", "ttf", "eot", "otf",
+                    //audio
+                    "mp3", "oga", "ogg", "wma", "wav",
+                    //video
+                    "mp4", "webm", "mov", "mkv", "mpg", "ogv", "avi", "wmv",
+                    //flash
+                    "flv", "swf",
+                ),
+                "cache.path" => AC_PATH_APP . "cache" . _DS
             );
         }
         return self::$env["defaults"];

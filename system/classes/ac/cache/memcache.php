@@ -1,6 +1,6 @@
 <?php
 
-class Ac_Storage_Memcache extends Ac_Cache {
+class Ac_Cache_Memcache extends Ac_Cache {
 
     /**
      *
@@ -9,10 +9,10 @@ class Ac_Storage_Memcache extends Ac_Cache {
     protected $memcache = null;
 
     /**
-     *
-     * @var Ac_Storage_Var 
+     * Variable cache
+     * @var array
      */
-    protected $vcache = null;
+    protected $vcache = array();
     protected $config = array(
         "enabled" => true,
         "host" => "127.0.0.1",
@@ -26,7 +26,7 @@ class Ac_Storage_Memcache extends Ac_Cache {
         $this->config = array_merge($this->config, $config);
         if ($this->isEnabled()) {
             $this->memcache = new Memcache;
-            $this->vcache = new Ac_Storage_Var();
+            $this->vcache = array();
 
             if ($config["autoconnect"] == true) {
                 $this->connect();
@@ -44,17 +44,17 @@ class Ac_Storage_Memcache extends Ac_Cache {
     public function get($id) {
         if (!$this->isEnabled())
             return false;
-        if (!$this->vcache->has($id)) {
-            $this->vcache->set($id, $this->memcache->get($id));
+        if (!isset($this->vcache[$id])) {
+            $this->vcache[$id] = $this->memcache->get($id);
         }
 
-        return $this->vcache->get($id);
+        return $this->vcache[$id];
     }
 
     public function set($id, $value, $ttl = 0) {
         if (!$this->isEnabled())
             return false;
-        $this->vcache->set($id, $value);
+        $this->vcache[$id] = $value;
 
         if ($ttl === null)
             $ttl = $this->config["default_ttl"];
@@ -70,10 +70,10 @@ class Ac_Storage_Memcache extends Ac_Cache {
         if (!$this->isEnabled())
             return false;
 
-        if ($this->vcache->has($id)) {
-            $this->vcache->delete($id);
+        if (isset($this->vcache[$id])) {
+            unset($this->vcache[$id]);
         }
-        if ($this->memcache->has($id)) {
+        if ($this->memcache->get($id)) {
             $this->memcache->delete($id);
         }
     }
@@ -91,7 +91,8 @@ class Ac_Storage_Memcache extends Ac_Cache {
     public function clearVarcache() {
         if (!$this->isEnabled())
             return false;
-        return $this->vcache->clear();
+        $this->vcache = array();
+        return true;
     }
 
     /**

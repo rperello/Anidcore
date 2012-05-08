@@ -1,6 +1,6 @@
 <?php
 
-class Ac_Storage_File {
+class Ac_Cache_File extends Ac_Cache {
 
     /**
      * Cache path
@@ -9,10 +9,10 @@ class Ac_Storage_File {
     public $path;
 
     /**
-     *
-     * @var Ac_Storage_Var
+     * Variable cache
+     * @var array
      */
-    protected $varcache = null;
+    protected $vcache = null;
     protected $buffer = array();
     protected $buffer_queue = array();
 
@@ -29,7 +29,7 @@ class Ac_Storage_File {
         }
 
         $this->path = $cache_path;
-        $this->varcache = new Ac_Storage_Var();
+        $this->vcache = array();
     }
 
     public function has($id) {
@@ -43,8 +43,8 @@ class Ac_Storage_File {
      * @return mixed Returns value or false
      */
     public function get($id) {
-        if ($this->varcache->has($id))
-            return $this->varcache->get($id);
+        if (isset($this->vcache[$id]))
+            return $this->vcache[$id];
         $fileName = $this->fileName($id);
 
         if (!is_readable($fileName)) {
@@ -61,7 +61,7 @@ class Ac_Storage_File {
             }
             fclose($file);
             $value = $data;
-            $this->varcache->set($id, $value);
+            $this->vcache[$id] = $value;
             return $value;
         }
         fclose($file);
@@ -85,7 +85,7 @@ class Ac_Storage_File {
             $expires = time() + (int) $ttl;
         }
         if (file_put_contents($file, $expires . "\n" . $value)) {
-            $this->varcache->set($id, $value);
+            $this->vcache[$id] = $value;
             return true;
         }
     }
@@ -99,7 +99,7 @@ class Ac_Storage_File {
     public function delete($id) {
         $file = $this->fileName($id);
         if (is_file($file)) {
-            $this->varcache->delete($id);
+            unset($this->vcache[$id]);
             return unlink($file);
         }
         return false;
@@ -123,7 +123,7 @@ class Ac_Storage_File {
                 }
             }
         }
-        $this->varcache->clear();
+        $this->vcache = array();
         return $erased;
     }
 
@@ -132,7 +132,8 @@ class Ac_Storage_File {
      * @return boolean 
      */
     public function clearVarcache() {
-        return $this->vcache->clear();
+        $this->vcache = array();
+        return true;
     }
 
     public function fileName($id) {

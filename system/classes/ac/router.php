@@ -2,18 +2,18 @@
 
 class Ac_Router{
 
-    protected $controller_name = NULL;
+    protected $controller_name = null;
 
     /**
      *
      * @var Ac_Controller 
      */
-    protected $controller_instance = NULL;
-    protected $action = NULL;
-    protected $controller_url = NULL;
-    protected $action_url = NULL;
-    protected $resource = NULL;
-    protected $params = NULL; //remaining resource from action
+    protected $controller_instance = null;
+    protected $action = null;
+    protected $controller_url = null;
+    protected $action_url = null;
+    protected $resource = null;
+    protected $params = null; //remaining resource from action
     protected $canonical_segments = array();
 
     public function info() {
@@ -56,17 +56,17 @@ class Ac_Router{
         $this->canonical_segments[] = $segment;
     }
 
-    public function segment($index, $default = false, $filter = NULL) {
+    public function segment($index, $default = false, $filter = null) {
         $this->resolve();
         return ac_arr_value($this->resource, $index, $default, $filter);
     }
 
     public function resolve() {
         //Yet initialized
-        if ($this->controller_name != NULL)
+        if ($this->controller_name != null)
             return;
 
-        Ac::hookApply("ac.before.router_resolve", $this);
+        Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, $this);
 
         if (empty($this->canonical_segments)) {
             $this->canonical_segments = array(trim(Ac::request()->baseUri, " /"));
@@ -75,7 +75,7 @@ class Ac_Router{
         $rs = Ac::request()->resource;
         $this->resource = $rs = empty($rs) ? array() : explode("/", trim($rs, " /"));
 
-        $rs = Ac::hookApply("ac.on.router_resource", $rs);
+        $rs = Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOURCE, $rs);
 
         //Defaults
         $default_app_controller = ucfirst(Ac::config("router.default_controller", "index"));
@@ -93,7 +93,7 @@ class Ac_Router{
                 //prevent access to main app controller using /$default_app_controller/ segment
                 $this->action = "__handle";
                 $this->params = $rs;
-                Ac::hookApply("ac.on.router_resolve", $this);
+                Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOLVE, $this);
                 return;
             }
 
@@ -148,7 +148,7 @@ class Ac_Router{
         //PARAMS
         $this->params = $rs;
 
-        Ac::hookApply("ac.on.router_resolve", $this);
+        Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOLVE, $this);
     }
 
     public function controllerClassName($controllerName) {
@@ -156,10 +156,10 @@ class Ac_Router{
     }
 
     public function call() {
-        Ac::hookApply("ac.before.router_call", $this);
+        Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_CALL, $this);
         $klass = $this->controllerClassName($this->controller_name);
         $fn = $this->action;
-        $result = NULL;
+        $result = null;
 
         if ($fn == "__default")
             $validate_fn = "validate_default";
@@ -190,7 +190,7 @@ class Ac_Router{
                 $result = $this->controller_instance->__handle($fn);
             }
         }
-        $result = Ac::hookApply("ac.on.router_call", $result);
+        $result = Ac::hookApply(Ac::HOOK_ON_ROUTER_CALL, $result);
         return $result;
     }
 

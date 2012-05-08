@@ -26,8 +26,8 @@ class Ac_Module{
 
         Ac::setConfig(null, array_merge($defaults, Ac::config(null, array(), $moduleName)), $moduleName);
 
-        Ac::hookApply("ac.on.load_module", $this);
-        Ac::hookApply("ac.on.load_module." . $moduleName, $this);
+        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE, $this);
+        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE. "_" . $moduleName, $this);
     }
 
     public function init() {
@@ -37,8 +37,8 @@ class Ac_Module{
         if (is_readable($this->path . "init.php")) {
             include $this->path . "init.php";
         }
-        Ac::hookApply("ac.on.init_module", $this);
-        Ac::hookApply("ac.on.init_module." . $this->name, $this);
+        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE, $this);
+        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE. "_" . $this->name, $this);
     }
 
     public function isMain() {

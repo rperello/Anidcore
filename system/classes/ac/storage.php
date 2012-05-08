@@ -18,11 +18,6 @@ class Ac_Storage {
     public $cookie;
 
     /**
-     * @var Ac_Storage_Memcache
-     */
-    public $memcache;
-
-    /**
      * @var Ac_Storage_Db
      */
     public $db;

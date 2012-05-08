@@ -3,12 +3,12 @@
 /**
  * Define the start time of the application. Used for profiling.
  */
-define("RI_START_TIME", microtime(true));
+define("AC_START_TIME", microtime(true));
 
 /**
  * Define the memory usage at the start of the application. Used for profiling.
  */
-define("RI_START_MEMORY", memory_get_usage());
+define("AC_START_MEMORY", memory_get_usage());
 
 // Default server config
 error_reporting(-1);
@@ -44,12 +44,10 @@ if (isset($_SERVER["SCRIPT_NAME"])) {
 }
 define("AC_BASEDIR", $baseDir);
 
-ob_start();
 //Load the application
 require_once AC_PATH_SYSTEM . "functions.php";
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac.php";
 
 Ac::init();
 Ac::run(true);
-
 ?>

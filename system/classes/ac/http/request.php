@@ -69,9 +69,9 @@ class Ac_Http_Request {
     const METHOD_OVERRIDE = '_METHOD';
 
     public function __construct($resource = false, $requestMethod = false) {
-        $this->server = new Ac_Object($_SERVER);
+        $this->server = Ac::server();
 
-        $this->domain = $this->server->val("SERVER_NAME", "localhost");
+        $this->domain = $this->server->__("SERVER_NAME", "localhost");
 
         $this->isCli = (PHP_SAPI == "cli");
 
@@ -108,8 +108,6 @@ class Ac_Http_Request {
         $this->requestUri = !empty($_GET) ? $this->resourceUri . '?' . http_build_query($_GET) : $this->resourceUri;
 
         $this->findPutDelete();
-
-        unset($this->server);
     }
 
     protected function findServerPort() {
@@ -119,7 +117,7 @@ class Ac_Http_Request {
     }
 
     protected function findProtocolSchema() {
-        $this->serverProtocol = explode('/', $this->server->val("SERVER_PROTOCOL", "HTTP/1.1"), 2);
+        $this->serverProtocol = explode('/', $this->server->__("SERVER_PROTOCOL", "HTTP/1.1"), 2);
         if ($this->isHttps && ($this->serverProtocol[0] == "HTTP")) {
             $this->uriSchema = "https";
         } else {
