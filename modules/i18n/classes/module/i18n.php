@@ -11,7 +11,7 @@ class Module_I18n extends Ac_Module {
     }
 
     public function onRouterResource($request) {
-        $baseUri = $request["baseUri"];
+        $directoryUrl = $request["directoryUrl"];
         $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
         if (empty($rs)) {
             $this->langRedirect($this->langFromBrowser());
@@ -20,17 +20,17 @@ class Module_I18n extends Ac_Module {
             if (!in_array($lang, $this->config("available_languages"))) {
                 $this->langRedirect($this->langFromBrowser());
             }
-            $baseUri.=$lang . "/";
+            $directoryUrl.=$lang . "/";
         }
-        return array("baseUri" => $baseUri, "resource" => implode('/', $rs));
+        return array("directoryUrl" => $directoryUrl, "resource" => implode('/', $rs));
     }
 
     public function langRedirect($lang) {
-        Ac::redirect(Ac::url('base') . $lang . "/");
+        Ac::redirect(Ac::request()->directoryUrl() . $lang . "/");
     }
 
     public function langFromBrowser() {
-        $browser_langs = explode(",", Ac::request()->languages);
+        $browser_langs = explode(",", Ac::request()->languages());
         foreach ($browser_langs as $i => $lang) {
             if (in_array($lang, $this->config("available_languages"))) {
                 return $lang;

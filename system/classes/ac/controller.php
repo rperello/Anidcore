@@ -32,7 +32,7 @@ abstract class Ac_Controller {
      * Request validation function
      */
     public function __validate() {
-        if (!in_array(Ac::request()->requestMethod, $this->supports)) {
+        if (!in_array(Ac::request()->method(), $this->supports)) {
             $this->setStatus(405);
             return false;
         }

@@ -1,15 +1,11 @@
 <?php
 
-class Ac_Array implements ArrayAccess {
+class Ac_Array implements ArrayAccess, IteratorAggregate, Countable{
 
     /**
      * @var array 
      */
-    protected $vars;
-
-    public function __construct($vars = array()) {
-        $this->vars = (array) $vars;
-    }
+    protected $vars = array();
 
     public function __isset($name) {
         return isset($this->vars[$name]);
@@ -53,6 +49,19 @@ class Ac_Array implements ArrayAccess {
 
     public function offsetUnset($offset) {
         return $this->__unset($offset);
+    }
+
+    /**
+     * IteratorAggregate
+     *
+     * @return ArrayIterator
+     */
+    public function getIterator() {
+        return new ArrayIterator($this->vars);
+    }
+    
+    public function count() {
+        return count($this->vars);
     }
 
     public function clear() {

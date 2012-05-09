@@ -5,7 +5,8 @@ return array(
     "logger.enabled" => true,
     "logger.class" => "Ac_Logger",
     "modules.autoload" => array(
-        'i18n', "admin", //"firephp"
+        'i18n',
+        "admin",
     ),
     "modules.config" => array(
         "admin" => array(

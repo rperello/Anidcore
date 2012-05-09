@@ -1,24 +1,7 @@
 <?php
 
 /**
- * @property-read string $domain
- * @property-read boolean $isCli
- * @property-read boolean $isAjax
- * @property-read boolean $isHttps
- * @property-read boolean $isUpload
- * @property-read string $serverProtocol
- * @property-read string $uriSchema
- * @property-read string $serverPort
- * @property-read string $requestMethod
- * @property-read string $clientIp
- * @property-read string $contentType
- * @property-read string $languages
- * @property-read string $domainUri
- * @property-read string $baseUri
- * @property-read string $resource
- * @property-read string $resourceUri
- * @property-read string $requestUri
- * @property-read string $virtualUri
+ * HTTP Request
  */
 class Ac_Http_Request {
     /**
@@ -65,169 +48,190 @@ class Ac_Http_Request {
     const METHOD_OPTIONS = 'OPTIONS';
 
     /**
-     * Uploads a representation of the specified resource.
+     *
+     * @var Ac_Context 
      */
-    const METHOD_OVERRIDE = '_METHOD';
+    protected $context;
 
-    public function __construct($resource = false, $requestMethod = false) {
-        $this->server = Ac::server();
+    /**
+     *
+     * @var Ac_Global 
+     */
+    public $GET;
 
-        $this->domain = $this->server->__("SERVER_NAME", "localhost");
+    /**
+     *
+     * @var Ac_Global 
+     */
+    public $POST;
 
-        $this->isCli = (PHP_SAPI == "cli");
+    /**
+     *
+     * @var Ac_Array 
+     */
+    public $PUT;
 
-        $this->isAjax = (strtolower($this->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+    /**
+     *
+     * @var Ac_Array 
+     */
+    public $DELETE;
 
-        $this->isHttps = ($this->server['HTTPS'] == 'on');
+    /**
+     *
+     * @var Ac_Global_Cookie 
+     */
+    public $COOKIE;
 
-        $this->isUpload = !empty($_FILES);
+    public function __construct($context = null) {
+        if (empty($context))
+            $context = Ac_Context::getInstance();
+        $this->context = $context;
 
-        $this->findProtocolSchema();
+        $input = $this->parsedInput();
 
-        $this->findServerPort();
+        $this->GET = new Ac_Global("_GET");
+        $this->POST = new Ac_Global("POST");
+        $this->PUT = ($context->method == self::METHOD_PUT) ? $input : new Ac_Array();
+        $this->DELETE = ($context->method == self::METHOD_DELETE) ? $input : new Ac_Array();
 
-        if ($requestMethod === false)
-            $this->findRequestMethod();
-        else
-            $this->requestMethod = $requestMethod;
-
-        $this->findClientIp();
-
-        $this->findContentType();
-
-        $this->languages = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", $this->server["HTTP_ACCEPT_LANGUAGE"]);
-
-        $this->domainUri = $this->uriSchema . "://" . $this->domain . (($this->serverPort == 80) ? "" : ":" . $this->serverPort) . "/";
-        $this->baseUri = $this->domainUri . AC_BASEDIR;
-
-        if ($resource === false)
-            $this->findResource();
-        else
-            $this->resource = trim(ac_arr_first(explode('?', $resource, 2)), " /");
-
-        $this->resourceUri = $this->baseUri . trim($this->resource, " /");
-        $this->requestUri = !empty($_GET) ? $this->resourceUri . '?' . http_build_query($_GET) : $this->resourceUri;
-
-        $this->findPutDelete();
-    }
-    
-    public function setResource($resource){
-        $this->resource = trim($resource, " /");
-        $this->resourceUri = $this->domainUri . $this->resource;
-        $this->requestUri = !empty($_GET) ? $this->resourceUri . '?' . http_build_query($_GET) : $this->resourceUri;
+        $this->COOKIE = new Ac_Global_Cookie();
     }
 
-    protected function findServerPort() {
-        $REQUEST_URI = explode("?", $this->server["REQUEST_URI"], 2);
-        $port = parse_url($REQUEST_URI[0], PHP_URL_PORT);
-        $this->serverPort = !empty($port) ? $port : 80;
-    }
-
-    protected function findProtocolSchema() {
-        $this->serverProtocol = explode('/', $this->server->__("SERVER_PROTOCOL", "HTTP/1.1"), 2);
-        if ($this->isHttps && ($this->serverProtocol[0] == "HTTP")) {
-            $this->uriSchema = "https";
-        } else {
-            $this->uriSchema = strtolower($this->serverProtocol[0]);
-        }
-        $this->serverProtocol = implode('/', $this->serverProtocol);
-
-        return $this->uriSchema;
-    }
-
-    protected function findRequestMethod() {
-        if (isset($_POST[self::METHOD_OVERRIDE])) {
-            $this->requestMethod = $_POST[self::METHOD_OVERRIDE];
-        } else {
-            $this->requestMethod = isset($this->server['REQUEST_METHOD']) ? $this->server['REQUEST_METHOD'] : self::METHOD_GET;
-        }
-    }
-
-    protected function findClientIp() {
-        $ip = FALSE;
-        if (!empty($this->server["HTTP_CLIENT_IP"]))
-            $ip = $this->server["HTTP_CLIENT_IP"];
-
-        if (!empty($this->server['HTTP_X_FORWARDED_FOR'])) {
-            // Put the IP's into an array which we shall work with shortly.
-            $ips = explode(", ", $this->server['HTTP_X_FORWARDED_FOR']);
-            if ($ip) {
-                array_unshift($ips, $ip);
-                $ip = false;
-            }
-
-            for ($i = 0; $i < count($ips); $i++) {
-                if (!preg_match("/^(10|172\.16|192\.168)\./", $ips[$i])) {
-                    $ip = $ips[$i];
-                    break;
-                }
-            }
-        }
-        $ip = ($ip ? $ip : $this->server['REMOTE_ADDR']);
-        if (in_array($ip, array("::1", "localhost"))) {
-            $ip = "127.0.0.1";
-        }
-
-        $this->clientIP = $ip;
-        return $this->clientIP;
-    }
-
-    protected function findContentType() {
-        $contentType = isset($this->server["CONTENT_TYPE"]) ? $this->server["CONTENT_TYPE"] : isset($this->server["HTTP_CONTENT_TYPE"]) ? $this->server["HTTP_CONTENT_TYPE"] : null;
-        if (!empty($contentType)) {
-            $headerParts = preg_split('/\s*;\s*/', $contentType);
-            $contentType = $headerParts[0];
-        }
-        $this->contentType = $contentType;
-        return $contentType;
-    }
-
-    protected function findPutDelete() {
-        $customMethod = $this->requestMethod;
-        if (isset($_ENV["_{$customMethod}"]))
-            unset($_ENV["_{$customMethod}"]);
-        if (in_array($this->server['REQUEST_METHOD'], array(self::METHOD_PUT, self::METHOD_DELETE))) {
-            $body = @file_get_contents('php://input');
+    protected function parsedInput() {
+        if (in_array($this->context->method, array(self::METHOD_PUT, self::METHOD_DELETE))) {
+            $body = $this->rawInput();
             $input = is_string($body) ? $body : '';
             if (function_exists('mb_parse_str')) {
                 mb_parse_str($input, $output);
             } else {
                 parse_str($input, $output);
             }
-            $_ENV["_{$customMethod}"] = $output;
-        } elseif (in_array($customMethod, array(self::METHOD_PUT, self::METHOD_DELETE))) {
-            $_ENV["_{$customMethod}"] = $_POST;
+            $result = $output;
+        } else {
+            $result = $_POST;
         }
 
-        if (!isset($_ENV["_PUT"]))
-            $_ENV["_PUT"] = array();
-        if (!isset($_ENV["_DELETE"]))
-            $_ENV["_DELETE"] = array();
+        $output = new Ac_Array();
+        $output->import($result);
+
+        return $output;
     }
 
-    protected function findResource() {
-        $resource = '';
-        if (isset($this->server["PATH_INFO"]) && (!empty($this->server["PATH_INFO"]))) {
-            $resource = $this->server["PATH_INFO"];
-        } else {
-            if (isset($this->server["REQUEST_URI"])) {
-                $currentUri = explode("?", $this->server["REQUEST_URI"], 2);
-                $resource = substr(trim($currentUri[0], "/ "), strlen(AC_BASEDIR));
-            } elseif (isset($this->server["PHP_SELF"])) {
-                $resource = $this->server["PHP_SELF"];
-            } else {
-                throw new RuntimeException('Unable to detect request URI');
-            }
-        }
-        if (($this->baseUri !== '') && (strpos($resource, $this->baseUri) === 0)) {
-            $resource = substr($resource, strlen($this->baseUri));
-        }
-        $resource = trim($resource, '/ ');
-        if (empty($resource))
-            $resource = null;
+    public function host() {
+        return $this->context->host;
+    }
 
-        $this->resource = $resource;
-        return $this->resource;
+    /**
+     * Protocol scheme
+     * @return string 
+     */
+    public function scheme() {
+        return $this->context->scheme;
+    }
+
+    /**
+     * Protocol version
+     * @return string 
+     */
+    public function version() {
+        return $this->context->version;
+    }
+
+    public function port() {
+        return $this->context->port;
+    }
+
+    public function method() {
+        return $this->context->method;
+    }
+
+    public function directory() {
+        return $this->context->directory;
+    }
+
+    public function resource() {
+        return $this->context->resource;
+    }
+
+    public function resourceFormat() {
+        return $this->context->resource_format;
+    }
+
+    public function queryString() {
+        return $this->context->query_string;
+    }
+
+    public function rawInput() {
+        return $this->context->raw_input;
+    }
+
+    public function userAgent() {
+        return $this->context->user_agent;
+    }
+
+    /**
+     * Client keyboard available languages
+     * @return string (comma-separated and lowercased langs) 
+     */
+    public function languages() {
+        return $this->context->languages;
+    }
+
+    public function clientIp() {
+        return $this->context->client_ip;
+    }
+
+    public function isCli() {
+        return $this->context->is_cli;
+    }
+
+    public function isAjax() {
+        return $this->context->is_ajax;
+    }
+
+    public function isHttps() {
+        return $this->context->scheme == "https";
+    }
+
+    public function isUpload() {
+        return !empty($_FILEs);
+    }
+
+    public function isGet() {
+        return $this->context->method == self::METHOD_GET;
+    }
+
+    public function isPost() {
+        return $this->context->method == self::METHOD_POST;
+    }
+
+    public function isPut() {
+        return $this->context->method == self::METHOD_PUT;
+    }
+
+    public function isDelete() {
+        return $this->context->method == self::METHOD_DELETE;
+    }
+
+    public function isOptions() {
+        return $this->context->method == self::METHOD_OPTIONS;
+    }
+
+    public function hostUrl() {
+        return $this->context->host_url;
+    }
+
+    public function directoryUrl() {
+        return $this->context->host_url . $this->context->directory;
+    }
+
+    public function resourceUrl() {
+        return $this->directoryUrl() . $this->context->resource;
+    }
+
+    public function url() {
+        return !empty($this->context->query_string) ? $this->resourceUrl() . '?' . $this->context->query_string : $this->resourceUrl();
     }
 
 }

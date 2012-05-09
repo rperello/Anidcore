@@ -13,9 +13,9 @@ class Module_App extends Ac_Module {
     }
 
     public function beforeRouterResolve() {
-        $rs = explode('/', Ac::request()->resource);
-        if (end($rs) == 'test2') {
-            Ac::request()->requestMethod = "PUT";
+        $rs = explode('/', Ac::request()->resource());
+        if (ac_arr_last($rs) == 'test2') {
+            Ac_Context::getInstance()->method = "PUT";
         }
     }
 

@@ -4,7 +4,7 @@ spl_autoload_register(array('Ac', 'autoload'));
 
 class Ac {
 
-    const VERSION = "0.4.6";
+    const VERSION = "0.4.7";
     /**
      *  1. Triggered before initializing Anidcore (through Ac::init).
      * 
@@ -43,8 +43,8 @@ class Ac {
      *  5. Triggered before the router resolves the controller and the action.
      * 
      *  <b>Parameters</b>: <i>array</i> <b>$request</b> Array containing the
-     *      current request 'baseUri' and 'resource'
-     *  <b>Replaces</b>: The request resource and baseUri used inside the
+     *      current request 'baseUrl' and 'resource'
+     *  <b>Replaces</b>: The request resource and baseUrl used inside the
      *      resolve() function (it won't modify the Ac::request() ones)
      */
     const HOOK_BEFORE_ROUTER_RESOLVE = 'ac.before_router_resolve';
@@ -135,11 +135,14 @@ class Ac {
     public static $reg;
 
     public static function init() {
-        ob_start(); //start capturing buffer to prevent undesired echo
+        ob_start(); //start capturlng buffer to prevent undesired echo
         if (self::$env === null) {
             self::$env = array();
             self::$reg = array();
             self::$env["config"] = self::hookApply(self::HOOK_BEFORE_INIT, array_merge(self::defaults(), include AC_PATH_APP . "config.php"));
+
+            self::$env["context"] = Ac_Context::getInstance();
+
             self::configureServer();
             self::generateKeys();
 
@@ -203,7 +206,7 @@ class Ac {
      */
     public static function request() {
         if (empty(self::$env["request"])) {
-            self::$env["request"] = new Ac_Http_Request();
+            self::$env["request"] = new Ac_Http_Request(self::$env["context"]);
         }
         return self::$env["request"];
     }
@@ -231,73 +234,6 @@ class Ac {
     }
 
     /**
-     *
-     * @return Ac_Global_Server 
-     */
-    public static function server() {
-        if (empty(self::$env["_server"])) {
-            self::$env["_server"] = new Ac_Global_Server();
-        }
-        return self::$env["_server"];
-    }
-
-    /**
-     *
-     * @return Ac_Global_Get
-     */
-    public static function get() {
-        if (empty(self::$env["_get"])) {
-            self::$env["_get"] = new Ac_Global_Get();
-        }
-        return self::$env["_get"];
-    }
-
-    /**
-     *
-     * @return Ac_Global_Post 
-     */
-    public static function post() {
-        if (empty(self::$env["_post"])) {
-            self::$env["_post"] = new Ac_Global_Post();
-        }
-        return self::$env["_post"];
-    }
-
-    /**
-     *
-     * @return Ac_Global_Cookie 
-     */
-    public static function cookie() {
-        if (empty(self::$env["_cookie"])) {
-            self::$env["_cookie"] = new Ac_Global_Cookie();
-        }
-        return self::$env["_cookie"];
-    }
-
-    /**
-     *
-     * @return Ac_Global_Session 
-     */
-    public static function session() {
-        if (empty(self::$env["_session"])) {
-            self::$env["_session"] = new Ac_Global_Session(self::config("session.name"),
-                            self::config("session.sessid_lifetime"), self::request()->clientIP);
-        }
-        return self::$env["_session"];
-    }
-
-    /**
-     *
-     * @return Ac_Global_Env 
-     */
-    public static function env() {
-        if (empty(self::$env["_env"])) {
-            self::$env["_env"] = new Ac_Global_Env();
-        }
-        return self::$env["_env"];
-    }
-
-    /**
      * 
      * @return Ac_Dbc Returns a database connection and initializes them if needed
      */
@@ -308,22 +244,6 @@ class Ac {
             Ac_Dbc::init(self::config("database"));
             return Ac_Dbc::getConnection($instanceName);
         }
-    }
-
-    /**
-     *
-     * @return Ac_Logger
-     * @throws RuntimeException
-     */
-    public static function logger() {
-        if (empty(self::$env["logger"])) {
-            $logger_class = self::config("logger.class", "Ac_Logger");
-            self::$env["logger"] = new $logger_class();
-            if (!(self::$env["logger"] instanceof Ac_Logger)) {
-                self::exception("The logger.class must be Ac_Logger or extended from it");
-            }
-        }
-        return self::$env["logger"];
     }
 
     /**
@@ -340,6 +260,34 @@ class Ac {
             }
         }
         return self::$env["cache"];
+    }
+
+    /**
+     *
+     * @return Ac_Global_Session 
+     */
+    public static function session() {
+        if (empty(self::$env["_session"])) {
+            self::$env["_session"] = new Ac_Global_Session(self::config("session.name"),
+                            self::config("session.sessid_lifetime"), self::request()->clientIP);
+        }
+        return self::$env["_session"];
+    }
+
+    /**
+     *
+     * @return Ac_Logger
+     * @throws RuntimeException
+     */
+    public static function logger() {
+        if (empty(self::$env["logger"])) {
+            $logger_class = self::config("logger.class", "Ac_Logger");
+            self::$env["logger"] = new $logger_class();
+            if (!(self::$env["logger"] instanceof Ac_Logger)) {
+                self::exception("The logger.class must be Ac_Logger or extended from it");
+            }
+        }
+        return self::$env["logger"];
     }
 
     public static function config($name = null, $default = false, $module = null) {
@@ -405,7 +353,7 @@ class Ac {
 
     /**
      * Returns the specified url
-     * @param string $of Possible values: media, assets, virtual, action, controller, domain, current, resource, base, module (default)
+     * @param string $of Possible values: media, assets, virtual, action, controller, host, current, resource, dir, module (default)
      * @return string 
      */
     public static function url($of = "module") {
@@ -417,12 +365,12 @@ class Ac {
 
             case "assets":
             case "ASSETS": {
-                    return defined("AC_CONTENT_URL") ? AC_CONTENT_URL : self::request()->baseUri . "content/assets/";
+                    return defined("AC_CONTENT_URL") ? AC_CONTENT_URL : self::request()->directoryUrl() . "content/assets/";
                 }break;
 
             case "virtual":
             case "VIRTUAL": {
-                    return self::router()->virtualBaseUri;
+                    return self::router()->virtualBaseUrl;
                 }break;
 
             case "action":
@@ -435,24 +383,24 @@ class Ac {
                     return self::router()->controllerUrl();
                 }break;
 
-            case "domain":
-            case "DOMAIN": {
-                    return self::request()->domainUri;
+            case "host":
+            case "HOST": {
+                    return self::request()->hostUrl();
                 }break;
 
             case "current":
             case "CURRENT": {
-                    return self::request()->requestUri;
+                    return self::request()->url();
                 }break;
 
             case "resource":
             case "RESOURCE": {
-                    return self::request()->resourceUri;
+                    return self::request()->resourceUrl();
                 }break;
 
-            case "base":
-            case "BASE": {
-                    return self::request()->baseUri;
+            case "dir":
+            case "DIR": {
+                    return self::request()->directoryUrl();
                 }break;
 
             case "module":
@@ -694,23 +642,23 @@ class Ac {
     }
 
     protected static function generateKeys() {
-        //Security Keys
+        //Securlty Keys
         $keys_file = AC_PATH_DATA . "keys.data";
         if (!is_readable($keys_file)) {
-            $security_keys = array(
+            $securlty_keys = array(
                 "key.GLOBAL_SALT" => ac_str_random(64, AC_CHARS_ALPHANUMERIC
                         . AC_CHARS_SYMBOLS)
             );
             foreach (self::$env["config"]["key.names"] as $i => $kn) {
-                $security_keys["key." . $kn] = ac_str_random(64, AC_CHARS_ALPHANUMERIC
+                $securlty_keys["key." . $kn] = ac_str_random(64, AC_CHARS_ALPHANUMERIC
                         . AC_CHARS_SYMBOLS);
             }
-            file_put_contents($keys_file, serialize($security_keys));
+            file_put_contents($keys_file, serialize($securlty_keys));
         } else {
-            $security_keys = unserialize(file_get_contents($keys_file));
+            $securlty_keys = unserialize(file_get_contents($keys_file));
         }
 
-        foreach ($security_keys as $k => $val) {
+        foreach ($securlty_keys as $k => $val) {
             self::$env["config"][$k] = $val;
         }
     }

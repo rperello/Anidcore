@@ -14,8 +14,8 @@ class Ac_Router {
     public $actionUrl = null;
     public $resource = null;
     public $params = null; //remaining resource from action
-    public $virtualBaseUri;
-    public $actionUriParts = array();
+    public $virtualBaseUrl;
+    public $actionUrlParts = array();
 
     public function resource() {
         $this->resolve();
@@ -38,7 +38,7 @@ class Ac_Router {
     }
 
     protected function virtualUrl() {
-        return trim(implode("/", $this->actionUriParts), "/") . "/";
+        return trim(implode("/", $this->actionUrlParts), "/") . "/";
     }
 
     public function resolve() {
@@ -46,11 +46,11 @@ class Ac_Router {
         if ($this->controllerName != null)
             return;
 
-        $request = Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, array('baseUri' => Ac::request()->baseUri, 'resource' => Ac::request()->resource));
-        $this->virtualBaseUri = $request["baseUri"];
+        $request = Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
+        $this->virtualBaseUrl = $request["directoryUrl"];
 
-        if (empty($this->actionUriParts)) {
-            $this->actionUriParts = array(trim($this->virtualBaseUri, ' /'));
+        if (empty($this->actionUrlParts)) {
+            $this->actionUrlParts = array(trim($this->virtualBaseUrl, ' /'));
         }
 
         $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
@@ -81,7 +81,7 @@ class Ac_Router {
             if ($controller_exists) {
                 $this->controllerName = $controllerName;
                 if (!empty($part)) {
-                    $this->actionUriParts[] = $part;
+                    $this->actionUrlParts[] = $part;
                 }
                 array_shift($rs);
             }
@@ -96,7 +96,7 @@ class Ac_Router {
                 } else {
                     if (method_exists($this->controllerClassName($this->controllerName), "action_{$part}")) {
                         $this->action = "action_{$part}";
-                        $this->actionUriParts[] = $part;
+                        $this->actionUrlParts[] = $part;
                         array_shift($rs);
                     } else {
                         if (empty($part))
@@ -111,7 +111,7 @@ class Ac_Router {
                 $part = strtolower(ac_str_slug($rs[0], "_"));
                 if (method_exists($this->controllerClassName($controllerName), "action_{$part}")) {
                     $this->action = "action_{$part}";
-                    $this->actionUriParts[] = $part;
+                    $this->actionUrlParts[] = $part;
                     array_shift($rs);
                 } else {
                     if (empty($part))
