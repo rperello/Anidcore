@@ -98,10 +98,48 @@ class Ac_Http_Response {
         if (empty($name)) {
             return $this->headers;
         }
+        $name = $this->formatHeaderName($name);
         if ($value !== null) {
+            if ($value === true)
+                $value = "true";
+            elseif ($value === false)
+                $value = "false";
+
             $this->headers[$name] = $value;
         }
         return $this->headers[$name];
+    }
+
+    /**
+     * Get / Set an Access-Control-* header
+     * @param type $name Some possible values:
+     * 
+     * <b>Allow-Origin:</b> The origin parameter specifies a URI that may access the resource. 
+     * The browser must enforce this.  For requests without credentials, the server may
+     * specify "*" as a wildcard, thereby allowing any origin to access the resource.
+     * 
+     * <b>Expose-Headers:</b> This header lets a server whitelist headers
+     * that browsers are allowed to access. Multiple values are separated by comma.
+     * 
+     * <b>Max-Age:</b> Indicates the number of seconds the results can be cached.
+     * 
+     * <b>Allow-Credentials:</b> Indicates whether or not the response to the request
+     * can be exposed when the credentials flag is true. Possible values: true or false
+     * 
+     * <b>Allow-Methods:</b> Specifies the method or methods allowed for accessing the resource. 
+     * 
+     * <b>Allow-Headers:</b> Used when issuing a preflight request to let the server know
+     * what HTTP headers will be used when the actual request is made.
+     *  Multiple values are separated by comma.
+     * 
+     * @param type $value The value of the header
+     */
+    public function accessControl($name, $value = null) {
+        return $this->header("Access-Control-" . $name, $value);
+    }
+
+    protected function formatHeaderName($name) {
+        return str_replace(" ", "-", ucwords(str_replace("-", " ", strtolower($name))));
     }
 
     /**
@@ -136,12 +174,14 @@ class Ac_Http_Response {
      * @param   string       $httpVersion
      * @return  int
      */
-    public function status($status = null, $httpVersion = "1.1") {
+    public function status($status = null, $httpVersion = null) {
         if (func_num_args() > 0) {
             $this->status = (int) $status;
             if (strpos(PHP_SAPI, 'cgi') === 0) {
                 $this->header("Status", $this->status);
             } else {
+                if (empty($httpVersion))
+                    $httpVersion = Ac::context()->version;
                 $this->header("HTTP/" . $httpVersion, $this->status);
             }
         }
@@ -163,32 +203,41 @@ class Ac_Http_Response {
     }
 
     public function sendHeaders() {
-        if (!headers_sent()) {
-            foreach ($this->headers as $k => $v) {
-                header($k . ': ' . $v, true);
-            }
-            return true;
+        foreach ($this->headers as $k => $v) {
+            header($k . ': ' . $v, true);
         }
-        return false;
     }
 
-    public function prepare($status = 200, $contentType = "text/html") {
-        $this->status($status);
+    public function send($sendHeaders = true, $cleanOb = true) {
         if ($this->isEmpty()) {
             if (isset($this->headers['Content-Type']))
                 unset($this->headers['Content-Type']);
             if (isset($this->headers['Content-Length']))
                 unset($this->headers['Content-Length']);
-        }else {
-            $this->header("Content-Type", $contentType);
         }
 
-        return array("body" => $this->body, "status" => $this->status, "headers" => $this->headers);
+        if ($sendHeaders)
+            $this->sendHeaders();
+
+        if ($cleanOb)
+            $this->cleanOb();
+
+        print $this->body;
     }
 
-    public function send() {
-        $this->sendHeaders();
-        echo $this->body;
+    /**
+     * Clean all existing output buffers
+     * @return string The resulting output buffer.
+     */
+    public function cleanOb() {
+        $ob = "";
+        while (ob_get_level() > 0) {
+            $ob .= ob_get_clean();
+        }
+        if (!empty($ob)) {
+            Ac::log()->info($ob, "Output Buffer detected before send response: ");
+        }
+        return $ob;
     }
 
     public function __toString() {

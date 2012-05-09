@@ -1,6 +1,6 @@
 <?php
 
-class Ac_Singleton {
+abstract class Ac_Singleton {
 
     private static $_instances = array();
 

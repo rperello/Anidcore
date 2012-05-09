@@ -449,53 +449,6 @@ function ac_base64_decode($string, $urlSafe = false) {
 }
 
 ####################
-## ac_jsonrpc
-####################
-
-function ac_jsonrpc_request($id, $method, $params = null, $version = "2.0") {
-    $message = array(
-        "jsonrpc" => $version,
-        "method" => $method,
-        "params" => $params,
-        "id" => (!(empty($id)) ? $id : str_random(16))
-    );
-    return json_encode($message);
-}
-
-function ac_jsonrpc_notification($method = "", $params = null, $version = "2.0") {
-    $message = array(
-        "jsonrpc" => $version,
-        "method" => $method,
-        "params" => $params
-    );
-    return json_encode($message);
-}
-
-function ac_jsonrpc_result($id, $result = null, $version = "2.0") {
-    $message = array(
-        "jsonrpc" => $version,
-        "result" => $result,
-        "id" => $id
-    );
-    return json_encode($message);
-}
-
-function ac_jsonrpc_error($id = null, $code = 1, $message = "", $data = null, $version = "2.0") {
-    $error = array(
-        "code" => $code,
-        "message" => $message
-    );
-    if ($data !== null)
-        $error["data"] = $data;
-    $message = array(
-        "jsonrpc" => $version,
-        "error" => $error,
-        "id" => $id
-    );
-    return json_encode($message);
-}
-
-####################
 ## ac_dir
 ####################
 

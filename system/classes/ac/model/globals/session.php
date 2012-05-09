@@ -2,12 +2,12 @@
 
 class Ac_Model_Globals_Session extends Ac_Model_Globals {
 
-    protected $sessname;
+    protected $session_name;
     protected $sessid_fingerprint;
     protected $sessid_lifetime = 180;
 
-    public function __construct($sessname, $sessid_lifetime = 180, $sessid_fingerprint_data = null) {
-        $this->sessname = $sessname;
+    public function __construct($session_name, $sessid_lifetime = 180, $sessid_fingerprint_data = null) {
+        $this->session_name = $session_name;
         $this->sessid_lifetime = $sessid_lifetime;
 
         if (!empty($sessid_fingerprint_data)) {
@@ -18,7 +18,7 @@ class Ac_Model_Globals_Session extends Ac_Model_Globals {
 
     public function start() {
         if (!$this->isStarted()) {
-            session_name($this->sessname);
+            session_name($this->session_name);
             session_start();
             $this->validate();
             return true;
@@ -28,6 +28,28 @@ class Ac_Model_Globals_Session extends Ac_Model_Globals {
 
     public function isStarted() {
         return (session_id() != "");
+    }
+
+    public function destroy() {
+        if ($this->isStarted()) {
+            session_unset();
+            session_destroy();
+        }
+        return false;
+    }
+
+    public function clear() {
+        if ($this->isStarted()) {
+            $last_id = session_id();
+            $this->destroy();
+            $this->start();
+            //we ensure that it's a whole new session
+            if (session_id() == $last_id) {
+                session_regenerate_id(true);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -59,28 +81,6 @@ class Ac_Model_Globals_Session extends Ac_Model_Globals {
             }
         }
         return true;
-    }
-
-    public function destroy() {
-        if ($this->isStarted()) {
-            session_unset();
-            session_destroy();
-        }
-        return false;
-    }
-
-    public function clear() {
-        if ($this->isStarted()) {
-            $last_id = session_id();
-            $this->destroy();
-            $this->start();
-            //we ensure that it's a whole new session
-            if (session_id() == $last_id) {
-                session_regenerate_id(true);
-            }
-            return true;
-        }
-        return false;
     }
 
 }

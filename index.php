@@ -95,18 +95,11 @@ if (is_readable(AC_PATH_APP . "install.php")){
     // Load the application
     require_once AC_PATH_SYSTEM . "functions.php";
     require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "loader.php";
-    require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "observer.php";
     
-    Ac::__init();
-    
-    Ac::onAcInit(function($arg){ die("FIRED!!".$arg); });
-    
-    Ac::trigger("acInit", "<h1>DEMO</h1>");
-    
-    print_r(Ac::observer());
-    
-    echo "hello world!";
-    
-    //Ac::run(true);
+    Ac::onAcInit(function($arg){ echo 
+        '<h1>Context:</h1><pre>'.print_r(Ac::context(), true).'</pre>'.
+        '<h1>Config:</h1><pre>'.print_r(Ac::config(), true).'</pre>'
+        ; });
+    Ac::trigger("acinit");
 }
 ?>

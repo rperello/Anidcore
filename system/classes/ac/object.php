@@ -1,35 +1,39 @@
 <?php
 
-class Ac_Object implements ArrayAccess, IteratorAggregate, Countable{
+class Ac_Object implements ArrayAccess {
 
     /**
      * @var array 
      */
-    protected $vars = array();
+    protected $properties = array();
+
+    public function __construct($properties = array()) {
+        $this->properties = (array) $properties;
+    }
+
+    public function replace(array $properties) {
+        $this->properties = $properties;
+    }
+
+    public function &getArray() {
+        return $this->properties;
+    }
 
     public function __isset($name) {
-        return isset($this->vars[$name]);
+        return isset($this->properties[$name]);
     }
 
-    public function __get($name) {
-        return $this->__($name);
-    }
-
-    public function __($name = null, $default = false, $filter = null) {
-        if ($name === null) {
-            return $this->vars;
-        } else {
-            return ac_arr_value($this->vars, $name, $default, $filter);
-        }
+    public function &__get($name) {
+        return $this->properties[$name];
     }
 
     public function __set($name, $value) {
-        $this->vars[$name] = $value;
+        $this->properties[$name] = $value;
     }
 
     public function __unset($name) {
-        if (isset($this->vars[$name])) {
-            unset($this->vars[$name]);
+        if (isset($this->properties[$name])) {
+            unset($this->properties[$name]);
             return true;
         }else
             return false;
@@ -39,7 +43,7 @@ class Ac_Object implements ArrayAccess, IteratorAggregate, Countable{
         return $this->__isset($offset);
     }
 
-    public function offsetGet($offset) {
+    public function &offsetGet($offset) {
         return $this->__get($offset);
     }
 
@@ -49,31 +53,6 @@ class Ac_Object implements ArrayAccess, IteratorAggregate, Countable{
 
     public function offsetUnset($offset) {
         return $this->__unset($offset);
-    }
-
-    /**
-     * IteratorAggregate
-     *
-     * @return ArrayIterator
-     */
-    public function getIterator() {
-        return new ArrayIterator($this->vars);
-    }
-    
-    public function count() {
-        return count($this->vars);
-    }
-
-    public function clear() {
-        $this->vars = array();
-    }
-
-    public function import($arr) {
-        $this->vars = (array) $arr;
-    }
-
-    public function export() {
-        return $this->vars;
     }
 
 }

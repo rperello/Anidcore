@@ -10,13 +10,13 @@ class Ac_Module {
     protected $isMultiTheme = false;
     protected $currentTheme = null;
 
-    public function __construct($moduleName, $defaults = array()) {
+    protected function __construct($moduleName, $defaults = array()) {
 
         $this->name = $moduleName;
         $this->path = $this->isMain() ? AC_PATH_APP : AC_PATH_MODULES . $moduleName . _DS;
 
         if (!is_dir($this->path)) {
-            Ac::$logger->fatal($this->path, "Module not found at given path", __FILE__, __LINE__);
+            Ac::log()->fatal($this->path, "Module not found at given path", __FILE__, __LINE__);
         }
 
         $this->defaults = $defaults;
@@ -37,8 +37,8 @@ class Ac_Module {
             $this->currentTheme = $theme;
         }
 
-        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE, $this);
-        Ac::hookApply(Ac::HOOK_ON_LOAD_MODULE . "_" . $moduleName, $this);
+        Ac::trigger('AcOnLoadModule', $this);
+        Ac::trigger('AcOnLoadModule_' . $moduleName, $this);
     }
 
     /**
@@ -51,14 +51,14 @@ class Ac_Module {
         $path = ($moduleName == "app") ? AC_PATH_APP : AC_PATH_MODULES . $moduleName . _DS;
 
         if (!is_dir($path)) {
-            Ac::$logger->fatal($path, "Module not found at given path", __FILE__, __LINE__);
+            Ac::log()->fatal($path, "Module not found at given path", __FILE__, __LINE__);
         }
 
         $moduleClass = 'Module_' . ucfirst($moduleName);
         $classFound = false;
 
         //Try to load the moduleClass using the HMVC power
-        if (Ac::classFind($moduleClass)) {
+        if (Ac::loader()->autoload($moduleClass)) {
             $classFound = true;
         } else {
             //Lookup under the module /classes dir
@@ -81,8 +81,8 @@ class Ac_Module {
         if (is_readable($this->path . "init.php")) {
             include $this->path . "init.php";
         }
-        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE, $this);
-        Ac::hookApply(Ac::HOOK_ON_INIT_MODULE . "_" . $this->name, $this);
+        Ac::trigger('AcOnInitModule', $this);
+        Ac::trigger('AcOnInitModule_' . $moduleName, $this);
     }
 
     public function isMain() {
@@ -111,7 +111,7 @@ class Ac_Module {
         if ($this->name == "app") {
             return Ac::url("virtual");
         } else {
-            return Ac::url("virtual").$this->config('default_controller', $this->name).'/';
+            return Ac::url("virtual") . $this->config('default_controller', $this->name) . '/';
         }
     }
 

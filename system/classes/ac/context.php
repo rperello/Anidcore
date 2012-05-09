@@ -23,15 +23,12 @@
  */
 class Ac_Context extends Ac_Singleton {
 
-    /**
-     * @var Ac_Context
-     */
-    protected static $instance;
     protected static $default_server = array(
         'HTTPS' => 'off',
         'SERVER_NAME' => 'localhost',
         'SERVER_PORT' => 80,
         'REQUEST_METHOD' => 'GET',
+        'SCRIPT_FILENAME' => '',
         'SCRIPT_NAME' => '',
         'PATH_INFO' => '',
         'QUERY_STRING' => '',
@@ -41,13 +38,17 @@ class Ac_Context extends Ac_Singleton {
         'HTTP_USER_AGENT' => 'Unknown',
         'REMOTE_ADDR' => 'localhost',
         'HTTP_X_REQUESTED_WITH' => '',
+        'HTTP_ORIGIN' => '',
     );
-    protected static $default_settings = array(
+    protected static $default_context = array(
+        'id' => '',
+        'time'=>0,
         'host' => 'localhost',
         'scheme' => 'http',
         'version' => '1.1',
         'port' => 80,
         'host_url' => 'http://localhost/',
+        'origin' => '',
         'method' => 'GET',
         'directory' => '',
         'resource' => '',
@@ -60,46 +61,60 @@ class Ac_Context extends Ac_Singleton {
         'is_cli' => false,
         'is_ajax' => false,
     );
-    
-    protected $settings = array();
 
     /**
-     * Constructor (private access)
      *
-     * @param   array|null  $settings   If present, these are used instead of global server variables
+     * @var array 
+     */
+    protected $context = array();
+
+    /**
+     * Constructor (protected access)
+     *
+     * @param   array|null  $context   If present, these are used instead of global server variables
      * @return  void
      */
-    protected function __construct($settings = null) {
-        if (!empty($settings)) {
-            $this->settings = array_merge(self::$default_settings, $settings);
+    protected function __construct(array $context = null) {
+        if (!empty($context)) {
+            $this->context = array_merge(self::$default_context, $context);
         } else {
-            $sett = array();
+            $con = array();
             $_SERVER = array_merge(self::$default_server, $_SERVER);
+
+            /**
+             * In some HTTP servers DOCUMENT_ROOT points to a unaccessible directory or is not set
+             */
+            $_SERVER['DOCUMENT_ROOT'] = substr($_SERVER['SCRIPT_FILENAME'], 0, -strlen($_SERVER['SCRIPT_NAME']));
 
             /**
              * Server name, domain or hostname 
              */
-            $sett['host'] = $_SERVER['SERVER_NAME'];
+            $con['host'] = $_SERVER['SERVER_NAME'];
 
             /**
              * Scheme and protocol version 
              */
             $protocol = explode('/', trim($_SERVER["SERVER_PROTOCOL"]), 2);
             $https = strtolower($_SERVER["HTTPS"]) == "on" ? true : false;
-            $sett["scheme"] = $https ? 'https' : strtolower($protocol[0]);
-            $sett["version"] = strtolower($protocol[1]);
+            $con["scheme"] = $https ? 'https' : strtolower($protocol[0]);
+            $con["version"] = strtolower($protocol[1]);
 
             /**
              * Server port 
              */
-            $sett["port"] = $_SERVER['SERVER_PORT'];
+            $con["port"] = $_SERVER['SERVER_PORT'];
 
-            $sett["host_url"] = $sett["scheme"] . '://' . $sett["host"] . (($sett["port"] == 80) ? "" : ":" . $sett["port"]) . "/";
+            $con["host_url"] = $con["scheme"] . '://' . $con["host"] . (($con["port"] == 80) ? "" : ":" . $con["port"]) . "/";
+
+            /**
+             * Request origin (sent by modern browsers in preflight Cross Domain requests) 
+             */
+            $con["origin"] = $_SERVER["HTTP_ORIGIN"];
 
             /**
              * Request method (supports method overriding using X_REQUEST_METHOD in POST)
              */
-            $sett['method'] = isset($_POST["X_REQUEST_METHOD"]) ? $_POST["X_REQUEST_METHOD"] : $_SERVER['REQUEST_METHOD'];
+            $con['method'] = isset($_POST["X_REQUEST_METHOD"]) ? $_POST["X_REQUEST_METHOD"] : $_SERVER['REQUEST_METHOD'];
 
             /**
              * Directory:
@@ -113,7 +128,7 @@ class Ac_Context extends Ac_Singleton {
             } else {
                 $dir = "";
             }
-            $sett['directory'] = $dir;
+            $con['directory'] = $dir;
 
             /*
              * Resource:
@@ -124,28 +139,28 @@ class Ac_Context extends Ac_Singleton {
                 $resource = $_SERVER["PATH_INFO"];
             } else {
                 $currentUri = explode("?", $_SERVER["REQUEST_URI"], 2);
-                $resource = substr(trim($currentUri[0], "/ "), strlen($sett['directory']));
+                $resource = substr(trim($currentUri[0], "/ "), strlen($con['directory']));
             }
-            $sett['resource'] = explode('.', trim($resource, '/ '));
+            $con['resource'] = explode('.', trim($resource, '/ '));
 
             /**
              * Requested resource format 
              */
-            if (empty($sett['resource']) || (count($sett['resource']) == 1)) {
-                $sett['resource'] = implode('.', $sett['resource']);
-                $sett['resource_format'] = "html";
+            if (empty($con['resource']) || (count($con['resource']) == 1)) {
+                $con['resource'] = implode('.', $con['resource']);
+                $con['resource_format'] = "html";
             } else {
-                $sett['resource_format'] = array_pop($sett['resource']);
-                if (empty($sett['resource_format']))
-                    $sett['resource_format'] = "html";
+                $con['resource_format'] = array_pop($con['resource']);
+                if (empty($con['resource_format']))
+                    $con['resource_format'] = "html";
 
-                $sett['resource'] = implode('.', $sett['resource']);
+                $con['resource'] = implode('.', $con['resource']);
             }
 
             /**
              * Query string 
              */
-            $sett['query_string'] = $_SERVER["QUERY_STRING"];
+            $con['query_string'] = $_SERVER["QUERY_STRING"];
 
             /**
              * Raw input stream (readable one time only; not available for mutipart/form-data requests)
@@ -154,45 +169,62 @@ class Ac_Context extends Ac_Singleton {
             if (!$rawInput) {
                 $rawInput = '';
             }
-            $sett['raw_input'] = $rawInput;
+            $con['raw_input'] = $rawInput;
 
             /**
              * Client user agent
              */
-            $sett['user_agent'] = $_SERVER["HTTP_USER_AGENT"];
+            $con['user_agent'] = $_SERVER["HTTP_USER_AGENT"];
 
             /**
              * Client keyboard language (comma separated and lowercased) 
              */
-            $sett['languages'] = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+            $con['languages'] = preg_replace("/\;q\=[0-9]{1,}\.[0-9]{1,}/", "", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 
             /**
              * Client IP
              */
-            $sett['client_ip'] = in_array($_SERVER["REMOTE_ADDR"], array('::1', '127.0.0.1')) ? 'localhost' : $_SERVER["REMOTE_ADDR"];
+            $con['client_ip'] = in_array($_SERVER["REMOTE_ADDR"], array('::1', '127.0.0.1')) ? 'localhost' : $_SERVER["REMOTE_ADDR"];
 
             /**
              * Is CLI ? 
              */
-            $sett['is_cli'] = (PHP_SAPI == "cli");
+            $con['is_cli'] = (PHP_SAPI == "cli");
 
             /**
              * Is AJAX ?
              */
-            $sett['is_ajax'] = (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+            $con['is_ajax'] = (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
-            $this->settings = $sett;
+            $this->context = $con;
+            
+            $this->generateId();
         }
     }
 
+    public function __get($name) {
+        return $this->context($name);
+    }
+
+    public function __set($name, $value) {
+        $this->context[$name] = $value;
+        $this->generateId();
+    }
+    
+    protected function generateId(){
+        unset($this->context["id"]);
+        $this->context["id"] = md5(json_encode($this->context));
+        return $this->context["id"];
+    }
+
     /**
-     * Get mock environment instance
+     * Changes and reinitializes the current context
      *
-     * @param   array           $userSettings
-     * @return  Ac_Context
+     * @param   array           $context
+     * @return  Ac_Context      The new context
      */
-    public static function mock($userSettings = array()) {
-        self::$instance = new self(array_merge(self::$default_settings, $userSettings));
+    public static function parse(array $context = array()) {
+        self::$instance = new self(array_merge(self::$default_context, $context));
         return self::$instance;
     }
 

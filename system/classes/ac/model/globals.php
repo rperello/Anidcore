@@ -13,20 +13,24 @@ class Ac_Model_Globals implements ArrayAccess {
             $GLOBALS[$this->name] = array();
     }
 
+    public function replace(array $values) {
+        $GLOBALS[$this->name] = $values;
+    }
+
+    public function &getArray() {
+        return $GLOBALS[$this->name];
+    }
+
+    public function clear() {
+        $GLOBALS[$this->name] = array();
+    }
+
     public function __isset($name) {
         return isset($GLOBALS[$this->name][$name]);
     }
 
-    public function __($name = null, $default = false, $filter = null) {
-        if ($name === null) {
-            return $GLOBALS[$this->name];
-        } else {
-            return ac_arr_value($GLOBALS[$this->name], $name, $default, $filter);
-        }
-    }
-
-    public function __get($name) {
-        return $this->__($name);
+    public function &__get($name) {
+        return $this->__isset($name) ? $GLOBALS[$this->name][$name] : false;
     }
 
     public function __set($name, $value) {
@@ -45,7 +49,7 @@ class Ac_Model_Globals implements ArrayAccess {
         return $this->__isset($offset);
     }
 
-    public function offsetGet($offset) {
+    public function &offsetGet($offset) {
         return $this->__get($offset);
     }
 
@@ -55,18 +59,6 @@ class Ac_Model_Globals implements ArrayAccess {
 
     public function offsetUnset($offset) {
         return $this->__unset($offset);
-    }
-
-    public function clear() {
-        $GLOBALS[$this->name] = array();
-    }
-
-    public function import($arr) {
-        $GLOBALS[$this->name] = (array) $arr;
-    }
-
-    public function export() {
-        return $GLOBALS[$this->name];
     }
 
 }

@@ -76,7 +76,7 @@ class Ac_Router {
             }
 
             $controllerName = ucfirst($part); //Example: Pages
-            $controller_exists = Ac::autoload($this->controllerClassName($controllerName));
+            $controller_exists = $this->loadClass($this->controllerClassName($controllerName));
 
             if ($controller_exists) {
                 $this->controllerName = $controllerName;
@@ -91,7 +91,7 @@ class Ac_Router {
             //ACTION
             if (!$controller_exists) {
                 //is action of $default_app_controller controller?
-                if (!Ac::autoload($this->controllerClassName($default_app_controller))) {
+                if (!$this->loadClass($this->controllerClassName($default_app_controller))) {
                     Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", __FILE__, __LINE__);
                 } else {
                     if (method_exists($this->controllerClassName($this->controllerName), "action_{$part}")) {
@@ -180,6 +180,28 @@ class Ac_Router {
     public function actionUrl() {
         $this->resolve();
         return $this->actionUrl;
+    }
+
+    /**
+     * Autoloads a class and changes the current module
+     * if the class belongs to a module
+     * 
+     * @param string $class_name
+     * @return boolean 
+     */
+    protected function loadClass($class_name) {
+        $result = Ac::loader()->autoload($class_name);
+        // class loaded from /system
+        if ($result === true) {
+            return true;
+        } elseif ($result instanceof Ac_Module) {
+            // class loaded from /app or /modules/*
+            $this->current_module_name = $result->name;
+            return true;
+        }
+
+        // class not found
+        return false;
     }
 
 }

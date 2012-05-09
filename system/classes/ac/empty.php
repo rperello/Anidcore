@@ -32,5 +32,9 @@ final class Ac_Empty {
     public function __toString() {
         return null;
     }
+    
+    public static function __callStatic($name, $arguments) {
+        return null;
+    }
 
 }

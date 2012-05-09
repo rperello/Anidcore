@@ -55,51 +55,68 @@ class Ac_Http_Request {
 
     /**
      *
-     * @var Ac_Global 
+     * @var Ac_Model_Globals 
      */
     public $GET;
 
     /**
      *
-     * @var Ac_Global 
+     * @var Ac_Model_Globals
      */
     public $POST;
 
     /**
      *
-     * @var Ac_Array 
+     * @var Ac_Model_Globals 
      */
-    public $PUT;
+    public $INPUT;
 
     /**
      *
-     * @var Ac_Array 
-     */
-    public $DELETE;
-
-    /**
-     *
-     * @var Ac_Global_Cookie 
+     * @var Ac_Model_Globals_Cookie 
      */
     public $COOKIE;
+
+    /**
+     *
+     * @var Ac_Model_Globals 
+     */
+    public $REQUEST;
 
     public function __construct($context = null) {
         if (empty($context))
             $context = Ac_Context::getInstance();
+
+        /* @var $context Ac_Context */
         $this->context = $context;
 
-        $input = $this->parsedInput();
+        $this->GET = new Ac_Model_Globals("_GET");
+        $this->POST = new Ac_Model_Globals("_POST");
 
-        $this->GET = new Ac_Global("_GET");
-        $this->POST = new Ac_Global("POST");
-        $this->PUT = ($context->method == self::METHOD_PUT) ? $input : new Ac_Array();
-        $this->DELETE = ($context->method == self::METHOD_DELETE) ? $input : new Ac_Array();
+        /**
+         * Input variables of PUT/DELETE methods
+         * @global type $GLOBALS['_INPUT']
+         * @name $_INPUT 
+         */
+        $GLOBALS["_INPUT"] = $this->parsedInput();
+        $this->INPUT = new Ac_Model_Globals("_INPUT");
 
         $this->COOKIE = new Ac_Global_Cookie();
+
+        /**
+         * Merge the $_INPUT variables into the $_REQUEST global
+         */
+        $GLOBALS["_REQUEST"] = array_merge($_GET, $_POST, $GLOBALS["_INPUT"], $_COOKIE);
+        $this->REQUEST = new Ac_Model_Globals("_REQUEST");
     }
 
+    /**
+     *
+     * @return array 
+     */
     protected function parsedInput() {
         if (in_array($this->context->method, array(self::METHOD_PUT, self::METHOD_DELETE))) {
+            $output = array();
             $body = $this->rawInput();
             $input = is_string($body) ? $body : '';
             if (function_exists('mb_parse_str')) {
@@ -109,13 +126,14 @@ class Ac_Http_Request {
             }
             $result = $output;
         } else {
-            $result = $_POST;
+            $result = $this->POST->getArray();
         }
 
-        $output = new Ac_Array();
-        $output->import($result);
+        return $result;
+    }
 
-        return $output;
+    public function id() {
+        return $this->context->id;
     }
 
     public function host() {
@@ -140,6 +158,14 @@ class Ac_Http_Request {
 
     public function port() {
         return $this->context->port;
+    }
+
+    /**
+     * Request origin
+     * @return string Origin Domain sent by modern browsers in preflight Cross Domain requests
+     */
+    public function origin() {
+        return $this->context->origin;
     }
 
     public function method() {
@@ -188,6 +214,10 @@ class Ac_Http_Request {
 
     public function isAjax() {
         return $this->context->is_ajax;
+    }
+
+    public function isJsonRpc($version = "2.0") {
+        return ($this->REQUEST["jsonrpc"] == $version) && isset($this->REQUEST["method"]);
     }
 
     public function isHttps() {

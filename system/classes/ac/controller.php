@@ -47,11 +47,11 @@ abstract class Ac_Controller {
         return $this->view->$name;
     }
 
-    public function setBody($body) {
+    protected function body($body) {
         Ac::response()->body($body);
     }
 
-    public function setStatus($status) {
+    protected function status($status) {
         Ac::response()->status($status);
     }
 
