@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Empty object that always returns null 
+ * Ghost object that always returns null 
  */
 final class Ac_Empty {
 

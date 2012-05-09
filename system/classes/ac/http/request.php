@@ -195,7 +195,7 @@ class Ac_Http_Request {
     }
 
     public function isUpload() {
-        return !empty($_FILEs);
+        return !empty($_FILES);
     }
 
     public function isGet() {

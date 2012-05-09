@@ -21,7 +21,7 @@
  * @property boolean $is_cli
  * @property boolean $is_ajax
  */
-class Ac_Context extends Ac_Array {
+class Ac_Context extends Ac_Singleton {
 
     /**
      * @var Ac_Context
@@ -60,6 +60,8 @@ class Ac_Context extends Ac_Array {
         'is_cli' => false,
         'is_ajax' => false,
     );
+    
+    protected $settings = array();
 
     /**
      * Constructor (private access)
@@ -67,9 +69,9 @@ class Ac_Context extends Ac_Array {
      * @param   array|null  $settings   If present, these are used instead of global server variables
      * @return  void
      */
-    private function __construct($settings = null) {
+    protected function __construct($settings = null) {
         if (!empty($settings)) {
-            $this->vars = array_merge(self::$default_settings, $settings);
+            $this->settings = array_merge(self::$default_settings, $settings);
         } else {
             $sett = array();
             $_SERVER = array_merge(self::$default_server, $_SERVER);
@@ -179,25 +181,8 @@ class Ac_Context extends Ac_Array {
              */
             $sett['is_ajax'] = (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
-            $this->vars = $sett;
+            $this->settings = $sett;
         }
-    }
-
-    /**
-     * Get environment instance (singleton)
-     *
-     * This creates and/or returns an Context instance (singleton)
-     * derived from $_SERVER variables. You may override the global server 
-     * variables by using `Environment::mock()` instead.
-     *
-     * @param   bool            $refresh    Refresh properties using global server variables?
-     * @return  Ac_Context
-     */
-    public static function getInstance($refresh = false) {
-        if (is_null(self::$instance) || $refresh) {
-            self::$instance = new static();
-        }
-        return self::$instance;
     }
 
     /**
@@ -207,7 +192,7 @@ class Ac_Context extends Ac_Array {
      * @return  Ac_Context
      */
     public static function mock($userSettings = array()) {
-        self::$instance = new self(array_merge(self::$defaults, $userSettings));
+        self::$instance = new self(array_merge(self::$default_settings, $userSettings));
         return self::$instance;
     }
 

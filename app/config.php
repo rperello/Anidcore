@@ -1,4 +1,4 @@
-<?php
+<?php defined('AC_PATH') OR exit('No direct access allowed in file '.__FILE__);
 
 return array(
     "server.timezone" => "Europe/Madrid",
