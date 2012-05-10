@@ -1,19 +1,20 @@
 <?php
 
-class Ac_Storage_Pdo extends PDO {
+//THIS CLASS NEEDS ADAPTATION
+class __Ac_Storage_Pdo extends PDO {
 
     const FETCH_ASSOC_FIRST = 3000;
     const FETCH_OBJ_FIRST = 3001;
-    const HOOK_BEFORE_CONNECT = "ac.db_before_connect";
-    const HOOK_BEFORE_SUCCESS = "ac.db_before_success";
-    const HOOK_BEFORE_ERROR = "ac.db_before_error";
-    const HOOK_BEFORE_EXECUTE = "ac.db_before_execute";
-    const HOOK_BEFORE_SELECT = "ac.db_before_select";
-    const HOOK_ON_CONNECT = "ac.db_on_connect";
-    const HOOK_ON_SUCCESS = "ac.db_on_success";
-    const HOOK_ON_ERROR = "ac.db_on_error";
-    const HOOK_ON_EXECUTE = "ac.db_on_execute";
-    const HOOK_ON_SELECT = "ac.db_on_select";
+    const EVENT_BEFORE_CONNECT = "AcDbBefore_connect";
+    const EVENT_BEFORE_SUCCESS = "AcDbBefore_success";
+    const EVENT_BEFORE_ERROR = "AcDbBefore_error";
+    const EVENT_BEFORE_EXECUTE = "AcDbBefore_execute";
+    const EVENT_BEFORE_SELECT = "AcDbBefore_select";
+    const EVENT_ON_CONNECT = "AcDb_connect";
+    const EVENT_ON_SUCCESS = "AcDb_success";
+    const EVENT_ON_ERROR = "AcDb_error";
+    const EVENT_ON_EXECUTE = "AcDb_execute";
+    const EVENT_ON_SELECT = "AcDb_select";
 
     /**
      *
@@ -138,13 +139,13 @@ class Ac_Storage_Pdo extends PDO {
 
     public function connect() {
         if ($this->pdo == null) {
-            $this->config = Ac::hookApply(self::HOOK_BEFORE_CONNECT, $this->config);
+            $this->config = Ac::trigger(self::EVENT_BEFORE_CONNECT, $this->config);
             $this->pdo = new PDO($this->config["dsn"], $this->config["username"], $this->config["password"], $this->options);
 
             if (preg_match("/mysql/i", $this->config["driver"]) > 0) {
                 $this->pdo->exec("SET NAMES '{$this->config["charset"]}' COLLATE '{$this->config["collate"]}'");
             }
-            Ac::hookApply(self::HOOK_ON_CONNECT, $this);
+            Ac::trigger(self::EVENT_ON_CONNECT, $this);
             return true;
         }
         return false;
@@ -342,7 +343,7 @@ class Ac_Storage_Pdo extends PDO {
      */
     public function exec($statement) {
         Ac::timerStart();
-        $statement = Ac::hookApply(self::HOOK_BEFORE_EXECUTE, array($this, $statement));
+        $statement = Ac::trigger(self::EVENT_BEFORE_EXECUTE, array($this, $statement));
         $statement = $statement[1];
 
         $this->lastRowCount = 0;
@@ -355,16 +356,16 @@ class Ac_Storage_Pdo extends PDO {
 
         if (!$this->isError()) {
             $this->commit();
-            Ac::hookApply(self::HOOK_ON_SUCCESS, array('exec', $this, $statement));
+            Ac::trigger(self::EVENT_ON_SUCCESS, array('exec', $this, $statement));
             $this->logSuccess($statement);
         } else {
             $this->rollback();
-            Ac::hookApply(self::HOOK_ON_ERROR, array('exec', $this, $statement));
+            Ac::trigger(self::EVENT_ON_ERROR, array('exec', $this, $statement));
             $this->logError($statement);
         }
 
 
-        Ac::hookApply(self::HOOK_ON_EXECUTE, array($this, $statement, $this->lastRowCount));
+        Ac::trigger(self::EVENT_ON_EXECUTE, array($this, $statement, $this->lastRowCount));
 
         return $this->lastRowCount;
     }
@@ -385,7 +386,7 @@ class Ac_Storage_Pdo extends PDO {
     public function query($statement) {
         Ac::timerStart();
         $result = false;
-        $statement = Ac::hookApply(self::HOOK_BEFORE_SELECT, array($this, $statement));
+        $statement = Ac::trigger(self::EVENT_BEFORE_SELECT, array($this, $statement));
         $statement = $statement[1];
 
         $statement = trim($statement);
@@ -429,14 +430,14 @@ class Ac_Storage_Pdo extends PDO {
                 self::$varcache[$hash] = $records;
                 $this->logSuccess($statement, $records);
             }
-            Ac::hookApply(self::HOOK_ON_SUCCESS, array('select', $this, $statement));
+            Ac::trigger(self::EVENT_ON_SUCCESS, array('select', $this, $statement));
             $result = self::$varcache[$hash];
         } else {
-            Ac::hookApply(self::HOOK_ON_ERROR, array('select', $this, $statement));
+            Ac::trigger(self::EVENT_ON_ERROR, array('select', $this, $statement));
             $this->logError($statement);
         }
 
-        Ac::hookApply(self::HOOK_ON_SELECT, array($this, $statement, $result));
+        Ac::trigger(self::EVENT_ON_SELECT, array($this, $statement, $result));
 
         return $result;
     }

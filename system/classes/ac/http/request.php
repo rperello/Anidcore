@@ -83,7 +83,7 @@ class Ac_Http_Request {
      */
     public $REQUEST;
 
-    public function __construct($context = null) {
+    public function __construct(Ac_Context $context = null) {
         if (empty($context))
             $context = Ac_Context::getInstance();
 
@@ -101,7 +101,7 @@ class Ac_Http_Request {
         $GLOBALS["_INPUT"] = $this->parsedInput();
         $this->INPUT = new Ac_Model_Globals("_INPUT");
 
-        $this->COOKIE = new Ac_Global_Cookie();
+        $this->COOKIE = new Ac_Model_Globals_Cookie();
 
         /**
          * Merge the $_INPUT variables into the $_REQUEST global

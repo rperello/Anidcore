@@ -23,7 +23,7 @@ class Ac_Storage_Cache_File extends Ac_Storage_Cache {
      */
     public function __construct($cache_path) {
         if (!is_dir($cache_path)) {
-            if (!mkdir($cache_path, 0755, true)) {
+            if (empty($cache_path) || (!mkdir($cache_path, 0755, true))) {
                 throw new Exception('Directory "' . $cache_path . '" does ot exist and could not be created.');
             }
         }

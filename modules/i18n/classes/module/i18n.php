@@ -7,10 +7,10 @@ class Module_I18n extends Ac_Module {
             'default_language' => "en",
             "available_languages" => array('en'),
         ));
-        Ac::hookRegister(Ac::HOOK_BEFORE_ROUTER_RESOLVE, array($this, "onRouterResource"));
+        Ac::on("AcBeforeRouterResolve", array($this, "onBeforeRouterResolve"));
     }
 
-    public function onRouterResource($request) {
+    public function onBeforeRouterResolve($request) {
         $directoryUrl = $request["directoryUrl"];
         $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
         if (empty($rs)) {

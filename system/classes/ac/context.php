@@ -203,7 +203,7 @@ class Ac_Context extends Ac_Singleton {
     }
 
     public function __get($name) {
-        return $this->context($name);
+        return $this->context[$name];
     }
 
     public function __set($name, $value) {

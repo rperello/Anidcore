@@ -53,7 +53,7 @@ class Ac_System {
     protected static $response;
 
     ###
-    ## VARIABLE DATA:
+    ## DATA MANIPULATION:
 
     /**
      * 
@@ -62,7 +62,9 @@ class Ac_System {
     protected static $reg;
 
     /**
-     * 
+     * Finals are variables that only can be assigned once
+     * Anidcore provides a way to emulate them using this variable
+     * and the finals() function
      * @var array 
      */
     protected static $finals;
@@ -75,13 +77,7 @@ class Ac_System {
 
     /**
      *
-     * @var Ac_Model_Pdo 
-     */
-    protected static $db;
-
-    /**
-     *
-     * @var Ac_Cache 
+     * @var Ac_Storage_Cache 
      */
     protected static $cache;
 
@@ -99,17 +95,45 @@ class Ac_System {
         ;
     }
 
-    public static function __init(array $config) {
+    public static function __init() {
         if (empty(self::$observer)) {
+            self::$reg = new stdClass();
+            self::$finals = array();
             self::$observer = new Ac_Observer();
-            self::$config = Ac::trigger('AcBeforeInit', $config);
-            self::$context = Ac_Context::getInstance();
             self::$loader = Ac_Loader::getInstance();
-            Ac::trigger('AcLoader');
+            self::$config = Ac::trigger('AcBeforeInit', self::$loader->getConfig());
+            self::$context = Ac_Context::getInstance();
+            Ac::trigger('AcLoaderLoad');
             self::$session = new Ac_Model_Globals_Session(self::config("session.name"),
                             self::config("session.sessid_lifetime"),
                             self::config("session.sessid_fingerprint_data"));
             self::$session->start();
+            self::$request = new Ac_Http_Request(self::$context);
+            self::$response = new Ac_Http_Response();
+
+            //Initialize db connections (and connect them if autoconnect=true in their config)
+            //self::db();
+
+            self::module("app");
+            self::$router = new Ac_Router();
+
+            //load and initialize all modules defined in modules.autoload
+            foreach (self::config("modules.autoload") as $moduleName) {
+                if ($moduleName != "app") {
+                    $mod = self::module($moduleName);
+                    $mod->init();
+                    Ac::trigger('AcInitModule', $mod);
+                    Ac::trigger('AcInitModule_'.$moduleName, $mod);
+                }
+            }
+            // init app module after all other modules
+            self::module("app")->init();
+            Ac::trigger('AcInitModule', self::module("app"));
+            Ac::trigger('AcInitModule_app', self::module("app"));
+
+            //resolve request resource
+            self::$router->resolve();
+
             Ac::trigger('AcInit');
         }
     }
@@ -117,6 +141,37 @@ class Ac_System {
     public static function run($sendResponse = false) {
         if (empty(self::$observer))
             self::__init();
+    }
+    
+//    /**
+//     * Calls the router and returns the action return value
+//     */
+//    public static function run_old($sendResponse = false) {
+//        if (self::$env === null) self::init ();
+//        self::hookApply(self::HOOK_BEFORE_RUN);
+//        $action_result = self::router()->call();
+//
+//        if ($sendResponse) {
+//            // get and clean output buffer previously started to capture in Ac::init
+//            $ob = ob_get_clean();
+//            $data = self::hookApply(self::HOOK_BEFORE_SEND_RESPONSE, array("responseBody" => self::response()->body(), "outputBuffer" => $ob));
+//            self::response()->body($data["responseBody"]);
+//            self::response()->send();
+//            self::hookApply(self::HOOK_ON_SEND_RESPONSE, $data['outputBuffer']);
+//        }
+//
+//        self::hookApply(self::HOOK_ON_RUN);
+//        return $action_result;
+//    }
+    
+    /**
+     *
+     * @param string $name
+     * @param boolean $autoimport
+     * @return Ac_Module 
+     */
+    public static function module($name, $autoimport=true){
+        return self::loader()->loadModule($name, $autoimport);
     }
 
     public static function config($name = null, $default = false, $module = null) {
@@ -160,7 +215,7 @@ class Ac_System {
      *
      * @return Ac_Context 
      */
-    public static function context() {
+    public static function &context() {
         return self::$context;
     }
 
@@ -168,7 +223,7 @@ class Ac_System {
      *
      * @return Ac_Loader 
      */
-    public static function loader() {
+    public static function &loader() {
         return self::$loader;
     }
 
@@ -176,7 +231,7 @@ class Ac_System {
      *
      * @return Ac_Http_Request 
      */
-    public static function request() {
+    public static function &request() {
         return self::$request;
     }
 
@@ -184,7 +239,7 @@ class Ac_System {
      *
      * @return Ac_Router
      */
-    public static function router() {
+    public static function &router() {
         return self::$router;
     }
 
@@ -192,15 +247,17 @@ class Ac_System {
      *
      * @return Ac_Http_Response 
      */
-    public static function response() {
+    public static function &response() {
         return self::$response;
     }
 
+    ################
+    
     /**
      *
      * @return stdClass 
      */
-    public static function reg() {
+    public static function &reg() {
         return self::$reg;
     }
 
@@ -211,10 +268,11 @@ class Ac_System {
      * @param mixed $new_value (if not empty, assings a value to a non-existing var)
      * @return mixed 
      */
-    public static function finals($varname = null) {
+    public static function &finals($varname = null) {
         if (empty($varname))
             return self::$finals;
 
+        $varname = strtolower($varname);
         $args = func_get_args();
         if (count($args) == 2) {
             if (!isset(self::$finals[$varname]))
@@ -232,34 +290,54 @@ class Ac_System {
      *
      * @return Ac_Model_Globals_Session 
      */
-    public static function session() {
+    public static function &session() {
         return self::$session;
     }
 
     /**
-     *
-     * @return Ac_Storage_Pdo 
+     * 
+     * @return Ac_Storage_Pdo|false Returns a database connection and initializes them if needed
      */
-    public static function db() {
-        return self::$db;
+    public static function db($instanceName = null) {
+        if (Ac_Storage_Pdo::hasConnections()) {
+            return Ac_Storage_Pdo::getConnection($instanceName);
+        } elseif (self::config("database")) {
+            Ac_Storage_Pdo::init(self::config("database"));
+            return Ac_Storage_Pdo::getConnection($instanceName);
+        }
+        return false;
     }
 
     /**
      *
      * @return Ac_Storage_Cache 
      */
-    public static function cache() {
+    public static function &cache() {
+        if (empty(self::$cache)) {
+            $cache_class = self::config("cache.class", "Ac_Storage_Cache_File");
+            self::$cache = new $cache_class(self::config("cache.path"));
+            if (!(self::$cache instanceof Ac_Storage_Cache)) {
+                self::exception("$cache_class is not a valid Ac_Storage_Cache instance");
+            }
+        }
         return self::$cache;
     }
 
     /**
-     * Returns the Ac_Log instance or calls the Ac_Log::log()
-     * if some parameter is passed
+     * Returns the Ac_Log instance or calls the Ac_Log::log() function if some parameter is passed
      * @param mixed $data
      * @param string $label
+     * @param array $options
      * @return Ac_Log|void
      */
-    public static function log() {
+    public static function &log() {
+        if (empty(self::$log)) {
+            $log_class = self::config("log.class", "Ac_Log_File");
+            self::$log = new $log_class();
+            if (!(self::$log instanceof Ac_Log)) {
+                self::exception("$log_class is not a valid Ac_Log instance");
+            }
+        }
         if (func_num_args() > 0) {
             return call_user_func_array(array(self::$log, 'log'), func_get_args());
         }
@@ -276,11 +354,15 @@ class Ac_System {
      *  - <i>void</i> <b>off</b>($name)
      *  - <i>void</i> <b>off{EventName}</b>()
      * 
+     * You can also retrieve final or registry variables using magic method Ac::<finalOrRegistryName>().
+     * So if you declare a final named 'flash' you can retrieve it using Ac::flash()
+     * 
      * @param type $name
      * @param type $arguments
      * @return type 
      */
     public static function __callStatic($name, $arguments) {
+        // Observers:
         $fns = array("trigger", "on", "off");
         foreach ($fns as $fn) {
             if (preg_match("/^{$fn}[A-Z]/", $name) || preg_match("/^{$fn}$/", $name)) {
@@ -292,6 +374,26 @@ class Ac_System {
                 return call_user_func_array(array(self::$observer, $fn), $arguments);
             }
         }
+
+        // Finals:
+        $lcname = strtolower($name);
+        if (isset(self::$finals[$lcname])) {
+            if (is_callable(self::$finals[$lcname])) {
+                return call_user_func_array(self::$finals[$lcname], $arguments);
+            } else {
+                return self::$finals[$lcname];
+            }
+        }
+
+        // Registry:
+        if (isset(self::$reg->$name)) {
+            if (is_callable(self::$reg->$name)) {
+                return call_user_func_array(self::$reg->$name, $arguments);
+            } else {
+                return self::$reg->$name;
+            }
+        }
+
         return null;
     }
 

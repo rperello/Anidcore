@@ -3,7 +3,7 @@
 class Module_Admin extends Ac_Module {
 
     public function __construct() {
-        Ac::$reg["admin.groups"] = $groups = array(
+        $groups = array(
             "developers" => array(1000),
             "administrators" => array(1000, 1001),
             "users" => array(1000, 1001, 1002)

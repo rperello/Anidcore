@@ -36,9 +36,6 @@ class Ac_Module {
             $this->isMultiTheme = true;
             $this->currentTheme = $theme;
         }
-
-        Ac::trigger('AcOnLoadModule', $this);
-        Ac::trigger('AcOnLoadModule_' . $moduleName, $this);
     }
 
     /**
@@ -81,8 +78,6 @@ class Ac_Module {
         if (is_readable($this->path . "init.php")) {
             include $this->path . "init.php";
         }
-        Ac::trigger('AcOnInitModule', $this);
-        Ac::trigger('AcOnInitModule_' . $moduleName, $this);
     }
 
     public function isMain() {

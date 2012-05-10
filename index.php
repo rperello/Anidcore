@@ -89,17 +89,18 @@ chdir(AC_PATH);
 restore_include_path();
 set_include_path(get_include_path() . PATH_SEPARATOR . AC_PATH);
 
+// Load the core
+require_once AC_PATH_SYSTEM . "functions.php";
+require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "loader.php";
+
 if (is_readable(AC_PATH_APP . "install.php")){
     require_once AC_PATH_APP . "install.php";
 }else{
-    // Load the application
-    require_once AC_PATH_SYSTEM . "functions.php";
-    require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "loader.php";
-    
+    Ac::__init();
     Ac::onAcInit(function($arg){ echo 
         '<h1>Context:</h1><pre>'.print_r(Ac::context(), true).'</pre>'.
         '<h1>Config:</h1><pre>'.print_r(Ac::config(), true).'</pre>'
         ; });
-    Ac::trigger("acinit");
+    Ac::trigger("acinIt");
 }
 ?>

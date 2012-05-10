@@ -8,6 +8,12 @@ class Ac extends Ac_System {
 
     /**
      *
+     * @var array 
+     */
+    protected $timers = array();
+
+    /**
+     *
      * @return Ac_Model_Globals 
      */
     public static function get() {
@@ -156,6 +162,33 @@ class Ac extends Ac_System {
             default: {
                     return self::module()->path;
                 }break;
+        }
+    }
+
+    public static function timerStart() {
+        self::$timers[] = microtime(true);
+    }
+
+    public static function timerStop($start_time = null, $detailed_result = true) {
+        if ($start_time == null) {
+            if (!empty(self::$timers)) {
+                $start_time = ac_arr_last(self::$timers);
+                array_pop(self::$timers);
+            }else
+                return 0;
+        }
+
+        $end_time = round((microtime(true) - $start_time), 3);
+
+        if ($detailed_result) {
+            if ($end_time < 1) {
+                $end_time_str = ($end_time * 1000) . "ms";
+            }else
+                $end_time_str = $end_time . "s";
+
+            return $end_time_str;
+        }else {
+            return $end_time;
         }
     }
 

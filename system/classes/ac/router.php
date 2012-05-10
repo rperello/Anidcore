@@ -46,7 +46,7 @@ class Ac_Router {
         if ($this->controllerName != null)
             return;
 
-        $request = Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_RESOLVE, array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
+        $request = Ac::trigger("AcBeforeRouterResolve", array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
         $this->virtualBaseUrl = $request["directoryUrl"];
 
         if (empty($this->actionUrlParts)) {
@@ -71,7 +71,7 @@ class Ac_Router {
                 //prevent access to main app controller using /$default_app_controller/ segment
                 $this->action = "__handle";
                 $this->params = $rs;
-                Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOLVE, $this);
+                Ac::trigger("AcRouterResolve", $this);
                 return;
             }
 
@@ -126,7 +126,7 @@ class Ac_Router {
         //PARAMS
         $this->params = $rs;
 
-        Ac::hookApply(Ac::HOOK_ON_ROUTER_RESOLVE, $this);
+        Ac::trigger("AcRouterResolve", $this);
     }
 
     public function controllerClassName($controllerName) {
@@ -134,7 +134,7 @@ class Ac_Router {
     }
 
     public function call() {
-        Ac::hookApply(Ac::HOOK_BEFORE_ROUTER_CALL, $this);
+        Ac::trigger("AcBeforeRouterCall", $this);
         $klass = $this->controllerClassName($this->controllerName);
         $fn = $this->action;
         $result = null;
@@ -168,7 +168,7 @@ class Ac_Router {
                 $result = $this->controllerInstance->__handle($fn);
             }
         }
-        $result = Ac::hookApply(Ac::HOOK_ON_ROUTER_CALL, $result);
+        $result = Ac::trigger("AcOnRouterCall", $result);
         return $result;
     }
 
