@@ -378,6 +378,10 @@ function ac_date_sec2hms($sec, $padHours = false) {
 ## ac_crypto
 ####################
 
+function ac_crypto_sha256($data) {
+    return hash("sha256", $data);
+}
+
 /**
  * Encrypts an string using MCRYPT_RIJNDAEL_256 and MCRYPT_MODE_ECB
  * 
@@ -912,59 +916,6 @@ function ac_ie_classes() {
 ## compat functions
 ####################
 
-/**
- * Lowercase first character.
- *
- * @param string
- * @return string
- */
-if (!function_exists("lcfirst")) {
-
-    function lcfirst($str) {
-        return strlen($str) ? strtolower($str[0]) . substr($str, 1) : "";
-    }
-
-}
-
-if (!function_exists("array_replace")) :
-
-    /**
-     * (PHP 5 &gt;= 5.3.0)<br/>
-     * Replaces elements from passed arrays into the first array
-     * @link http://php.net/manual/en/function.array-replace.php
-     * @param array $array <p>
-     * The array in which elements are replaced.
-     * </p>
-     * @param array $array1 <p>
-     * The array from which elements will be extracted.
-     * </p>
-     * @param array $_ [optional] <p>
-     * More arrays from which elements will be extracted.
-     * Values from later arrays overwrite the previous values.
-     * </p>
-     * @return array an array, or null if an error occurs.
-     */
-    function array_replaces(/* & (?) */$target/* , $from, $from2, ... */) {
-        $merge = func_get_args();
-        array_shift($merge);
-        foreach ($merge as $add) {
-            foreach ($add as $i => $v) {
-                $target[$i] = $v;
-            }
-        }
-        return $target;
-    }
-
-endif;
-
-if (!function_exists("sha256")) :
-
-    function sha256($data) {
-        return hash("sha256", $data);
-    }
-
-endif;
-
 if (!function_exists('hash_hmac')) :
 
     function hash_hmac($algorithm, $data, $key, $raw_output = false) {
@@ -980,54 +931,6 @@ if (!function_exists('hash_hmac')) :
         return $raw_output ? $hmac : bin2hex($hmac);
     }
 
-endif;
-
-
-if (!function_exists('get_called_class')) :
-
-    function get_called_class($bt = false, $l = 1) {
-        if (!$bt)
-            $bt = @debug_backtrace();
-        if (!isset($bt[$l]))
-            throw new Exception("Cannot find called class -> stack level too deep.");
-        if (!isset($bt[$l]['type'])) {
-            throw new Exception('type not set');
-        }
-        else
-            switch ($bt[$l]['type']) {
-                case '::':
-                    $lines = file($bt[$l]['file']);
-                    $i = 0;
-                    $callerLine = '';
-                    do {
-                        $i++;
-                        $callerLine = $lines[$bt[$l]['line'] - $i] . $callerLine;
-                    } while (stripos($callerLine, $bt[$l]['function']) === false);
-                    preg_match('/([a-zA-Z0-9\_]+)::' . $bt[$l]['function'] . '/', $callerLine, $matches);
-                    if (!isset($matches[1])) {
-                        // must be an edge case.
-                        throw new Exception("Could not find caller class: originating method call is obscured.");
-                    }
-                    switch ($matches[1]) {
-                        case 'self':
-                        case 'parent':
-                            return get_called_class($bt, $l + 1);
-                        default:
-                            return $matches[1];
-                    }
-                // won't get here.
-                case '->': switch ($bt[$l]['function']) {
-                        case '__get':
-                            // edge case -> get class of calling object
-                            if (!is_object($bt[$l]['object']))
-                                throw new Exception("Edge case fail. __get called on non object.");
-                            return get_class($bt[$l]['object']);
-                        default: return $bt[$l]['class'];
-                    }
-
-                default: throw new Exception("Unknown backtrace method type");
-            }
-    }
 
 
 endif;

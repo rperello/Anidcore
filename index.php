@@ -78,7 +78,7 @@ setlocale(LC_ALL, 'en_US.UTF8');
 date_default_timezone_set('UTC');
 
 //Check PHP 5.3
-if(version_compare(PHP_VERSION, "5.3", "<")){
+if (version_compare(PHP_VERSION, "5.3", "<")) {
     throw new RuntimeException("Anidcore Framework needs PHP 5.3 or greater in order to run");
 }
 
@@ -93,14 +93,9 @@ set_include_path(get_include_path() . PATH_SEPARATOR . AC_PATH);
 require_once AC_PATH_SYSTEM . "functions.php";
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "loader.php";
 
-if (is_readable(AC_PATH_APP . "install.php")){
+if (is_readable(AC_PATH_APP . "install.php")) {
     require_once AC_PATH_APP . "install.php";
-}else{
-    Ac::__init();
-    Ac::onAcInit(function($arg){ echo 
-        '<h1>Context:</h1><pre>'.print_r(Ac::context(), true).'</pre>'.
-        '<h1>Config:</h1><pre>'.print_r(Ac::config(), true).'</pre>'
-        ; });
-    Ac::trigger("acinIt");
+} else {
+    Ac::run(true);
 }
 ?>

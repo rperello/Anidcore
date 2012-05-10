@@ -5,7 +5,7 @@ class Ac_Module {
     public $name;
     public $path;
     protected $defaults;
-    protected $hasClasses = false;
+    protected $hasAutoload = false;
     protected $hasViews = false;
     protected $isMultiTheme = false;
     protected $currentTheme = null;
@@ -24,7 +24,8 @@ class Ac_Module {
         $this->setConfig(null, array_merge($defaults, $this->config(null, array())));
 
         if (is_dir($this->path . "classes")) {
-            $this->hasClasses = true;
+            $files = ac_dir_files($this->path . "classes");
+            $this->hasAutoload = count($files) > 1;
         }
 
         if (is_dir($this->path . "views")) {
@@ -80,12 +81,20 @@ class Ac_Module {
         }
     }
 
+    public function name() {
+        return $this->name;
+    }
+
+    public function path() {
+        return $this->path;
+    }
+
     public function isMain() {
         return $this->name == "app";
     }
 
-    public function hasClasses() {
-        return $this->hasClasses;
+    public function hasAutoload() {
+        return $this->hasAutoload;
     }
 
     public function hasViews() {

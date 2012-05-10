@@ -5,7 +5,7 @@
  */
 class Ac_System {
 
-    const VERSION = "0.5.0-WIP";
+    const VERSION = "4.0.0-WIP";
 
     ###
     ## ENVIRONMENT:
@@ -102,20 +102,24 @@ class Ac_System {
             self::$observer = new Ac_Observer();
             self::$loader = Ac_Loader::getInstance();
             self::$config = Ac::trigger('AcBeforeInit', self::$loader->getConfig());
-            self::$context = Ac_Context::getInstance();
+            if (empty(self::$context))
+                self::$context = Ac_Context::getInstance();
             Ac::trigger('AcLoaderLoad');
             self::$session = new Ac_Model_Globals_Session(self::config("session.name"),
                             self::config("session.sessid_lifetime"),
                             self::config("session.sessid_fingerprint_data"));
             self::$session->start();
-            self::$request = new Ac_Http_Request(self::$context);
-            self::$response = new Ac_Http_Response();
+            if (empty(self::$request))
+                self::$request = new Ac_Http_Request(self::$context);
+            if (empty(self::$response))
+                self::$response = new Ac_Http_Response();
 
-            //Initialize db connections (and connect them if autoconnect=true in their config)
+            //Initialize db connections (and connect if autoconnect==true in their config)
             //self::db();
 
-            self::module("app");
-            self::$router = new Ac_Router();
+            self::loader()->setActiveModule("app", true);
+            if (empty(self::$router))
+                self::$router = new Ac_Router();
 
             //load and initialize all modules defined in modules.autoload
             foreach (self::config("modules.autoload") as $moduleName) {
@@ -123,7 +127,7 @@ class Ac_System {
                     $mod = self::module($moduleName);
                     $mod->init();
                     Ac::trigger('AcInitModule', $mod);
-                    Ac::trigger('AcInitModule_'.$moduleName, $mod);
+                    Ac::trigger('AcInitModule_' . $moduleName, $mod);
                 }
             }
             // init app module after all other modules
@@ -138,39 +142,42 @@ class Ac_System {
         }
     }
 
+    /**
+     * Calls the router and returns the action return value
+     * @param boolean $sendResponse
+     * @return mixed The action call return value 
+     */
     public static function run($sendResponse = false) {
         if (empty(self::$observer))
             self::__init();
+        ob_start();
+        self::trigger("AcBeforeRun");
+        $action_result = self::router()->call();
+
+        if ($sendResponse) {
+            $body = self::trigger('AcBeforeSendResponse', self::response()->body());
+            self::response()->body($body);
+            $ob = self::response()->send(true, true);
+            self::trigger('AcSendResponse', $ob);
+        }
+        if (!isset($ob)) {
+            if (ob_get_level())
+                $ob = ob_get_clean();
+            else
+                $ob = null;
+        }
+
+        self::trigger("AcRun", $ob);
+        return $action_result;
     }
-    
-//    /**
-//     * Calls the router and returns the action return value
-//     */
-//    public static function run_old($sendResponse = false) {
-//        if (self::$env === null) self::init ();
-//        self::hookApply(self::HOOK_BEFORE_RUN);
-//        $action_result = self::router()->call();
-//
-//        if ($sendResponse) {
-//            // get and clean output buffer previously started to capture in Ac::init
-//            $ob = ob_get_clean();
-//            $data = self::hookApply(self::HOOK_BEFORE_SEND_RESPONSE, array("responseBody" => self::response()->body(), "outputBuffer" => $ob));
-//            self::response()->body($data["responseBody"]);
-//            self::response()->send();
-//            self::hookApply(self::HOOK_ON_SEND_RESPONSE, $data['outputBuffer']);
-//        }
-//
-//        self::hookApply(self::HOOK_ON_RUN);
-//        return $action_result;
-//    }
-    
+
     /**
      *
      * @param string $name
      * @param boolean $autoimport
      * @return Ac_Module 
      */
-    public static function module($name, $autoimport=true){
+    public static function module($name = null, $autoimport = true) {
         return self::loader()->loadModule($name, $autoimport);
     }
 
@@ -212,47 +219,62 @@ class Ac_System {
     }
 
     /**
-     *
+     * Get / Set the context
+     * @param Ac_Context $context The new context
      * @return Ac_Context 
      */
-    public static function &context() {
+    public static function &context(Ac_Context &$context = null) {
+        if (!empty($context))
+            self::$context = $context;
         return self::$context;
     }
 
     /**
-     *
+     * Get / Set the router
+     * @param Ac_Loader $loader The new loader
      * @return Ac_Loader 
      */
-    public static function &loader() {
+    public static function &loader(Ac_Loader &$loader = null) {
+        if (!empty($loader))
+            self::$loader = $loader;
         return self::$loader;
     }
 
     /**
-     *
+     * Get / Set the request
+     * @param Ac_Http_Request $request The new request
      * @return Ac_Http_Request 
      */
-    public static function &request() {
+    public static function &request(Ac_Http_Request &$request = null) {
+        if (!empty($request))
+            self::$request = $request;
         return self::$request;
     }
 
     /**
-     *
+     * Get / Set the router
+     * @param Ac_Router $router The new router
      * @return Ac_Router
      */
-    public static function &router() {
+    public static function &router(Ac_Router &$router = null) {
+        if (!empty($router))
+            self::$router = $router;
         return self::$router;
     }
 
     /**
-     *
+     * Get / Set the response
+     * @param Ac_Http_Response $response The new response
      * @return Ac_Http_Response 
      */
-    public static function &response() {
+    public static function &response(Ac_Http_Response &$response = null) {
+        if (!empty($response))
+            self::$response = $response;
         return self::$response;
     }
 
     ################
-    
+
     /**
      *
      * @return stdClass 
@@ -393,6 +415,8 @@ class Ac_System {
                 return self::$reg->$name;
             }
         }
+
+        self::exception("Call to undefined method Ac_System::$name()");
 
         return null;
     }

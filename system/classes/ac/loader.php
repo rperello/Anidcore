@@ -44,14 +44,17 @@ class Ac_Loader extends Ac_Singleton {
      * @return boolean 
      */
     public function setActiveModule($name, $autoImport = true) {
+        $result = true;
         if (!$this->hasModule($name)) {
-            if($autoImport) return $this->loadModule($name);
-            else return false;
+            if ($autoImport)
+                $result = ($this->loadModule($name) != false);
+            else
+                $result = false;
         }
         $this->active_module_name = $name;
-        return true;
+        return $result;
     }
-    
+
     /**
      *
      * @param string $name
@@ -70,7 +73,7 @@ class Ac_Loader extends Ac_Singleton {
             if ($autoImport) {
                 $this->modules[$name] = Ac_Module::factory($name);
                 Ac::trigger('AcLoadModule', $this->modules[$name]);
-                Ac::trigger('AcLoadModule_'.$name, $this->modules[$name]);
+                Ac::trigger('AcLoadModule_' . $name, $this->modules[$name]);
                 return $this->modules[$name];
             }
         }else
@@ -105,7 +108,7 @@ class Ac_Loader extends Ac_Singleton {
      * @return Ac_Module|boolean 
      */
     public function autoload($class_name) {
-        if (class_exists($class_name))
+        if (class_exists($class_name, false))
             return true;
 
         $class_file = null;
@@ -114,8 +117,8 @@ class Ac_Loader extends Ac_Singleton {
         /* /modules/<module>/classes/ folder */
         if (isset($this->modules)) {
             foreach ($this->modules as $name => $module) {
-                if ($module->hasClasses()) {
-                    $class_file = $module->path . "classes" . _DS . $class_name_dir . ".php";
+                if ($module->hasAutoload()) {
+                    $class_file = $module->path() . "classes" . _DS . $class_name_dir . ".php";
                     $exists = $this->classInclude($class_file, $class_name);
                     if ($exists) {
                         return $module;
@@ -146,7 +149,7 @@ class Ac_Loader extends Ac_Singleton {
         }
         return false;
     }
-    
+
     protected function generateKeys() {
         //Securlty Keys
         $keys_file = AC_PATH_DATA . "keys.data";
@@ -218,55 +221,55 @@ class Ac_Loader extends Ac_Singleton {
             Ac::exception("Anidcore Framework cannot be executed under safe_mode");
         }
     }
-        
-    public function getConfig(){
-        if(empty($this->config)){
+
+    public function getConfig() {
+        if (empty($this->config)) {
             $this->config = array_merge(array(
-                    ////
-                    //MODULES:
-                    "modules.config" => array(),
-                    "modules.autoload" => array(),
-                    ////
-                    //ROUTER:
-                    "router.default_controller" => "index",
-                    ////
-                    //LOG:
-                    "log.enabled" => true,
-                    "log.class" => "Ac_Log_File",
-                    ////
-                    //CACHE:
-                    "cache.enabled" => false,
-                    "cache.class" => "Ac_Storage_Cache_File",
-                    "cache.path" => AC_PATH_APP . "cache" . _DS,
-                    ////
-                    //KEY:
-                    "key.names" => array(), //extra generated keys
-                    ////
-                    //SERVER:
-                    "server.default_mimetype" => "text/html",
-                    "server.default_charset" => "UTF-8",
-                    "server.locale" => "en_US.UTF8",
-                    "server.timezone" => "UTC",
-                    "server.memory_limit" => "180M",
-                    "server.max_execution_time" => 60,
-                    "server.max_input_time" => -1,
-                    "server.post_max_size" => "24M",
-                    "server.upload_max_file_size" => "16M",
-                    "server.display_errors" => true,
-                    "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
-                    "server.error_log_file" => AC_PATH_LOGS . 'php_errors.log',
-                    ////
-                    //SESSION:
-                    "session.name" => "phpsessid_" . md5($_SERVER["SCRIPT_FILENAME"]),
-                    "session.sessid_lifetime" => 180,
-                    "session.cookie_path" => '/' . preg_replace('/\/index\.php.*/', '/', $_SERVER["SCRIPT_NAME"]),
-                    "session.cookie_secure" => (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")),
-                    "session.cookie_lifetime" => 0,
-                    "session.gc_maxlifetime" => 1440,
-                    "session.cache_expire" => 180,
-                    "session.cache_limiter" => "nocache",
-                        )
-                        , include AC_PATH_APP . "config.php");
+                ////
+                //MODULES:
+                "modules.config" => array(),
+                "modules.autoload" => array(),
+                ////
+                //ROUTER:
+                "router.default_controller" => "index",
+                ////
+                //LOG:
+                "log.enabled" => true,
+                "log.class" => "Ac_Log_File",
+                ////
+                //CACHE:
+                "cache.enabled" => false,
+                "cache.class" => "Ac_Storage_Cache_File",
+                "cache.path" => AC_PATH_APP . "cache" . _DS,
+                ////
+                //KEY:
+                "key.names" => array(), //extra generated keys
+                ////
+                //SERVER:
+                "server.default_mimetype" => "text/html",
+                "server.default_charset" => "UTF-8",
+                "server.locale" => "en_US.UTF8",
+                "server.timezone" => "UTC",
+                "server.memory_limit" => "180M",
+                "server.max_execution_time" => 60,
+                "server.max_input_time" => -1,
+                "server.post_max_size" => "24M",
+                "server.upload_max_file_size" => "16M",
+                "server.display_errors" => true,
+                "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
+                "server.error_log_file" => AC_PATH_LOGS . 'php_errors.log',
+                ////
+                //SESSION:
+                "session.name" => "phpsessid_" . md5($_SERVER["SCRIPT_FILENAME"]),
+                "session.sessid_lifetime" => 180,
+                "session.cookie_path" => preg_replace('/\/index\.php.*/', '/', $_SERVER["SCRIPT_NAME"]),
+                "session.cookie_secure" => (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")),
+                "session.cookie_lifetime" => 0,
+                "session.gc_maxlifetime" => 1440,
+                "session.cache_expire" => 180,
+                "session.cache_limiter" => "nocache",
+                    )
+                    , include AC_PATH_APP . "config.php");
         }
         return $this->config;
     }

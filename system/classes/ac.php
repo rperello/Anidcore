@@ -69,7 +69,7 @@ class Ac extends Ac_System {
 
             case "virtual":
             case "VIRTUAL": {
-                    return self::router()->virtualBaseUrl;
+                    return self::router()->virtualBaseUrl();
                 }break;
 
             case "action":
@@ -160,7 +160,7 @@ class Ac extends Ac_System {
             case "module":
             case "MODULE":
             default: {
-                    return self::module()->path;
+                    return self::module()->path();
                 }break;
         }
     }

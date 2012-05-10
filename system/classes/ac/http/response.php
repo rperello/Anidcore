@@ -220,9 +220,13 @@ class Ac_Http_Response {
             $this->sendHeaders();
 
         if ($cleanOb)
-            $this->cleanOb();
+            $ob = $this->cleanOb();
+        else
+            $ob = null;
 
         print $this->body;
+
+        return $ob;
     }
 
     /**
@@ -234,8 +238,9 @@ class Ac_Http_Response {
         while (ob_get_level() > 0) {
             $ob .= ob_get_clean();
         }
+        $ob = trim($ob);
         if (!empty($ob)) {
-            Ac::log()->info($ob, "Output Buffer detected before send response: ");
+            Ac::log()->info($ob, "Output Buffer detected before send response");
         }
         return $ob;
     }

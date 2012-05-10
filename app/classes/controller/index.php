@@ -3,12 +3,12 @@
 class Controller_Index extends Ac_Controller_Html {
 
     public function __default() {
-        echo "this won't be echoed";
-        $this->setBody("<h1>This is the home page</h1><br>Current module: " . Ac::module()->name);
+        //echo "this won't be echoed";
+        $this->body("<h1>This is the home page</h1><br>Current module: " . Ac::module()->name());
     }
 
     public function action_say() {
-        $this->setBody($_GET["msg"]);
+        $this->body($_GET["msg"]);
     }
 
     public function validate_say() {
@@ -16,7 +16,7 @@ class Controller_Index extends Ac_Controller_Html {
     }
 
     public function test2() {
-        $this->setBody("action unreachable");
+        $this->body("action unreachable");
     }
 
 }

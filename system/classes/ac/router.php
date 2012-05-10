@@ -41,6 +41,10 @@ class Ac_Router {
         return trim(implode("/", $this->actionUrlParts), "/") . "/";
     }
 
+    public function virtualBaseUrl() {
+        return $this->virtualBaseUrl;
+    }
+
     public function resolve() {
         //Yet initialized
         if ($this->controllerName != null)
@@ -92,7 +96,7 @@ class Ac_Router {
             if (!$controller_exists) {
                 //is action of $default_app_controller controller?
                 if (!$this->loadClass($this->controllerClassName($default_app_controller))) {
-                    Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", __FILE__, __LINE__);
+                    Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", array(), __FILE__, __LINE__);
                 } else {
                     if (method_exists($this->controllerClassName($this->controllerName), "action_{$part}")) {
                         $this->action = "action_{$part}";
@@ -168,7 +172,7 @@ class Ac_Router {
                 $result = $this->controllerInstance->__handle($fn);
             }
         }
-        $result = Ac::trigger("AcOnRouterCall", $result);
+        $result = Ac::trigger("AcRouterCall", $result);
         return $result;
     }
 
@@ -196,7 +200,7 @@ class Ac_Router {
             return true;
         } elseif ($result instanceof Ac_Module) {
             // class loaded from /app or /modules/*
-            $this->current_module_name = $result->name;
+            Ac::loader()->setActiveModule($result->name(), false);
             return true;
         }
 

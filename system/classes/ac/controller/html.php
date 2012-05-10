@@ -25,9 +25,9 @@ class Ac_Controller_Html extends Ac_Controller {
         $this->meta_robots = "NOINDEX,NOFOLLOW";
 
         if (Ac::response()->status() == 405) {
-            $this->body(($body === null) ? "<html><body><h1>405 Method Not Allowed</h1>Current module: " . Ac::module()->name . "</body></html>" : $body);
+            $this->body(($body === null) ? "<html><body><h1>405 Method Not Allowed</h1>Current module: " . Ac::module()->name() . "</body></html>" : $body);
         } else {
-            $this->body(($body === null) ? "<html><body><h1>404 Not Found</h1>Current module: " . Ac::module()->name . "</body></html>" : $body);
+            $this->body(($body === null) ? "<html><body><h1>404 Not Found</h1>Current module: " . Ac::module()->name() . "</body></html>" : $body);
             $this->status(404);
         }
     }
@@ -35,12 +35,12 @@ class Ac_Controller_Html extends Ac_Controller {
     public function action_test() {
         $this->body('<pre>' . htmlspecialchars(print_r(
                                 array(
-                            "module" => Ac::module()->name,
+                            "module" => Ac::module()->name(),
                             "controller" => Ac::router()->controller(),
                             "action" => Ac::router()->action(),
                             "module_url" => Ac::url(),
-                            "ac_documents table" => Ac::dbc()->findAll("ac_documents"),
-                            "environment" => Ac::environment()), true)
+                            //"ac_documents table" => Ac::dbc()->findAll("ac_documents"),
+                            "context" => Ac::context()), true)
                 ) . '</pre>');
     }
 

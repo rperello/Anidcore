@@ -29,7 +29,7 @@ class Ac_Log_File extends Ac_Log {
                         ), $options));
     }
 
-    public function error($data, $label = null, $options = array(), $file = null, $line = null) {
+    public function error($data, $label = null, $file = null, $line = null, $options = array()) {
         $label = "[ERROR] '" . $label . " : ";
         $options = array_merge(array(
             "func" => __FUNCTION__,
@@ -45,7 +45,7 @@ class Ac_Log_File extends Ac_Log {
             throw new Exception("Anidcore " . $label . " : " . print_r($data, true) . "' ");
     }
 
-    public function fatal($data, $label = null, $options = array(), $file = null, $line = null) {
+    public function fatal($data, $label = null, $file = null, $line = null, $options = array()) {
         $label = "[FATAL] '" . $label . " : ";
         $options = array_merge(array(
             "func" => __FUNCTION__,
