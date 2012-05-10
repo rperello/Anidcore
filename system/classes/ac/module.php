@@ -25,7 +25,7 @@ class Ac_Module {
 
         if (is_dir($this->path . "classes")) {
             $files = ac_dir_files($this->path . "classes");
-            $this->hasAutoload = count($files) > 1;
+            $this->hasAutoload = (count($files) > 1);
         }
 
         if (is_dir($this->path . "views")) {

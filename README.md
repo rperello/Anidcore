@@ -8,7 +8,7 @@ It supports PHP 5.3.0+ and PHP in CLI mode.
 This framework is in an early development stage.
 This means that code is not stable and is not recommended for production environments.
 
-**Technologies will be used in this framework:**
+**Technologies that will be used in this framework:**
 > * Hierarchical MVC+ (the plus sign means sub-controller support)
 > * Hooks / Event handlers (Observer pattern)
 > * CLI mode handler
