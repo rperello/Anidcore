@@ -23,7 +23,7 @@ class Ac_Log_File extends Ac_Log {
     public function info($data, $label = null, $options = array()) {
         $this->write($data, "[INFO] " . $label . " : ", array_merge(array(
                     "func" => __FUNCTION__,
-                    "filename" => "debug.log",
+                    "filename" => "info.log",
                     "use_timestamp" => true,
                     "use_monthfolders" => false
                         ), $options));

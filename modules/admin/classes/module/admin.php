@@ -23,11 +23,4 @@ class Module_Admin extends Ac_Module {
         );
         parent::__construct('admin', $defaults);
     }
-
-    public function init() {
-        //init module here
-        
-        parent::init();
-    }
-
 }

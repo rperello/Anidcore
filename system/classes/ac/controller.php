@@ -3,10 +3,15 @@
 abstract class Ac_Controller {
 
     /**
-     * Supported HTTP methods
+     * Supported HTTP methods and their resource formats
+     * 
+     * For support all formats the value will be '*',
+     * for specific formats, the value will be an array containing the supported
+     * format extensions i.e. array("html", 'json', 'xml')
+     * 
      * @var array 
      */
-    protected $supports = array("GET", "POST");
+    protected $supports = array("HEAD" => '*', "GET" => '*', "POST" => '*');
 
     /**
      * 
@@ -31,9 +36,13 @@ abstract class Ac_Controller {
     /**
      * Request validation function
      */
-    public function __validate() {
-        if (!in_array(Ac::request()->method(), $this->supports)) {
+    public function __validate($action = null) {
+        $method = Ac::request()->method();
+        if (!isset($this->supports[$method])) {
             $this->status(405);
+            return false;
+        }elseif(($this->supports[$method]!='*') && (!in_array(Ac::request()->format(), $this->supports[$method]))){
+            $this->status(415);
             return false;
         }
         return true;
@@ -45,6 +54,10 @@ abstract class Ac_Controller {
 
     public function __get($name) {
         return $this->view->$name;
+    }
+
+    protected function contentType($contentType) {
+        Ac::response()->contentType($contentType);
     }
 
     protected function body($body) {

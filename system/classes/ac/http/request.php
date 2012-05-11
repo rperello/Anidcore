@@ -179,9 +179,9 @@ class Ac_Http_Request {
     public function resource() {
         return $this->context->resource;
     }
-
-    public function resourceFormat() {
-        return $this->context->resource_format;
+    
+    public function format(){
+        return $this->context->format;
     }
 
     public function queryString() {
@@ -246,6 +246,10 @@ class Ac_Http_Request {
 
     public function isOptions() {
         return $this->context->method == self::METHOD_OPTIONS;
+    }
+
+    public function isHead() {
+        return $this->context->method == self::METHOD_HEAD;
     }
 
     public function hostUrl() {

@@ -72,8 +72,6 @@ class Ac_Loader extends Ac_Singleton {
         if (!isset($this->modules[$name])) {
             if ($autoImport) {
                 $this->modules[$name] = Ac_Module::factory($name);
-                Ac::trigger('AcLoadModule', $this->modules[$name]);
-                Ac::trigger('AcLoadModule_' . $name, $this->modules[$name]);
                 return $this->modules[$name];
             }
         }else
@@ -220,6 +218,8 @@ class Ac_Loader extends Ac_Singleton {
         } else {
             Ac::exception("Anidcore Framework cannot be executed under safe_mode");
         }
+        
+        Ac::trigger("AcConfigureServer");
     }
 
     public function getConfig() {

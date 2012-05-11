@@ -3,6 +3,11 @@
 class Ac_Http_Response {
 
     /**
+     * @var Ac_Http_Request HTTP Request
+     */
+    protected $request;
+
+    /**
      * @var int HTTP status code
      */
     protected $status;
@@ -78,11 +83,13 @@ class Ac_Http_Response {
 
     /**
      * Constructor
+     * @param   Ac_Http_Request    $request       The HTTP request
      * @param   string    $body       The HTTP response body
      * @param   int       $status     The HTTP response status
      * @param   array     $headers    The HTTP response headers
      */
-    public function __construct($body = '', $status = 200, $headers = array()) {
+    public function __construct(&$request, $body = '', $status = 200, $headers = array()) {
+        $this->request = $request;
         $this->headers = $headers;
         $this->status($status);
         $this->body($body);
@@ -107,7 +114,7 @@ class Ac_Http_Response {
 
             $this->headers[$name] = $value;
         }
-        return $this->headers[$name];
+        return isset($this->headers[$name]) ? $this->headers[$name] : false;
     }
 
     /**
@@ -169,6 +176,18 @@ class Ac_Http_Response {
     }
 
     /**
+     * Get and set Content-Type header
+     * @param   string     $contentType The new value
+     * @return  string
+     */
+    public function contentType($contentType = null) {
+        if (func_num_args() > 0) {
+            $this->header("Content-Type", $contentType);
+        }
+        return $this->header("Content-Type");
+    }
+
+    /**
      * Get and set status
      * @param   int|null     $status
      * @param   string       $httpVersion
@@ -176,16 +195,33 @@ class Ac_Http_Response {
      */
     public function status($status = null, $httpVersion = null) {
         if (func_num_args() > 0) {
+            if (!in_array(intval($status), array_keys(self::$messages))) {
+                throw new InvalidArgumentException('Cannot set Response status. Provided status code "' . $status . '" is not a valid HTTP response code.');
+            }
             $this->status = (int) $status;
-            if (strpos(PHP_SAPI, 'cgi') === 0) {
+            if (strpos(PHP_SAPI, 'cgi') !== false) {
+                //Send Status header if running with fastcgi
                 $this->header("Status", $this->status);
             } else {
                 if (empty($httpVersion))
                     $httpVersion = Ac::context()->version;
                 $this->header("HTTP/" . $httpVersion, $this->status);
+                //Else send HTTP message
+                $this->header(sprintf('HTTP/%s %s', $httpVersion, $this->getStatusMessage()));
             }
         }
         return $this->status;
+    }
+
+    /**
+     * Get message for HTTP status code
+     * @param   int  $status The status code (optional)
+     * @return string|null
+     */
+    public function getStatusMessage($status = null) {
+        if (empty($status))
+            $status = $this->status;
+        return isset(self::$messages[$status]) ? self::$messages[$status] : null;
     }
 
     /**
@@ -208,6 +244,14 @@ class Ac_Http_Response {
         }
     }
 
+    /**
+     * Can this HTTP response have a body?
+     * @return bool
+     */
+    public function canHaveBody() {
+        return ( $this->status < 100 || $this->status >= 200 ) && ($this->status != 204) && ($this->status != 304);
+    }
+
     public function send($sendHeaders = true, $cleanOb = true) {
         if ($this->isEmpty()) {
             if (isset($this->headers['Content-Type']))
@@ -224,7 +268,10 @@ class Ac_Http_Response {
         else
             $ob = null;
 
-        print $this->body;
+
+        if ($this->canHaveBody() && $this->request->isHead() === false) {
+            print $this->body;
+        }
 
         return $ob;
     }
@@ -240,7 +287,7 @@ class Ac_Http_Response {
         }
         $ob = trim($ob);
         if (!empty($ob)) {
-            Ac::log()->info($ob, "Output Buffer detected before send response");
+            Ac::log()->log($ob, "Output Buffer detected before send response", array("filename" => "output.log"));
         }
         return $ob;
     }

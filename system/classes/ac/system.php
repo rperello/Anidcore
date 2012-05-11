@@ -112,28 +112,25 @@ class Ac_System {
             if (empty(self::$request))
                 self::$request = new Ac_Http_Request(self::$context);
             if (empty(self::$response))
-                self::$response = new Ac_Http_Response();
+                self::$response = new Ac_Http_Response(self::$request);
 
             //Initialize db connections (and connect if autoconnect==true in their config)
             //self::db();
 
-            self::loader()->setActiveModule("app", true);
+            
             if (empty(self::$router))
                 self::$router = new Ac_Router();
-
+            
+            //load app module
+            self::module("app", true);
+            
             //load and initialize all modules defined in modules.autoload
             foreach (self::config("modules.autoload") as $moduleName) {
                 if ($moduleName != "app") {
-                    $mod = self::module($moduleName);
-                    $mod->init();
-                    Ac::trigger('AcInitModule', $mod);
-                    Ac::trigger('AcInitModule_' . $moduleName, $mod);
+                    self::module($moduleName, true);
                 }
             }
-            // init app module after all other modules
-            self::module("app")->init();
-            Ac::trigger('AcInitModule', self::module("app"));
-            Ac::trigger('AcInitModule_app', self::module("app"));
+            self::loader()->setActiveModule("app");
 
             //resolve request resource
             self::$router->resolve();
@@ -352,7 +349,7 @@ class Ac_System {
      * @param array $options
      * @return Ac_Log|void
      */
-    public static function &log() {
+    public static function log() {
         if (empty(self::$log)) {
             $log_class = self::config("log.class", "Ac_Log_File");
             self::$log = new $log_class();

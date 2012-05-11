@@ -12,7 +12,7 @@
  * @property string $method
  * @property string $directory
  * @property string $resource
- * @property string $resource_format
+ * @property string $format
  * @property string $query_string
  * @property string $raw_input
  * @property string $user_agent
@@ -52,7 +52,7 @@ class Ac_Context extends Ac_Singleton {
         'method' => 'GET',
         'directory' => '',
         'resource' => '',
-        'resource_format' => 'html',
+        'format' => 'html',
         'query_string' => '',
         'raw_input' => '',
         'user_agent' => 'Unknown',
@@ -148,11 +148,11 @@ class Ac_Context extends Ac_Singleton {
              */
             if (empty($con['resource']) || (count($con['resource']) == 1)) {
                 $con['resource'] = implode('.', $con['resource']);
-                $con['resource_format'] = "html";
+                $con['format'] = "html";
             } else {
-                $con['resource_format'] = array_pop($con['resource']);
-                if (empty($con['resource_format']))
-                    $con['resource_format'] = "html";
+                $con['format'] = strtolower(array_pop($con['resource']));
+                if (empty($con['format']))
+                    $con['format'] = "html";
 
                 $con['resource'] = implode('.', $con['resource']);
             }

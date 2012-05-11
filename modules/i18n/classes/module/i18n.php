@@ -3,11 +3,11 @@
 class Module_I18n extends Ac_Module {
 
     public function __construct() {
+        Ac::on("AcBeforeRouterResolve", array($this, "onBeforeRouterResolve"));
         parent::__construct('i18n', array(
             'default_language' => "en",
             "available_languages" => array('en'),
         ));
-        Ac::on("AcBeforeRouterResolve", array($this, "onBeforeRouterResolve"));
     }
 
     public function onBeforeRouterResolve($request) {
@@ -38,9 +38,4 @@ class Module_I18n extends Ac_Module {
         }
         return $this->config("default_language", 'en');
     }
-
-    public function init() {
-        parent::init();
-    }
-
 }

@@ -4,11 +4,21 @@ abstract class Ac_Singleton {
 
     private static $_instances = array();
 
+    /**
+     * Prevents direct creation of object.
+     *
+     * @return void
+     */
     protected function __construct() {
         
     }
 
-    private final function __clone() {
+    /**
+     * Prevents to clone the instance.
+     *
+     * @return void
+     */
+    final private function __clone() {
         
     }
 

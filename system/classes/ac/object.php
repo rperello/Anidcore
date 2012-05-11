@@ -11,11 +11,9 @@ class Ac_Object implements ArrayAccess {
         $this->properties = (array) $properties;
     }
 
-    public function replace(array $properties) {
-        $this->properties = $properties;
-    }
-
-    public function &getArray() {
+    public function properties(array $properties = array()) {
+        if (!empty($properties))
+            $this->properties = $properties;
         return $this->properties;
     }
 
@@ -23,7 +21,7 @@ class Ac_Object implements ArrayAccess {
         return isset($this->properties[$name]);
     }
 
-    public function &__get($name) {
+    public function __get($name) {
         return $this->properties[$name];
     }
 
@@ -43,7 +41,7 @@ class Ac_Object implements ArrayAccess {
         return $this->__isset($offset);
     }
 
-    public function &offsetGet($offset) {
+    public function offsetGet($offset) {
         return $this->__get($offset);
     }
 
@@ -53,6 +51,23 @@ class Ac_Object implements ArrayAccess {
 
     public function offsetUnset($offset) {
         return $this->__unset($offset);
+    }
+
+    /**
+     * Returns a new instance of the called class
+     * @return Ac_Object 
+     */
+    public static function factory() {
+        return new static(func_get_args());
+    }
+
+    /**
+     * Returns the constant value of the called class
+     * @param string $name constant name
+     * @return mixed 
+     */
+    public static function constant($name) {
+        return defined("static::$name") ? constant("static::$name") : null;
     }
 
 }

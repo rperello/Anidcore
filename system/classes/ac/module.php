@@ -37,6 +37,8 @@ class Ac_Module {
             $this->isMultiTheme = true;
             $this->currentTheme = $theme;
         }
+        Ac::trigger('AcCreateModule', $this);
+        Ac::trigger('AcCreateModule_' . $this->name, $this);
     }
 
     /**
@@ -73,12 +75,6 @@ class Ac_Module {
             return new $moduleClass($defaults);
         }else
             return new Ac_Module($moduleName, $defaults);
-    }
-
-    public function init() {
-        if (is_readable($this->path . "init.php")) {
-            include $this->path . "init.php";
-        }
     }
 
     public function name() {

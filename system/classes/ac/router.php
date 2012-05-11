@@ -158,18 +158,18 @@ class Ac_Router {
         }
 
         if (method_exists($klass, $validate_fn)) {
-            if ($this->controllerInstance->$validate_fn($fn)) {
+            if ($this->controllerInstance->$validate_fn($this->action)) {
                 $is_valid = true;
                 $result = $this->controllerInstance->$fn();
             } else {
-                $result = $this->controllerInstance->__handle($fn);
+                $result = $this->controllerInstance->__handle();
             }
         } else {
-            if ($this->controllerInstance->__validate($fn)) {
+            if ($this->controllerInstance->__validate($this->action)) {
                 $is_valid = true;
                 $result = $this->controllerInstance->$fn();
             } else {
-                $result = $this->controllerInstance->__handle($fn);
+                $result = $this->controllerInstance->__handle();
             }
         }
         $result = Ac::trigger("AcRouterCall", $result);
