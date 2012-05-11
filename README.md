@@ -11,6 +11,7 @@ This means that code is not stable and is not recommended for production environ
 **Technologies that will be used in this framework:**
 > * Hierarchical MVC+ (the plus sign means sub-controller support)
 > * Hooks / Event handlers (Observer pattern)
+> * DBAL with ActiveRecord pattern
 > * CLI mode handler
 > * RESTFul request handler
 > * JSON-RPC client & server & JSONP

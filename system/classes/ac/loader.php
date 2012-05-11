@@ -203,7 +203,7 @@ class Ac_Loader extends Ac_Singleton {
 
             ini_set("log_errors", true);
             ini_set('error_log', $this->config["server.error_log_file"]);
-
+            $this->config["session.name"] = "phpsessid_" . md5($_SERVER["SCRIPT_FILENAME"] . $this->config["key.GLOBAL_SALT"]);
             ini_set("session.name", $this->config["session.name"]);
             ini_set("session.use_cookies", 1);
             ini_set("session.use_only_cookies", 1);
@@ -218,7 +218,7 @@ class Ac_Loader extends Ac_Singleton {
         } else {
             Ac::exception("Anidcore Framework cannot be executed under safe_mode");
         }
-        
+
         Ac::trigger("AcConfigureServer");
     }
 
@@ -260,7 +260,6 @@ class Ac_Loader extends Ac_Singleton {
                 "server.error_log_file" => AC_PATH_LOGS . 'php_errors.log',
                 ////
                 //SESSION:
-                "session.name" => "phpsessid_" . md5($_SERVER["SCRIPT_FILENAME"]),
                 "session.sessid_lifetime" => 180,
                 "session.cookie_path" => preg_replace('/\/index\.php.*/', '/', $_SERVER["SCRIPT_NAME"]),
                 "session.cookie_secure" => (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")),

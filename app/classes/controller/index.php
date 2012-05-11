@@ -16,16 +16,16 @@ class Controller_Index extends Ac_Controller_Html {
     public function __default() {
         //echo "this won't be echoed";
 
-        $r = new Ac_Model_Record();
-        $r->page_id = 7;
-        $r->content = "<h1>This is the home page</h1><br>Current module: " . Ac::module()->name();
+        $doc = new R_Document();
+        $doc->document_id = 7;
+        $doc->content = "<h1>This is the home page</h1><br>Current module: " . Ac::module()->name();
 
         if (Ac::request()->format() == 'json') {
             $this->contentType("text/json");
-            $this->body(json_encode($r->properties()));
+            $this->body(json_encode($doc->properties()));
         } else {
             $this->contentType("text/html");
-            $this->body($r->content);
+            $this->body($doc->content);
         }
     }
 

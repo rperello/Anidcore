@@ -1,6 +1,9 @@
 <?php
 
-class Ac_Model_Record extends Ac_Object {
+/**
+ * abstract Active Record model 
+ */
+abstract class Ac_Model_Record extends Ac_Object {
 
     public function __isset($name) {
         return $this->__overload(__FUNCTION__, $name);
@@ -17,6 +20,12 @@ class Ac_Model_Record extends Ac_Object {
     public function __unset($name) {
         return $this->__overload(__FUNCTION__, $name);
     }
+
+    abstract public function save();
+
+    abstract public function delete();
+
+    abstract public function exists();
 
     protected function __overload() {
         $args = func_get_args();

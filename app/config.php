@@ -2,8 +2,8 @@
 
 return array(
     "server.timezone" => "Europe/Madrid",
-    "logger.enabled" => true,
-    "logger.class" => "Ac_Logger",
+    "log.enabled" => true,
+    "log.class" => "Ac_Log_Flash",
     "modules.autoload" => array(
         'i18n',
         "admin",
