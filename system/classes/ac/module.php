@@ -37,8 +37,8 @@ class Ac_Module {
             $this->isMultiTheme = true;
             $this->currentTheme = $theme;
         }
-        Ac::trigger('AcCreateModule', $this);
-        Ac::trigger('AcCreateModule_' . $this->name, $this);
+        Ac::trigger('AC_Module_on_create', $this);
+        Ac::trigger('AC_Module_on_create_' . $this->name, $this);
     }
 
     /**
@@ -109,9 +109,9 @@ class Ac_Module {
 
     public function url() {
         if ($this->name == "app") {
-            return Ac::url("virtual");
+            return Ac::url("routerdir");
         } else {
-            return Ac::url("virtual") . $this->config('default_controller', $this->name) . '/';
+            return Ac::url("routerdir") . $this->config('default_controller', $this->name) . '/';
         }
     }
 

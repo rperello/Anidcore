@@ -230,8 +230,12 @@ class Ac_Loader extends Ac_Singleton {
                 "modules.config" => array(),
                 "modules.autoload" => array(),
                 ////
+                //HTTP:
+                "http.default_format" => "html",
+                ////
                 //ROUTER:
                 "router.default_controller" => "index",
+                "router.on_action_index" => "__index",
                 ////
                 //LOG:
                 "log.enabled" => true,

@@ -13,7 +13,7 @@ class Controller_Index extends Ac_Controller_Html {
      */
     protected $supports = array("HEAD" => array('html'), "GET" => array('html', 'json'), "POST" => array('html'));
 
-    public function __default() {
+    public function __index() {
         //echo "this won't be echoed";
 
         $doc = new R_Document();
@@ -48,7 +48,6 @@ class Controller_Index extends Ac_Controller_Html {
                             "controller" => Ac::router()->controller(),
                             "action" => Ac::router()->action(),
                             "module_url" => Ac::url(),
-                            "ac_documents table" => R_Document::find(),
                             "context" => Ac::context()), true)
                 ) . '</pre>');
     }

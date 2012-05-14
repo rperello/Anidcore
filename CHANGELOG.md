@@ -3,8 +3,7 @@ CHANGELOG
 There are no public releases yet
 
 **TO-DO:**
->* sub-controllers support (this strategy could be named HMVC+ ? )
-* views / templates / multitheme system
+>* views / templates / multitheme system
 * i18n strings translation system
 * oauth & jsonrpc implementations
 * basic demo frontend & admin & login

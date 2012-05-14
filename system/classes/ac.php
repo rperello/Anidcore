@@ -52,7 +52,7 @@ class Ac extends Ac_System {
 
     /**
      * Returns the specified url
-     * @param string $of Possible values: media, assets, virtual, action, controller, host, current, resource, dir, module (default)
+     * @param string $of Possible values: media, assets, routerdir, action, controller, host, current, resource, dir, module (default)
      * @return string 
      */
     public static function url($of = "module") {
@@ -65,11 +65,6 @@ class Ac extends Ac_System {
             case "assets":
             case "ASSETS": {
                     return defined("AC_CONTENT_URL") ? AC_CONTENT_URL : self::request()->directoryUrl() . "content/assets/";
-                }break;
-
-            case "virtual":
-            case "VIRTUAL": {
-                    return self::router()->virtualBaseUrl();
                 }break;
 
             case "action":
@@ -100,6 +95,11 @@ class Ac extends Ac_System {
             case "dir":
             case "DIR": {
                     return self::request()->directoryUrl();
+                }break;
+
+            case "routerdir":
+            case "ROUTERDIR": {
+                    return self::router()->directoryUrl();
                 }break;
 
             case "module":

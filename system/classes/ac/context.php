@@ -42,7 +42,7 @@ class Ac_Context extends Ac_Singleton {
     );
     protected static $default_context = array(
         'id' => '',
-        'time'=>0,
+        'time' => 0,
         'host' => 'localhost',
         'scheme' => 'http',
         'version' => '1.1',
@@ -148,11 +148,12 @@ class Ac_Context extends Ac_Singleton {
              */
             if (empty($con['resource']) || (count($con['resource']) == 1)) {
                 $con['resource'] = implode('.', $con['resource']);
-                $con['format'] = "html";
+                $con['format'] = Ac::config("http.default_format", "html");
             } else {
                 $con['format'] = strtolower(array_pop($con['resource']));
-                if (empty($con['format']))
-                    $con['format'] = "html";
+                if (empty($con['format'])) {
+                    $con['format'] = Ac::config("http.default_format", "html");
+                }
 
                 $con['resource'] = implode('.', $con['resource']);
             }
@@ -197,7 +198,7 @@ class Ac_Context extends Ac_Singleton {
             $con['is_ajax'] = (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
             $this->context = $con;
-            
+
             $this->generateId();
         }
     }
@@ -210,8 +211,8 @@ class Ac_Context extends Ac_Singleton {
         $this->context[$name] = $value;
         $this->generateId();
     }
-    
-    protected function generateId(){
+
+    protected function generateId() {
         unset($this->context["id"]);
         $this->context["id"] = md5(json_encode($this->context));
         return $this->context["id"];

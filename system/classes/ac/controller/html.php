@@ -12,7 +12,7 @@ class Ac_Controller_Html extends Ac_Controller {
         $this->status(200);
     }
 
-    public function __default() {
+    public function __index() {
         $this->body($this->title);
     }
 

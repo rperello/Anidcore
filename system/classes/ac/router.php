@@ -2,149 +2,214 @@
 
 class Ac_Router {
 
-    public $controllerName = null;
+    /**
+     * Full resource parts
+     * @var array 
+     */
+    protected $resource = null;
 
     /**
-     *
+     * Controller class name
+     * @var string 
+     */
+    protected $controller = null;
+
+    /**
+     * Controller instance
      * @var Ac_Controller 
      */
-    public $controllerInstance = null;
-    public $action = null;
-    public $controllerUrl = null;
-    public $actionUrl = null;
-    public $resource = null;
-    public $params = null; //remaining resource from action
-    public $virtualBaseUrl;
-    public $actionUrlParts = array();
+    protected $controllerInstance = null;
 
-    public function resource() {
+    /**
+     * Action function name
+     * @var string 
+     */
+    protected $action = null;
+
+    /**
+     * Remaining resource from action
+     * @var array 
+     */
+    protected $params = null;
+
+    /**
+     * Controller URL
+     * @var string 
+     */
+    protected $controllerUrl = null;
+
+    /**
+     * Action URL
+     * @var string 
+     */
+    protected $actionUrl = null;
+
+    /**
+     * Router directory URL
+     * @var string 
+     */
+    protected $directoryUrl;
+
+    /**
+     * Router resource segments
+     * @return array 
+     */
+    public function resource($index = null) {
         $this->resolve();
-        return $this->resource;
+        if ($index === null) {
+            return $this->resource;
+        } elseif (isset($this->resource[$index])) {
+            return $this->resource[$index];
+        }
+        return null;
     }
 
+    /**
+     * Controller class name
+     * @return string 
+     */
     public function controller() {
         $this->resolve();
-        return $this->controllerName;
+        return $this->controller;
     }
 
+    /**
+     * Action function name
+     * @return string 
+     */
     public function action() {
         $this->resolve();
         return $this->action;
     }
 
-    public function params() {
+    /**
+     * Parameters after the action segment
+     * @param int $index
+     * @return mixed 
+     */
+    public function params($index = null) {
         $this->resolve();
-        return $this->params;
+        if ($index === null) {
+            return $this->params;
+        } elseif (isset($this->params[$index])) {
+            return $this->params[$index];
+        }
+        return null;
     }
 
-    protected function virtualUrl() {
-        return trim(implode("/", $this->actionUrlParts), "/") . "/";
+    public function controllerUrl() {
+        $this->resolve();
+        return $this->controllerUrl;
     }
 
-    public function virtualBaseUrl() {
-        return $this->virtualBaseUrl;
+    public function actionUrl() {
+        $this->resolve();
+        return $this->actionUrl;
+    }
+
+    public function directoryUrl() {
+        $this->resolve();
+        return $this->directoryUrl;
+    }
+
+    /**
+     * Autoloads a class and changes the current module
+     * if the class belongs to a module
+     * 
+     * @param string $class_name
+     * @return boolean 
+     */
+    protected function loadClass($class_name) {
+        $result = Ac::loader()->autoload($class_name);
+        // class loaded from /system
+        if ($result === true) {
+            return true;
+        } elseif ($result instanceof Ac_Module) {
+            // class loaded from /app or /modules/*
+            Ac::loader()->setActiveModule($result->name(), false);
+            return true;
+        }
+
+        // class not found
+        return false;
     }
 
     public function resolve() {
         //Yet initialized
-        if ($this->controllerName != null)
-            return;
+        if ($this->controller != null)
+            return true;
 
-        $request = Ac::trigger("AcBeforeRouterResolve", array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
-        $this->virtualBaseUrl = $request["directoryUrl"];
-
-        if (empty($this->actionUrlParts)) {
-            $this->actionUrlParts = array(trim($this->virtualBaseUrl, ' /'));
-        }
-
+        $request = Ac::trigger(__CLASS__ . "_before_" . __FUNCTION__, array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
+        $this->directoryUrl = trim($request["directoryUrl"], ' /') . "/";
         $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
 
-        //Defaults
-        $default_app_controller = ucfirst(Ac::config("router.default_controller", "index"));
-        $this->controllerName = ucfirst($default_app_controller);
-        $this->action = "__default";
+        $this->findController();
+        $this->findAction();
 
+        //die(print_r($this, true));
 
-        if (empty($rs)) {
-            $this->controllerUrl = $this->actionUrl = $this->virtualUrl();
-        } else {
-
-            //CONTROLLER
-            $part = strtolower(ac_str_slug($rs[0], "_"));
-            if ($part == $default_app_controller) {
-                //prevent access to main app controller using /$default_app_controller/ segment
-                $this->action = "__handle";
-                $this->params = $rs;
-                Ac::trigger("AcRouterResolve", $this);
-                return;
-            }
-
-            $controllerName = ucfirst($part); //Example: Pages
-            $controller_exists = $this->loadClass($this->controllerClassName($controllerName));
-
-            if ($controller_exists) {
-                $this->controllerName = $controllerName;
-                if (!empty($part)) {
-                    $this->actionUrlParts[] = $part;
-                }
-                array_shift($rs);
-            }
-
-            $this->controllerUrl = $this->actionUrl = $this->virtualUrl();
-
-            //ACTION
-            if (!$controller_exists) {
-                //is action of $default_app_controller controller?
-                if (!$this->loadClass($this->controllerClassName($default_app_controller))) {
-                    Ac::logger()->fatal($default_app_controller, "The controller cannot be loaded", array(), __FILE__, __LINE__);
-                } else {
-                    if (method_exists($this->controllerClassName($this->controllerName), "action_{$part}")) {
-                        $this->action = "action_{$part}";
-                        $this->actionUrlParts[] = $part;
-                        array_shift($rs);
-                    } else {
-                        if (empty($part))
-                            $this->action = "__default";
-                        else
-                            $this->action = "__handle";
-                    }
-                }
-                $this->actionUrl = $this->virtualUrl();
-            }elseif (!empty($rs)) {
-                // Controller exists, check action in next part:
-                $part = strtolower(ac_str_slug($rs[0], "_"));
-                if (method_exists($this->controllerClassName($controllerName), "action_{$part}")) {
-                    $this->action = "action_{$part}";
-                    $this->actionUrlParts[] = $part;
-                    array_shift($rs);
-                } else {
-                    if (empty($part))
-                        $this->action = "__default";
-                    else
-                        $this->action = "__handle";
-                }
-                $this->actionUrl = $this->virtualUrl();
-            }
-        }
-
-        //PARAMS
-        $this->params = $rs;
-
-        Ac::trigger("AcRouterResolve", $this);
+        Ac::trigger(__CLASS__ . "_on_" . __FUNCTION__, $this);
     }
 
-    public function controllerClassName($controllerName) {
-        return "Controller_" . $controllerName;
+    protected function findController() {
+        $resource = $this->resource;
+        if (!is_array($resource))
+            $resource = explode("/", trim($resource, "/ "));
+        $params = array();
+        $controller = "Controller_" . ucfirst(Ac::config("router.default_controller", "index"));
+        if (count($resource) > 0) {
+            while (count($resource) > 0) {
+                $klass = "Controller_" . strtolower(ac_str_slug(implode(" ", $resource), "_"));
+                if ($this->loadClass($klass)) {
+                    $this->controllerUrl = $this->directoryUrl . implode('/', $resource) . "/";
+                    $controller = $klass;
+                    break;
+                } else {
+                    $params[] = array_pop($resource);
+                }
+            }
+        }
+        $this->params = array_reverse($params);
+        $this->controller = $controller;
+        return $controller;
+    }
+
+    protected function findAction() {
+        $controller = $this->controller;
+        $resource = $this->params;
+
+        if (!is_array($resource))
+            $resource = explode("/", trim($resource, "/ "));
+
+        if (count($resource) > 0) {
+            $action = "__handle";
+            $part = $resource[0];
+            $fn = "action_" . strtolower(ac_str_slug($part, "_"));
+            if (Ac::config("router.on_action_index")) {
+                if ($fn == "action_index")
+                    $fn = Ac::config("router.on_action_index");
+            }
+            if (method_exists($controller, $fn)) {
+                $this->actionUrl = $this->controllerUrl . $part . "/";
+                $action = $fn;
+                array_shift($this->params);
+            }
+        } else {
+            $action = "__index";
+        }
+
+        $this->action = $action;
+        return $action;
     }
 
     public function call() {
-        Ac::trigger("AcBeforeRouterCall", $this);
-        $klass = $this->controllerClassName($this->controllerName);
+        Ac::trigger(__CLASS__ . "_before_" . __FUNCTION__, $this);
+        $klass = $this->controller;
         $fn = $this->action;
         $result = null;
 
-        if ($fn == "__default")
-            $validate_fn = "validate_default";
+        if ($fn == "__index")
+            $validate_fn = "validate_index";
         elseif ($fn == "__handle")
             $validate_fn = "validate_handle";
         else
@@ -172,40 +237,8 @@ class Ac_Router {
                 $result = $this->controllerInstance->__handle();
             }
         }
-        $result = Ac::trigger("AcRouterCall", $result);
+        $result = Ac::trigger(__CLASS__ . "_on_" . __FUNCTION__, $result);
         return $result;
-    }
-
-    public function controllerUrl() {
-        $this->resolve();
-        return $this->controllerUrl;
-    }
-
-    public function actionUrl() {
-        $this->resolve();
-        return $this->actionUrl;
-    }
-
-    /**
-     * Autoloads a class and changes the current module
-     * if the class belongs to a module
-     * 
-     * @param string $class_name
-     * @return boolean 
-     */
-    protected function loadClass($class_name) {
-        $result = Ac::loader()->autoload($class_name);
-        // class loaded from /system
-        if ($result === true) {
-            return true;
-        } elseif ($result instanceof Ac_Module) {
-            // class loaded from /app or /modules/*
-            Ac::loader()->setActiveModule($result->name(), false);
-            return true;
-        }
-
-        // class not found
-        return false;
     }
 
 }

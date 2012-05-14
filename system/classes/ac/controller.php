@@ -26,7 +26,7 @@ abstract class Ac_Controller {
     /**
      * Default function 
      */
-    abstract public function __default();
+    abstract public function __index();
 
     /**
      * Error handler function 
@@ -41,7 +41,7 @@ abstract class Ac_Controller {
         if (!isset($this->supports[$method])) {
             $this->status(405);
             return false;
-        }elseif(($this->supports[$method]!='*') && (!in_array(Ac::request()->format(), $this->supports[$method]))){
+        } elseif (($this->supports[$method] != '*') && (!in_array(Ac::request()->format(), $this->supports[$method]))) {
             $this->status(415);
             return false;
         }

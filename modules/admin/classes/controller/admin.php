@@ -2,8 +2,8 @@
 
 class Controller_Admin extends Ac_Controller_Html {
 
-    public function __default() {
-        $this->body("<h1>This is the ADMIN page</h1><br>Current module: " . print_r(Ac::module(), true).Ac::module()->name());
+    public function __index() {
+        $this->body("<h1>This is the ADMIN page</h1><br>Current module: " . print_r(Ac::module(), true) . Ac::module()->name());
     }
 
     public function __handle() {
@@ -17,8 +17,8 @@ class Controller_Admin extends Ac_Controller_Html {
                             "controller" => Ac::router()->controller(),
                             "action" => Ac::router()->action(),
                             "module_url" => Ac::url(),
-                            "ac_documents table" => R_Document::find(),
                             "context" => Ac::context()), true)
                 ) . '</pre>');
     }
+
 }
