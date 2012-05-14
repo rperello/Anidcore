@@ -17,7 +17,7 @@ class Controller_Admin extends Ac_Controller_Html {
                             "controller" => Ac::router()->controller(),
                             "action" => Ac::router()->action(),
                             "module_url" => Ac::url(),
-                            //"ac_documents table" => Ac::dbc()->findAll("ac_documents"),
+                            "ac_documents table" => R_Document::find(),
                             "context" => Ac::context()), true)
                 ) . '</pre>');
     }

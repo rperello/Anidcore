@@ -164,6 +164,57 @@ function ac_str_replace_repeated($str, $char, $replacement = null) {
 }
 
 /**
+ * Has the same behaviour than mysql_escape_string()
+ * @param type $str
+ * @return string 
+ */
+function ac_str_escape($str) {
+    if (!function_exists("mysql_escape_string")) {
+        $s = $str;
+        $sl = strlen($s);
+        for ($a = 0; $a < $sl; $a++) {
+            $c = substr($s, $a, 1);
+
+            switch (ord($c)) {
+                case 0:
+                    $c = "\\0";
+                    break;
+                case 10:
+                    $c = "\\n";
+                    break;
+                case 9:
+                    $c = "\\t";
+                    break;
+                case 13:
+                    $c = "\\r";
+                    break;
+                case 8:
+                    $c = "\\b";
+                    break;
+                case 39:
+                    $c = "\\'";
+                    break;
+                case 34:
+                    $c = "\\\"";
+                    break;
+                case 92:
+                    $c = "\\\\";
+                    break;
+                case 37:
+                    $c = "\\%";
+                    break;
+                case 95:
+                    $c = "\\_";
+                    break;
+            }
+            $s2.=$c;
+        }
+        return $s2;
+    }
+    return mysql_escape_string($str);
+}
+
+/**
  * Converts any string to a friendly-url string
  * @param string $str
  * @param string $delimiter

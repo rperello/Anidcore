@@ -12,6 +12,7 @@ class Ac_Observer {
      * @return  void
      */
     public function on($name, $callable, $priority = 10) {
+        $name = strtolower($name);
         if (!isset($this->events[$name])) {
             $this->events[$name] = array(array());
         }
@@ -27,6 +28,7 @@ class Ac_Observer {
      * @return  mixed event functions should return the (modified?) $eventArg
      */
     public function trigger($name, $eventArg = null) {
+        $name = strtolower($name);
         if (!isset($this->events[$name])) {
             $this->events[$name] = array(array());
         }
@@ -58,6 +60,7 @@ class Ac_Observer {
      * @return  void
      */
     public function off($name = null) {
+        $name = strtolower($name);
         if (!empty($name) && isset($this->events[(string) $name])) {
             $this->events[(string) $name] = array(array());
         } else {
@@ -80,6 +83,7 @@ class Ac_Observer {
      */
     public function events($name = null) {
         if (!empty($name)) {
+            $name = strtolower($name);
             return isset($this->events[(string) $name]) ? $this->events[(string) $name] : null;
         } else {
             return $this->events;

@@ -3,14 +3,14 @@
 class Module_I18n extends Ac_Module {
 
     public function __construct() {
-        Ac::on("AcBeforeRouterResolve", array($this, "onBeforeRouterResolve"));
+        Ac::on("AcBeforeRouterResolve", array($this, "beforeRouterResolve"));
         parent::__construct('i18n', array(
             'default_language' => "en",
             "available_languages" => array('en'),
         ));
     }
-
-    public function onBeforeRouterResolve($request) {
+    
+    public function beforeRouterResolve($request = "") {
         $directoryUrl = $request["directoryUrl"];
         $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
         if (empty($rs)) {
@@ -38,4 +38,5 @@ class Module_I18n extends Ac_Module {
         }
         return $this->config("default_language", 'en');
     }
+
 }

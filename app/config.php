@@ -19,13 +19,15 @@ return array(
         "driver" => "mysql",
         "host" => "localhost",
         "port" => 3306,
-        "schema" => "anidcore",
+        "dbname" => "anidcore",
         "prefix" => "ac_",
         "username" => "root",
         "password" => "root",
         "charset" => "utf8",
         "collate" => "utf8_general_ci",
-        "options" => array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ),
-        "autoconnect" => false //false = lazy connect (recommended)
+        "options" => array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC),
+        "autoconnect" => false, //false = lazy connect (recommended)
+        "log_success"=>false,
+        "log_errors"=>true,
     ),
 );

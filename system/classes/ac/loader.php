@@ -224,7 +224,7 @@ class Ac_Loader extends Ac_Singleton {
 
     public function getConfig() {
         if (empty($this->config)) {
-            $this->config = array_merge(array(
+            $this->config = Ac::trigger("AcImportConfig", array_merge(array(
                 ////
                 //MODULES:
                 "modules.config" => array(),
@@ -268,7 +268,7 @@ class Ac_Loader extends Ac_Singleton {
                 "session.cache_expire" => 180,
                 "session.cache_limiter" => "nocache",
                     )
-                    , include AC_PATH_APP . "config.php");
+                    , include AC_PATH_APP . "config.php"));
         }
         return $this->config;
     }

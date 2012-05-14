@@ -115,7 +115,7 @@ class Ac_System {
                 self::$response = new Ac_Http_Response(self::$request);
 
             //Initialize db connections (and connect if autoconnect==true in their config)
-            //self::db();
+            self::db();
 
             
             if (empty(self::$router))
@@ -321,7 +321,7 @@ class Ac_System {
         if (Ac_Storage_Pdo::hasConnections()) {
             return Ac_Storage_Pdo::getConnection($instanceName);
         } elseif (self::config("database")) {
-            Ac_Storage_Pdo::init(self::config("database"));
+            Ac_Storage_Pdo::__init(self::config("database"));
             return Ac_Storage_Pdo::getConnection($instanceName);
         }
         return false;

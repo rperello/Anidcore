@@ -10,7 +10,7 @@ class Ac extends Ac_System {
      *
      * @var array 
      */
-    protected $timers = array();
+    protected static $timers = array();
 
     /**
      *
@@ -169,11 +169,16 @@ class Ac extends Ac_System {
         self::$timers[] = microtime(true);
     }
 
+    /**
+     *
+     * @param int $start_time
+     * @param boolean $detailed_result
+     * @return int|string 
+     */
     public static function timerStop($start_time = null, $detailed_result = true) {
         if ($start_time == null) {
             if (!empty(self::$timers)) {
-                $start_time = ac_arr_last(self::$timers);
-                array_pop(self::$timers);
+                $start_time = array_pop(self::$timers);
             }else
                 return 0;
         }

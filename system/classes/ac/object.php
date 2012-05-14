@@ -7,8 +7,8 @@ class Ac_Object implements ArrayAccess {
      */
     protected $properties = array();
 
-    public function __construct($properties = array()) {
-        $this->properties = (array) $properties;
+    public function __construct(array $properties = array()) {
+        $this->properties = $properties;
     }
 
     public function properties(array $properties = array()) {
