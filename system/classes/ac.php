@@ -52,19 +52,20 @@ class Ac extends Ac_System {
 
     /**
      * Returns the specified url
-     * @param string $of Possible values: media, assets, routerdir, action, controller, host, current, resource, dir, module (default)
+     * @param string $of Possible values: static (static assets), assets (theme assets), routerdir, action, controller, host, current, resource, dir, module (default)
      * @return string 
      */
     public static function url($of = "module") {
         switch ($of) {
-            case "media":
-            case "MEDIA": {
-                    return self::module()->mediaUrl();
+
+            case "static":
+            case "STATIC": {
+                    return defined("AC_STATIC_ASSETS_URL") ? AC_STATIC_ASSETS_URL : self::request()->directoryUrl() . "content/assets/";
                 }break;
 
             case "assets":
             case "ASSETS": {
-                    return defined("AC_CONTENT_URL") ? AC_CONTENT_URL : self::request()->directoryUrl() . "content/assets/";
+                    return self::module()->assetsUrl();
                 }break;
 
             case "action":
@@ -112,7 +113,7 @@ class Ac extends Ac_System {
 
     /**
      * Returns the specified path (filesystem)
-     * @param string $of Possible values are: view, assets, media, app, system, content, modules, base, module (default)
+     * @param string $of Possible values are: view, static (static assets), assets (theme assets), app, system, content, modules, base, module (default)
      * @return string 
      */
     public static function path($of = "module") {
@@ -122,14 +123,14 @@ class Ac extends Ac_System {
                     return self::module()->viewsPath();
                 }break;
 
-            case "assets":
-            case "ASSETS": {
-                    return AC_PATH_CONTENT . "assets" . _DS;
+            case "static":
+            case "STATIC": {
+                    return defined("AC_STATIC_ASSETS_PATH") ? AC_STATIC_ASSETS_PATH : AC_PATH_CONTENT . "assets" . _DS;
                 }break;
 
-            case "media":
-            case "MEDIA": {
-                    return self::module()->mediaPath();
+            case "assets":
+            case "ASSETS": {
+                    return self::module()->assetsPath();
                 }break;
 
             case "app":

@@ -1,5 +1,7 @@
 <?php
-
+function __t($string) {
+    return $string;
+}
 class Module_I18n extends Ac_Module {
 
     public function __construct() {

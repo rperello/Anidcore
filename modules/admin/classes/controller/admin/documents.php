@@ -3,17 +3,17 @@
 class Controller_Admin_Documents extends Ac_Controller_Html {
 
     public function __index() {
-        $this->body("<h1>Subcontrollers works!<br></h1><h2>This is the ADMIN DOCUMENTS page</h2><br>Current module: " . print_r(Ac::module(), true) . Ac::module()->name());
+        $this->body("<h1>Subcontrollers works!<br></h1>");
     }
 
     public function __handle() {
-        parent::__handle("<h1>ADMIN DOCUMENTS 404 ERROR</h1><br>Current module: " . Ac::module()->name());
+        parent::__handle($this->view->load("pages/error.php"));
     }
 
     public function action_all() {
         $this->contentType("text/plain");
         $docs = R_Document::find();
-        $this->body(json_encode($docs));
+        $this->body(print_r($docs, true));
         return $docs;
     }
 

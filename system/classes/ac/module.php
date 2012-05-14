@@ -123,20 +123,20 @@ class Ac_Module {
         }
     }
 
-    public function mediaPath() {
-        return $this->viewsPath() . "media" . _DS;
+    public function assetsPath() {
+        return $this->viewsPath() . "assets" . _DS;
     }
 
-    public function mediaUrl() {
-        $url = Ac::url("base");
+    public function assetsUrl() {
+        $url = Ac::url("dir");
         if (!$this->isMain()) {
             $url .= $this->name . "/";
         }
 
         if ($this->isMultiTheme) {
-            return $url . "themes/" . $this->currentTheme . "/media/";
+            return $url . "themes/" . $this->currentTheme . "/assets/";
         } else {
-            return $url . "media/";
+            return $url . "assets/";
         }
     }
 

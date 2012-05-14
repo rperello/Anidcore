@@ -20,7 +20,8 @@ abstract class Ac_Controller {
     protected $view;
 
     public function __construct() {
-        $this->view = new Ac_View();
+        $view_class = Ac::config("views.class", "Ac_View");
+        $this->view = new $view_class();
     }
 
     /**

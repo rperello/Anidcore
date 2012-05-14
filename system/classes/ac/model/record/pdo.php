@@ -2,6 +2,7 @@
 
 /**
  * Active Record Model for Ac_Storage_PDO connections
+ * @property int $id bigint(20) Primary key alias
  */
 abstract class Ac_Model_Record_PDO extends Ac_Model_Record {
 

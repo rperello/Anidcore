@@ -1,0 +1,247 @@
+.admintoolbar-visible #header{
+    padding-top: 40px;
+}
+
+#admintoolbar{
+/*    border-top:2px solid #0088CC;*/
+    height:40px;
+    margin-bottom: 0;
+    min-width: 900px;
+    background: none;
+}
+#admintoolbar_logo{
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    font-size:20px;
+    color:#aaa;
+    padding:6px 9px 7px !important;
+}
+
+#admintoolbar_logo img{
+    opacity: 0.8;
+}
+
+#admintoolbar_logo:hover img{
+    opacity: 1;
+}
+
+#admintoolbar a i{
+    margin-right: 3px;
+}
+
+
+#admintoolbar_wrapper{
+/*    border-top:1px dotted #0088CC;*/
+    height:40px;
+/*    background: rgba(0,0,0,0.75);*/
+    background: #333;
+    background:rgba(0,0,0,0.78);
+}
+#admintoolbar_content{
+    margin:0 20px;
+}
+
+#admintoolbar .navbar-inner{
+/*    box-shadow:0 2px 3px rgba(0, 0, 0, 0.35), 0 -2px 0 rgba(0, 0, 0, 0.15) inset;*/
+}
+#admintoolbar .brand{
+    padding-top:12px;
+    font-size: 16px;
+}
+
+#admintoolbar .nav > li > a{
+    color:#999;
+    padding:9px 12px 11px 12px;
+}
+#admintoolbar .nav > li > a:hover{
+    color:#fff;
+}
+
+#admintoolbar .icon-white{
+    opacity:0.7;
+}
+#admintoolbar a:hover .icon-white,
+#admintoolbar .dropdown.open .icon-white{
+    opacity:1;
+}
+
+#admintoolbar ul.nav li.dropdown:hover ul.dropdown-menu{
+    display: block;    
+}
+
+#admintoolbar .nav .active > a, #admintoolbar .nav .active > a:hover {
+    background-color: #222222;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+/*#953B39*/
+@-moz-keyframes blue_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#0088CC;
+    }
+}
+@-webkit-keyframes blue_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#0088CC;
+    }
+}
+@-ms-keyframes blue_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#0088CC;
+    }
+}
+@keyframes blue_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#0088CC;
+    }
+}
+
+
+@-moz-keyframes red_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#953B39;
+    }
+}
+@-webkit-keyframes red_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#953B39;
+    }
+}
+@-ms-keyframes red_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#953B39;
+    }
+}
+@keyframes red_blink {
+    0% {
+        color:#666;
+        background-color: #444;
+    }
+    100% {
+        color:#fff;
+        background-color:#953B39;
+    }
+}
+
+#admintoolbar #notifier_area{
+    display:none;
+    padding:8px 0 8px 12px;
+}
+#admintoolbar #notifier_area.active{
+    display:block;
+}
+#admintoolbar #notifier_counter{
+    border-radius:50px;
+    padding:2px 3px 2px 3px;
+    background: #444;
+    color:#666;
+    text-align: center;
+    width:20px;
+    font-size: 12px;
+}
+#admintoolbar #notifier_box{
+    display:none;
+}
+
+#admintoolbar #notifier_area.active > #notifier_counter{
+    animation-name: red_blink;
+    animation-duration: 1.2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+    
+    -moz-animation-name: red_blink;
+    -moz-animation-duration: 1.2s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-direction: alternate;
+    -moz-animation-timing-function: ease-in-out;
+    
+    -webkit-animation-name: red_blink;
+    -webkit-animation-duration: 1.2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    -webkit-animation-timing-function: ease-in-out;
+    
+    -ms-animation-name: red_blink;
+    -ms-animation-duration: 1.2s;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-direction: alternate;
+    -ms-animation-timing-function: ease-in-out;
+}
+
+
+#admintoolbar form.navbar-search{
+    margin: 6px 10px 0 15px;
+}
+#admintoolbar input.search-query{
+    padding: 3px 9px;
+    font-size:11px;
+    background:#555;
+    color:#bbb;
+    border-radius:12px;
+    text-shadow: none;
+}
+
+#admintoolbar input.search-query:focus{
+    background:#eee;
+    color:#555;
+    text-shadow: none;
+/*    width:170px;*/
+}
+
+
+#admintoolbar input.search-query:focus{
+    transition:all 200ms;
+    -moz-transition:all 200ms;
+    -webkit-transition:all 200ms;
+    -ms-transition:all 200ms;
+    width:200px;
+    border:1px solid #111;
+}
+#admintoolbar input.search-query{
+    transition:all 200ms !important;
+    -moz-transition:all 200ms !important;
+    -webkit-transition:all 200ms !important;
+    -ms-transition:all 200ms !important;
+}
+
+#admintoolbar,
+#admintoolbar a{
+    text-shadow: none;
+}

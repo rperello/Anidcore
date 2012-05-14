@@ -21,6 +21,12 @@ class Module_Admin extends Ac_Module {
                 "admin_global_delete" => $groups["administrators"],
             )
         );
+        Ac::on("Ac_Router_on_resolve", function(){
+            if (!defined("AC_ADMIN_URL")) {
+                define("AC_ADMIN_URL", Ac::module("admin")->url());
+            }
+        });
         parent::__construct('admin', $defaults);
     }
+
 }

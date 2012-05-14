@@ -6,7 +6,7 @@ class Ac_Router {
      * Full resource parts
      * @var array 
      */
-    protected $resource = null;
+    protected $resource = array();
 
     /**
      * Controller class name
@@ -30,7 +30,7 @@ class Ac_Router {
      * Remaining resource from action
      * @var array 
      */
-    protected $params = null;
+    protected $params = array();
 
     /**
      * Controller URL
@@ -55,7 +55,6 @@ class Ac_Router {
      * @return array 
      */
     public function resource($index = null) {
-        $this->resolve();
         if ($index === null) {
             return $this->resource;
         } elseif (isset($this->resource[$index])) {
@@ -69,7 +68,6 @@ class Ac_Router {
      * @return string 
      */
     public function controller() {
-        $this->resolve();
         return $this->controller;
     }
 
@@ -78,7 +76,6 @@ class Ac_Router {
      * @return string 
      */
     public function action() {
-        $this->resolve();
         return $this->action;
     }
 
@@ -88,7 +85,6 @@ class Ac_Router {
      * @return mixed 
      */
     public function params($index = null) {
-        $this->resolve();
         if ($index === null) {
             return $this->params;
         } elseif (isset($this->params[$index])) {
@@ -98,17 +94,14 @@ class Ac_Router {
     }
 
     public function controllerUrl() {
-        $this->resolve();
         return $this->controllerUrl;
     }
 
     public function actionUrl() {
-        $this->resolve();
         return $this->actionUrl;
     }
 
     public function directoryUrl() {
-        $this->resolve();
         return $this->directoryUrl;
     }
 

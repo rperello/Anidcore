@@ -11,8 +11,8 @@ class Ac_Object implements ArrayAccess {
         $this->properties = $properties;
     }
 
-    public function properties(array $properties = array()) {
-        if (!empty($properties))
+    public function properties($properties = null) {
+        if (is_array($properties))
             $this->properties = $properties;
         return $this->properties;
     }

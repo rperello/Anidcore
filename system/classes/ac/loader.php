@@ -233,6 +233,9 @@ class Ac_Loader extends Ac_Singleton {
                 //HTTP:
                 "http.default_format" => "html",
                 ////
+                //VIEWS:
+                "views.class" => "Ac_View",
+                ////
                 //ROUTER:
                 "router.default_controller" => "index",
                 "router.on_action_index" => "__index",

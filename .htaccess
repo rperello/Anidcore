@@ -7,35 +7,25 @@ AddDefaultCharset UTF-8
 RewriteEngine On
 RewriteRule ^(system) - [F,L]
 
-# Development assets (single theme)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*/?media/assets/(.*)$ /assets/$1 [QSA,L]
-
-# Development assets (multi-theme)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*/?themes/[0-9a-zA-Z_-]{1,}/media/assets/(.*)$ /assets/$1 [QSA,L]
-
 # App single theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^media/(.*)$ app/views/media/$1 [QSA,L]
+RewriteRule ^assets/(.*)$ app/views/assets/$1 [QSA,L]
 
 # App multi-theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^themes/([0-9a-zA-Z_-]{1,})/media/(.*)$ app/views/$1/media/$2 [QSA,L]
+RewriteRule ^themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ app/views/$1/assets/$2 [QSA,L]
 
 # Module single theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([0-9a-zA-Z_-]{1,})/media/(.*)$ modules/$1/views/media/$2 [QSA,L]
+RewriteRule ^([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/views/assets/$2 [QSA,L]
 
 # Module multi-theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([0-9a-zA-Z_-]{1,})/themes/([0-9a-zA-Z_-]{1,})/media/(.*)$ modules/$1/views/$2/media/$3 [QSA,L]
+RewriteRule ^([0-9a-zA-Z_-]{1,})/themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/views/$2/assets/$3 [QSA,L]
 
 # index.php
 RewriteCond %{REQUEST_FILENAME} !-f

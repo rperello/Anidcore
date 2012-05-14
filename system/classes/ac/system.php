@@ -116,7 +116,6 @@ class Ac_System {
 
             //Initialize db connections (and connect if autoconnect==true in their config)
             self::db();
-
             
             if (empty(self::$router))
                 self::$router = new Ac_Router();
