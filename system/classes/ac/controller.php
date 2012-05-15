@@ -20,6 +20,8 @@ abstract class Ac_Controller {
     protected $view;
 
     public function __construct() {
+        $this->contentType("text/plain");
+        $this->status(200);
         $view_class = Ac::config("views.class", "Ac_View");
         $this->view = new $view_class();
     }

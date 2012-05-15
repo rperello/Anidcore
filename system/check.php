@@ -515,6 +515,14 @@ $servertest = new Ac_ServerTest();
                         ?></td>
                     </tr>
                     <tr>
+                        <th>Root folder owner:</th>
+                        <td><?php 
+                        echo getcwd()."<br>";
+                        $processUser = posix_getpwuid(fileowner($servertest->ROOT_PATH));
+                        echo "Name=".$processUser["name"]. '; ID='.$processUser["uid"].'; Group='. $processUser["gid"]; 
+                        ?></td>
+                    </tr>
+                    <tr>
                         <th colspan="2"><br />Loaded PHP extensions:</th>
                     </tr>
                     <tr>

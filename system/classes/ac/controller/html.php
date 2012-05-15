@@ -10,7 +10,6 @@ class Ac_Controller_Html extends Ac_Controller {
         $this->meta_keywords = "";
         $this->meta_robots = "INDEX,FOLLOW";
         $this->link_canonical = Ac::request()->resourceUrl();
-        $this->status(200);
     }
 
     public function __index() {

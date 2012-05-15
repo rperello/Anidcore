@@ -3,7 +3,7 @@
 return array(
     "server.timezone" => "Europe/Madrid",
     "log.enabled" => true,
-    "log.class" => "Ac_Log_Flash",
+    "log.class" => "Ac_Log_File",
     "modules.autoload" => array(
         'i18n',
         "admin",

@@ -1,5 +1,5 @@
 <?php
-function __t($string) {
+function __t($string, $lang = null, $realm = null) {
     return $string;
 }
 class Module_I18n extends Ac_Module {

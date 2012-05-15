@@ -1,14 +1,5 @@
 <?php
 
-class App extends Ac{
-    protected $current_language = null;
-    protected $current_document = null;
+class App extends Base_App{
     
-    public static function language($name = null){
-        
-    }
-    
-    public static function document($id = null){
-        
-    }
 }
