@@ -19,11 +19,12 @@
 }
 
 #admintoolbar_logo img{
-    opacity: 0.8;
+/*    opacity: 1;*/
+    max-height: 26px;
 }
 
 #admintoolbar_logo:hover img{
-    opacity: 1;
+/*    opacity: 1;*/
 }
 
 #admintoolbar a i{

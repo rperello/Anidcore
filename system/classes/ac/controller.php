@@ -51,6 +51,14 @@ abstract class Ac_Controller {
         return true;
     }
 
+    /**
+     * This action should not be callable
+     * @return mixed 
+     */
+    final private function action_error() {
+        return $this->__handle();
+    }
+
     public function __set($name, $value) {
         $this->view->$name = $value;
     }

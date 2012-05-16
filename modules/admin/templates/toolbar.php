@@ -4,16 +4,25 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     <li class="dropdown active_">
-                        <a id="admintoolbar_logo" class="dropdown-toggle" href="<?php echo Ac::module("admin")->url(); ?>">
-                            <img src="<?php echo Ac::module("admin")->assetsUrl() ?>img/hat_white.png?r=10" />
+                        <a id="admintoolbar_logo" class="dropdown-toggle" href="javascript:;<?php //echo App::admin()->url(); ?>">
+                            <img src="<?php echo App::logo("app") ? App::logo("app") : App::logo("admin");  ?>" />
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo Ac::url("dir"); ?>"><i class="icon-home"></i> <?php echo __t("Go to Website"); ?></a></li>
+                            <li<?php if(App::is("app")) echo ' class="active" '; ?>>
+                                <a href="<?php echo App::url("dir"); ?>">
+                                    <i class="icon-home<?php if(App::is("app")) echo ' icon-white '; ?>"></i> <?php echo __t("Home"); ?>
+                                </a>
+                            </li>
+                            <li<?php if(App::is("admin")) echo ' class="active" '; ?>>
+                                <a href="<?php echo App::admin()->url(); ?>">
+                                    <i class="icon-briefcase<?php if(App::is("admin")) echo ' icon-white '; ?>"></i> <?php echo __t("Admin Panel"); ?>
+                                </a>
+                            </li>
                             <li class="divider"></li>
                             <li><a href="#"><i class="icon-envelope"></i> <?php echo __t("Web mail"); ?></a></li>
                             <li><a href="#"><i class="icon-user"></i> <?php echo __t("Server admin"); ?></a></li>
                             <li>
-                                <a href="mailto:contact@example.com?subject=Support&body=Ref:<?php echo urlencode(" ".Ac::url("current")); ?>">
+                                <a href="mailto:contact@example.com?subject=Support&body=Ref:<?php echo urlencode(" ".App::url("current")); ?>">
                                     <i class="icon-question-sign"></i>
                                      <?php echo __t("Support"); ?>
                                 </a>
@@ -26,22 +35,22 @@
                         </form>
                     </li>
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown_" href="<?php echo AC_ADMIN_URL; ?>documents/">
+                        <a class="dropdown-toggle" data-toggle="dropdown_" href="<?php echo App::admin()->url(); ?>documents/">
                             <?php echo __t("Pages"); ?>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo AC_ADMIN_URL; ?>documents/new"><i class="icon-plus"></i> <?php echo __t("New page"); ?></a></li>
+                            <li><a href="<?php echo App::admin()->url(); ?>documents/new"><i class="icon-plus"></i> <?php echo __t("New page"); ?></a></li>
                             <li class="divider"></li>
                             <?php
                             
                                 $pages = R_Document::find("(type='page') AND (is_page=1) AND (parent_fk is null)", "sort_order");
                                 foreach($pages as $i => $p){
                                     ?>
-                            <li><a href="<?php echo AC_ADMIN_URL."documents/?id=".$p->id; ?>"><em> <?php echo $p->name; ?></em></a></li>
+                            <li><a href="<?php echo App::admin()->url()."documents/?id=".$p->id; ?>"><em> <?php echo $p->name; ?></em></a></li>
                             <?php
                                     if($i==1){
                                         ?>
-                                <li><a href="<?php echo AC_ADMIN_URL."documents/"; ?>"> &raquo; ver más </a></li>
+                                <li><a href="<?php echo App::admin()->url()."documents/"; ?>"> &raquo; ver más </a></li>
                                 <?php
                                         break;
                                     }
@@ -69,7 +78,7 @@
                             <li><a href="#"><?php echo __t("Themes"); ?></a></li>
                             <li><a href="#"><?php echo __t("Modules"); ?></a></li>
                             <li class="divider"></li>
-                            <li><a href="<?php echo AC_ADMIN_URL; ?>filesystem/"><?php echo __t("Code editor"); ?></a></li>
+                            <li><a href="<?php echo App::admin()->url(); ?>filesystem/"><?php echo __t("Code editor"); ?></a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -102,7 +111,7 @@
                     </li>
                     <?php if(/*ac_is_document()*/ false): ?>
                     <li>
-                        <a title="Editar esta página" href="<?php echo AC_ADMIN_URL."documents/?id=".ac_document()->id; ?>" class="pull-right">
+                        <a title="Editar esta página" href="<?php echo App::admin()->url()."documents/?id=".ac_document()->id; ?>" class="pull-right">
                             <i class="icon-pencil icon-white"></i>
                         </a>
                     </li>

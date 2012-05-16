@@ -8,7 +8,7 @@
 <meta name="robots" content="NOINDEX,NOFOLLOW" />
 <meta name="googlebot" content="noindex,nofollow" />
 
-<link rel="shortcut icon" type="image/png" href="<?php echo Ac::url("assets"); ?>img/hat.png?r=0" />
+<link rel="shortcut icon" type="image/png" href="<?php echo Ac::url("assets"); ?>img/favicon.png?r=0" />
 
 <link rel="stylesheet" href="/assets/css/framework-inc.css" type="text/css" media="all" />
 <link rel="stylesheet" href="<?php echo Ac::url("assets") ?>css/styles-inc.css" type="text/css" media="all" />

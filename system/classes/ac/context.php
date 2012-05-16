@@ -141,7 +141,9 @@ class Ac_Context extends Ac_Singleton {
                 $currentUri = explode("?", $_SERVER["REQUEST_URI"], 2);
                 $resource = substr(trim($currentUri[0], "/ "), strlen($con['directory']));
             }
-            $con['resource'] = explode('.', trim($resource, '/ '));
+            $con['resource'] = explode('.', trim($resource, '/ ') . "/");
+            if ($con["resource"] == "/")
+                $con["resource"] = "";
 
             /**
              * Requested resource format 

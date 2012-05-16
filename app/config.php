@@ -1,4 +1,6 @@
-<?php defined('AC_PATH') OR exit('No direct access allowed in file '.__FILE__);
+<?php
+
+defined('AC_PATH') OR exit('No direct access allowed in file ' . __FILE__);
 
 return array(
     "server.timezone" => "Europe/Madrid",
@@ -11,7 +13,10 @@ return array(
     "modules.config" => array(
         "admin" => array(
         //override module config. here
-        )
+        ),
+        "i18n"=>array(
+            "lang_in_urls"=>false,
+        ),
     ),
     "database" => array(
         "enabled" => true,
@@ -27,7 +32,7 @@ return array(
         "collate" => "utf8_general_ci",
         "options" => array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC),
         "autoconnect" => false, //false = lazy connect (recommended)
-        "log_success"=>false,
-        "log_errors"=>true,
+        "log_success" => false,
+        "log_errors" => true,
     ),
 );

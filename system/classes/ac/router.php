@@ -134,7 +134,16 @@ class Ac_Router {
 
         $request = Ac::trigger(__CLASS__ . "_before_" . __FUNCTION__, array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
         $this->directoryUrl = trim($request["directoryUrl"], ' /') . "/";
-        $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
+
+        if ($request["resource"] == "/")
+            $request["resource"] = "";
+        $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", $request["resource"]);
+
+        // Prevent? to access duplicated content when accessing '/', '/index' and '/index/index'
+        $r = strtolower(implode("/", $this->resource));
+        if (($r == "index") || ($r == "index/index")) {
+            $this->resource = Ac::config("router.on_index") ? array(Ac::config("router.on_index")) : $this->resource;
+        }
 
         $this->findController();
         $this->findAction();
@@ -147,7 +156,7 @@ class Ac_Router {
     protected function findController() {
         $resource = $this->resource;
         if (!is_array($resource))
-            $resource = explode("/", trim($resource, "/ "));
+            $resource = explode("/", $resource);
         $params = array();
         $controller = "Controller_" . ucfirst(Ac::config("router.default_controller", "index"));
         if (count($resource) > 0) {
@@ -172,15 +181,15 @@ class Ac_Router {
         $resource = $this->params;
 
         if (!is_array($resource))
-            $resource = explode("/", trim($resource, "/ "));
+            $resource = explode("/", $resource);
 
         if (count($resource) > 0) {
             $action = "__handle";
             $part = $resource[0];
             $fn = "action_" . strtolower(ac_str_slug($part, "_"));
-            if (Ac::config("router.on_action_index")) {
-                if ($fn == "action_index")
-                    $fn = Ac::config("router.on_action_index");
+
+            if (($fn == "action_index") && Ac::config("router.on_index")) {
+                $fn = Ac::config("router.on_index");
             }
             if (method_exists($controller, $fn)) {
                 $this->actionUrl = $this->controllerUrl . $part . "/";

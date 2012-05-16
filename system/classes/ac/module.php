@@ -2,8 +2,8 @@
 
 class Ac_Module {
 
-    public $name;
-    public $path;
+    protected $name;
+    protected $path;
     protected $defaults;
     protected $hasAutoload = false;
     protected $hasTemplates = false;

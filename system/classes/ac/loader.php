@@ -3,7 +3,6 @@
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "singleton.php";
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "observer.php";
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "context.php";
-require_once AC_PATH_SYSTEM . "classes" . _DS . "ac" . _DS . "system.php";
 require_once AC_PATH_SYSTEM . "classes" . _DS . "ac.php";
 
 class Ac_Loader extends Ac_Singleton {
@@ -225,57 +224,57 @@ class Ac_Loader extends Ac_Singleton {
     public function getConfig() {
         if (empty($this->config)) {
             $this->config = Ac::trigger("AcImportConfig", array_merge(array(
-                ////
-                //MODULES:
-                "modules.config" => array(),
-                "modules.autoload" => array(),
-                ////
-                //HTTP:
-                "http.default_format" => "html",
-                ////
-                //VIEWS:
-                "views.class" => "Ac_View",
-                ////
-                //ROUTER:
-                "router.default_controller" => "index",
-                "router.on_action_index" => "__index",
-                ////
-                //LOG:
-                "log.enabled" => true,
-                "log.class" => "Ac_Log_File",
-                ////
-                //CACHE:
-                "cache.enabled" => false,
-                "cache.class" => "Ac_Storage_Cache_File",
-                "cache.path" => AC_PATH_APP . "cache" . _DS,
-                ////
-                //KEY:
-                "key.names" => array(), //extra generated keys
-                ////
-                //SERVER:
-                "server.default_mimetype" => "text/html",
-                "server.default_charset" => "UTF-8",
-                "server.locale" => "en_US.UTF8",
-                "server.timezone" => "UTC",
-                "server.memory_limit" => "180M",
-                "server.max_execution_time" => 60,
-                "server.max_input_time" => -1,
-                "server.post_max_size" => "24M",
-                "server.upload_max_file_size" => "16M",
-                "server.display_errors" => true,
-                "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
-                "server.error_log_file" => AC_PATH_LOGS . 'php_errors.log',
-                ////
-                //SESSION:
-                "session.sessid_lifetime" => 180,
-                "session.cookie_path" => preg_replace('/\/index\.php.*/', '/', $_SERVER["SCRIPT_NAME"]),
-                "session.cookie_secure" => (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")),
-                "session.cookie_lifetime" => 0,
-                "session.gc_maxlifetime" => 1440,
-                "session.cache_expire" => 180,
-                "session.cache_limiter" => "nocache",
-                    )
-                    , include AC_PATH_APP . "config.php"));
+                                ////
+                                //MODULES:
+                                "modules.config" => array(),
+                                "modules.autoload" => array(),
+                                ////
+                                //HTTP:
+                                "http.default_format" => "html",
+                                ////
+                                //VIEWS:
+                                "views.class" => "Ac_View",
+                                ////
+                                //ROUTER:
+                                "router.default_controller" => "index",
+                                "router.on_index" => "error", //resource replacement value when the resource equals to 'index' or 'index/index'. false=no replace
+                                ////
+                                //LOG:
+                                "log.enabled" => true,
+                                "log.class" => "Ac_Log_File",
+                                ////
+                                //CACHE:
+                                "cache.enabled" => false,
+                                "cache.class" => "Ac_Storage_Cache_File",
+                                "cache.path" => AC_PATH_APP . "cache" . _DS,
+                                ////
+                                //KEY:
+                                "key.names" => array(), //extra generated keys
+                                ////
+                                //SERVER:
+                                "server.default_mimetype" => "text/html",
+                                "server.default_charset" => "UTF-8",
+                                "server.locale" => "en_US.UTF8",
+                                "server.timezone" => "UTC",
+                                "server.memory_limit" => "180M",
+                                "server.max_execution_time" => 60,
+                                "server.max_input_time" => -1,
+                                "server.post_max_size" => "24M",
+                                "server.upload_max_file_size" => "16M",
+                                "server.display_errors" => true,
+                                "server.error_reporting" => -1, //E_ALL & ~E_STRICT; // -1 | E_STRICT
+                                "server.error_log_file" => AC_PATH_LOGS . 'php_errors.log',
+                                ////
+                                //SESSION:
+                                "session.sessid_lifetime" => 180,
+                                "session.cookie_path" => preg_replace('/\/index\.php.*/', '/', $_SERVER["SCRIPT_NAME"]),
+                                "session.cookie_secure" => (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")),
+                                "session.cookie_lifetime" => 0,
+                                "session.gc_maxlifetime" => 1440,
+                                "session.cache_expire" => 180,
+                                "session.cache_limiter" => "nocache",
+                                    )
+                                    , include AC_PATH_APP . "config.php"));
         }
         return $this->config;
     }
