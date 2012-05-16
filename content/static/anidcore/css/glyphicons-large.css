@@ -1,0 +1,2411 @@
+[class^="icon-large-"], [class*=" icon-large-"] {
+  display: inline-block;
+  vertical-align: text-top;
+  background-image: url(../img/sprites/glyphicons-large.png);
+  background-repeat: no-repeat;
+  *margin-right: .3em;
+}
+
+.icon-white[class^="icon-large-"], .icon-white[class*=" icon-large-"] {
+  background-image: url(../img/sprites/glyphicons-large-white.png);
+}
+
+.icon-large-glass {
+    width: 24px;
+    height: 24px;
+    background-position: -315px -534px;
+}
+
+.icon-large-leaf {
+    width: 24px;
+    height: 25px;
+    background-position: -176px -359px;
+}
+
+.icon-large-dog {
+    width: 26px;
+    height: 25px;
+    background-position: -181px -254px;
+}
+
+.icon-large-user {
+    width: 23px;
+    height: 22px;
+    background-position: -669px -596px;
+}
+
+.icon-large-girl {
+    width: 22px;
+    height: 22px;
+    background-position: -704px -498px;
+}
+
+.icon-large-car {
+    width: 26px;
+    height: 22px;
+    background-position: -350px -567px;
+}
+
+.icon-large-user_add {
+    width: 28px;
+    height: 22px;
+    background-position: -434px -323px;
+}
+
+.icon-large-user_remove {
+    width: 26px;
+    height: 22px;
+    background-position: -634px -534px;
+}
+
+.icon-large-film {
+    width: 22px;
+    height: 26px;
+    background-position: -601px -534px;
+}
+
+.icon-large-magic {
+    width: 24px;
+    height: 24px;
+    background-position: -280px -534px;
+}
+
+.icon-large-envelope {
+    width: 24px;
+    height: 16px;
+    background-position: -735px -599px;
+}
+
+.icon-large-camera {
+    width: 26px;
+    height: 20px;
+    background-position: -282px -39px;
+}
+
+.icon-large-heart {
+    width: 24px;
+    height: 22px;
+    background-position: -659px -311px;
+}
+
+.icon-large-beach_umbrella {
+    width: 25px;
+    height: 25px;
+    background-position: -622px -254px;
+}
+
+.icon-large-train {
+    width: 20px;
+    height: 27px;
+    background-position: -428px -601px;
+}
+
+.icon-large-print {
+    width: 24px;
+    height: 24px;
+    background-position: -245px -534px;
+}
+
+.icon-large-bin {
+    width: 20px;
+    height: 28px;
+    background-position: -643px -0px;
+}
+
+.icon-large-music {
+    width: 21px;
+    height: 25px;
+    background-position: -655px -344px;
+}
+
+.icon-large-note {
+    width: 18px;
+    height: 25px;
+    background-position: -738px -138px;
+}
+
+.icon-large-cogwheel {
+    width: 24px;
+    height: 24px;
+    background-position: -210px -534px;
+}
+
+.icon-large-home {
+    width: 27px;
+    height: 26px;
+    background-position: -577px -70px;
+}
+
+.icon-large-snowflake {
+    width: 28px;
+    height: 28px;
+    background-position: -214px -0px;
+}
+
+.icon-large-fire {
+    width: 20px;
+    height: 26px;
+    background-position: -675px -417px;
+}
+
+.icon-large-cogwheels {
+    width: 26px;
+    height: 26px;
+    background-position: -407px -143px;
+}
+
+.icon-large-parents {
+    width: 32px;
+    height: 22px;
+    background-position: -577px -38px;
+}
+
+.icon-large-binoculars {
+    width: 24px;
+    height: 24px;
+    background-position: -175px -534px;
+}
+
+.icon-large-road {
+    width: 28px;
+    height: 24px;
+    background-position: -144px -217px;
+}
+
+.icon-large-search {
+    width: 24px;
+    height: 24px;
+    background-position: -140px -534px;
+}
+
+.icon-large-cars {
+    width: 36px;
+    height: 25px;
+    background-position: -0px -0px;
+}
+
+.icon-large-notes_2 {
+    width: 20px;
+    height: 27px;
+    background-position: -397px -601px;
+}
+
+.icon-large-pencil {
+    width: 25px;
+    height: 25px;
+    background-position: -586px -254px;
+}
+
+.icon-large-bus {
+    width: 32px;
+    height: 25px;
+    background-position: -171px -0px;
+}
+
+.icon-large-wifi_alt {
+    width: 26px;
+    height: 26px;
+    background-position: -370px -143px;
+}
+
+.icon-large-luggage {
+    width: 20px;
+    height: 27px;
+    background-position: -366px -601px;
+}
+
+.icon-large-old_man {
+    width: 23px;
+    height: 24px;
+    background-position: -205px -601px;
+}
+
+.icon-large-woman {
+    width: 22px;
+    height: 22px;
+    background-position: -703px -465px;
+}
+
+.icon-large-file {
+    width: 19px;
+    height: 24px;
+    background-position: -733px -67px;
+}
+
+.icon-large-credit {
+    width: 26px;
+    height: 24px;
+    background-position: -397px -290px;
+}
+
+.icon-large-airplane {
+    width: 24px;
+    height: 25px;
+    background-position: -141px -359px;
+}
+
+.icon-large-notes {
+    width: 20px;
+    height: 25px;
+    background-position: -707px -164px;
+}
+
+.icon-large-stats {
+    width: 26px;
+    height: 25px;
+    background-position: -144px -254px;
+}
+
+.icon-large-charts {
+    width: 27px;
+    height: 24px;
+    background-position: -329px -254px;
+}
+
+.icon-large-pie_chart {
+    width: 26px;
+    height: 25px;
+    background-position: -70px -254px;
+}
+
+.icon-large-group {
+    width: 35px;
+    height: 22px;
+    background-position: -253px -0px;
+}
+
+.icon-large-keys {
+    width: 24px;
+    height: 26px;
+    background-position: -362px -290px;
+}
+
+.icon-large-calendar {
+    width: 23px;
+    height: 25px;
+    background-position: -456px -534px;
+}
+
+.icon-large-router {
+    width: 27px;
+    height: 26px;
+    background-position: -319px -70px;
+}
+
+.icon-large-camera_small {
+    width: 22px;
+    height: 24px;
+    background-position: -659px -276px;
+}
+
+.icon-large-dislikes {
+    width: 26px;
+    height: 24px;
+    background-position: -325px -290px;
+}
+
+.icon-large-star {
+    width: 25px;
+    height: 24px;
+    background-position: -105px -359px;
+}
+
+.icon-large-link {
+    width: 21px;
+    height: 23px;
+    background-position: -703px -599px;
+}
+
+.icon-large-eye_open {
+    width: 31px;
+    height: 17px;
+    background-position: -0px -571px;
+}
+
+.icon-large-eye_close {
+    width: 31px;
+    height: 24px;
+    background-position: -373px -0px;
+}
+
+.icon-large-alarm {
+    width: 28px;
+    height: 26px;
+    background-position: -203px -38px;
+}
+
+.icon-large-clock {
+    width: 24px;
+    height: 24px;
+    background-position: -105px -534px;
+}
+
+.icon-large-stopwatch {
+    width: 23px;
+    height: 27px;
+    background-position: -586px -290px;
+}
+
+.icon-large-projector {
+    width: 28px;
+    height: 25px;
+    background-position: -615px -70px;
+}
+
+.icon-large-history {
+    width: 25px;
+    height: 26px;
+    background-position: -639px -217px;
+}
+
+.icon-large-truck {
+    width: 32px;
+    height: 27px;
+    background-position: -47px -0px;
+}
+
+.icon-large-cargo {
+    width: 25px;
+    height: 26px;
+    background-position: -603px -217px;
+}
+
+.icon-large-compass {
+    width: 24px;
+    height: 24px;
+    background-position: -70px -534px;
+}
+
+.icon-large-keynote {
+    width: 20px;
+    height: 30px;
+    background-position: -473px -323px;
+}
+
+.icon-large-attach {
+    width: 26px;
+    height: 24px;
+    background-position: -288px -290px;
+}
+
+.icon-large-power {
+    width: 22px;
+    height: 24px;
+    background-position: -675px -241px;
+}
+
+.icon-large-lightbulb {
+    width: 20px;
+    height: 26px;
+    background-position: -675px -380px;
+}
+
+.icon-large-tag {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -534px;
+}
+
+.icon-large-tags {
+    width: 30px;
+    height: 24px;
+    background-position: -494px -38px;
+}
+
+.icon-large-cleaning {
+    width: 24px;
+    height: 25px;
+    background-position: -70px -359px;
+}
+
+.icon-large-ruller {
+    width: 27px;
+    height: 14px;
+    background-position: -214px -299px;
+}
+
+.icon-large-gift {
+    width: 24px;
+    height: 25px;
+    background-position: -35px -359px;
+}
+
+.icon-large-umbrella {
+    width: 26px;
+    height: 28px;
+    background-position: -166px -38px;
+}
+
+.icon-large-book {
+    width: 22px;
+    height: 24px;
+    background-position: -675px -206px;
+}
+
+.icon-large-bookmark {
+    width: 16px;
+    height: 24px;
+    background-position: -740px -564px;
+}
+
+.icon-large-signal {
+    width: 31px;
+    height: 23px;
+    background-position: -535px -38px;
+}
+
+.icon-large-cup {
+    width: 22px;
+    height: 24px;
+    background-position: -674px -171px;
+}
+
+.icon-large-stroller {
+    width: 25px;
+    height: 26px;
+    background-position: -567px -217px;
+}
+
+.icon-large-headphones {
+    width: 24px;
+    height: 24px;
+    background-position: -0px -534px;
+}
+
+.icon-large-headset {
+    width: 24px;
+    height: 28px;
+    background-position: -109px -217px;
+}
+
+.icon-large-warning_sign {
+    width: 29px;
+    height: 24px;
+    background-position: -160px -106px;
+}
+
+.icon-large-signal {
+    width: 24px;
+    height: 24px;
+    background-position: -630px -499px;
+}
+
+.icon-large-retweet {
+    width: 30px;
+    height: 15px;
+    background-position: -503px -668px;
+}
+
+.icon-large-refresh {
+    width: 25px;
+    height: 26px;
+    background-position: -531px -217px;
+}
+
+.icon-large-roundabout {
+    width: 27px;
+    height: 27px;
+    background-position: -605px -0px;
+}
+
+.icon-large-random {
+    width: 28px;
+    height: 20px;
+    background-position: -490px -567px;
+}
+
+.icon-large-heat {
+    width: 29px;
+    height: 25px;
+    background-position: -413px -38px;
+}
+
+.icon-large-repeat {
+    width: 24px;
+    height: 26px;
+    background-position: -253px -290px;
+}
+
+.icon-large-display {
+    width: 28px;
+    height: 24px;
+    background-position: -70px -217px;
+}
+
+.icon-large-log_book {
+    width: 22px;
+    height: 24px;
+    background-position: -674px -136px;
+}
+
+.icon-large-adress_book {
+    width: 22px;
+    height: 24px;
+    background-position: -654px -101px;
+}
+
+.icon-large-magnet {
+    width: 21px;
+    height: 23px;
+    background-position: -708px -565px;
+}
+
+.icon-large-table {
+    width: 24px;
+    height: 24px;
+    background-position: -595px -499px;
+}
+
+.icon-large-adjust {
+    width: 26px;
+    height: 26px;
+    background-position: -333px -143px;
+}
+
+.icon-large-tint {
+    width: 23px;
+    height: 26px;
+    background-position: -319px -359px;
+}
+
+.icon-large-crop {
+    width: 26px;
+    height: 26px;
+    background-position: -296px -143px;
+}
+
+.icon-large-vector_path_square {
+    width: 24px;
+    height: 24px;
+    background-position: -560px -499px;
+}
+
+.icon-large-vector_path_circle {
+    width: 24px;
+    height: 24px;
+    background-position: -525px -499px;
+}
+
+.icon-large-vector_path_polygon {
+    width: 26px;
+    height: 25px;
+    background-position: -494px -217px;
+}
+
+.icon-large-vector_path_line {
+    width: 24px;
+    height: 24px;
+    background-position: -490px -499px;
+}
+
+.icon-large-vector_path_curve {
+    width: 24px;
+    height: 24px;
+    background-position: -455px -499px;
+}
+
+.icon-large-vector_path_all {
+    width: 24px;
+    height: 24px;
+    background-position: -420px -499px;
+}
+
+.icon-large-font {
+    width: 27px;
+    height: 23px;
+    background-position: -548px -290px;
+}
+
+.icon-large-italic {
+    width: 14px;
+    height: 24px;
+    background-position: -315px -697px;
+}
+
+.icon-large-bold {
+    width: 19px;
+    height: 24px;
+    background-position: -740px -0px;
+}
+
+.icon-large-text_underline {
+    width: 20px;
+    height: 24px;
+    background-position: -442px -668px;
+}
+
+.icon-large-text_strike {
+    width: 20px;
+    height: 22px;
+    background-position: -731px -328px;
+}
+
+.icon-large-text_height {
+    width: 26px;
+    height: 24px;
+    background-position: -177px -290px;
+}
+
+.icon-large-text_width {
+    width: 22px;
+    height: 24px;
+    background-position: -664px -66px;
+}
+
+.icon-large-text_resize {
+    width: 26px;
+    height: 26px;
+    background-position: -259px -143px;
+}
+
+.icon-large-left_indent {
+    width: 24px;
+    height: 22px;
+    background-position: -674px -33px;
+}
+
+.icon-large-right_indent {
+    width: 24px;
+    height: 22px;
+    background-position: -674px -0px;
+}
+
+.icon-large-align_left {
+    width: 24px;
+    height: 21px;
+    background-position: -662px -661px;
+}
+
+.icon-large-align_center {
+    width: 24px;
+    height: 21px;
+    background-position: -558px -661px;
+}
+
+.icon-large-align_right {
+    width: 24px;
+    height: 21px;
+    background-position: -407px -661px;
+}
+
+.icon-large-justify {
+    width: 24px;
+    height: 21px;
+    background-position: -372px -661px;
+}
+
+.icon-large-list {
+    width: 24px;
+    height: 21px;
+    background-position: -337px -661px;
+}
+
+.icon-large-text_smaller {
+    width: 22px;
+    height: 16px;
+    background-position: -232px -697px;
+}
+
+.icon-large-text_bigger {
+    width: 24px;
+    height: 22px;
+    background-position: -627px -634px;
+}
+
+.icon-large-embed {
+    width: 30px;
+    height: 14px;
+    background-position: -73px -328px;
+}
+
+.icon-large-embed_close {
+    width: 30px;
+    height: 24px;
+    background-position: -453px -38px;
+}
+
+.icon-large-adjust {
+    width: 23px;
+    height: 24px;
+    background-position: -171px -601px;
+}
+
+.icon-large-message_full {
+    width: 24px;
+    height: 28px;
+    background-position: -35px -217px;
+}
+
+.icon-large-message_empty {
+    width: 24px;
+    height: 28px;
+    background-position: -0px -217px;
+}
+
+.icon-large-message_in {
+    width: 24px;
+    height: 28px;
+    background-position: -635px -178px;
+}
+
+.icon-large-message_out {
+    width: 24px;
+    height: 28px;
+    background-position: -600px -178px;
+}
+
+.icon-large-message_plus {
+    width: 29px;
+    height: 23px;
+    background-position: -263px -217px;
+}
+
+.icon-large-message_minus {
+    width: 29px;
+    height: 23px;
+    background-position: -223px -217px;
+}
+
+.icon-large-message_ban {
+    width: 29px;
+    height: 23px;
+    background-position: -183px -217px;
+}
+
+.icon-large-message_flag {
+    width: 27px;
+    height: 23px;
+    background-position: -510px -290px;
+}
+
+.icon-large-message_lock {
+    width: 28px;
+    height: 24px;
+    background-position: -561px -178px;
+}
+
+.icon-large-message_new {
+    width: 28px;
+    height: 22px;
+    background-position: -214px -323px;
+}
+
+.icon-large-inbox {
+    width: 24px;
+    height: 23px;
+    background-position: -136px -601px;
+}
+
+.icon-large-inbox_plus {
+    width: 27px;
+    height: 27px;
+    background-position: -567px -0px;
+}
+
+.icon-large-inbox_minus {
+    width: 27px;
+    height: 27px;
+    background-position: -529px -0px;
+}
+
+.icon-large-inbox_lock {
+    width: 26px;
+    height: 28px;
+    background-position: -129px -38px;
+}
+
+.icon-large-inbox_in {
+    width: 24px;
+    height: 26px;
+    background-position: -142px -290px;
+}
+
+.icon-large-inbox_out {
+    width: 24px;
+    height: 26px;
+    background-position: -107px -290px;
+}
+
+.icon-large-computer_locked {
+    width: 28px;
+    height: 24px;
+    background-position: -522px -178px;
+}
+
+.icon-large-computer_service {
+    width: 28px;
+    height: 24px;
+    background-position: -483px -178px;
+}
+
+.icon-large-computer_proces {
+    width: 28px;
+    height: 24px;
+    background-position: -444px -178px;
+}
+
+.icon-large-phone {
+    width: 15px;
+    height: 25px;
+    background-position: -735px -626px;
+}
+
+.icon-large-database_lock {
+    width: 26px;
+    height: 28px;
+    background-position: -39px -38px;
+}
+
+.icon-large-database_plus {
+    width: 27px;
+    height: 27px;
+    background-position: -491px -0px;
+}
+
+.icon-large-database_minus {
+    width: 27px;
+    height: 27px;
+    background-position: -453px -0px;
+}
+
+.icon-large-database_ban {
+    width: 26px;
+    height: 27px;
+    background-position: -282px -70px;
+}
+
+.icon-large-folder_open {
+    width: 30px;
+    height: 22px;
+    background-position: -344px -217px;
+}
+
+.icon-large-folder_plus {
+    width: 29px;
+    height: 25px;
+    background-position: -373px -38px;
+}
+
+.icon-large-folder_minus {
+    width: 29px;
+    height: 25px;
+    background-position: -242px -38px;
+}
+
+.icon-large-folder_lock {
+    width: 28px;
+    height: 26px;
+    background-position: -0px -38px;
+}
+
+.icon-large-folder_flag {
+    width: 27px;
+    height: 25px;
+    background-position: -558px -143px;
+}
+
+.icon-large-folder_new {
+    width: 28px;
+    height: 24px;
+    background-position: -635px -143px;
+}
+
+.icon-large-check {
+    width: 22px;
+    height: 18px;
+    background-position: -397px -328px;
+}
+
+.icon-large-edit {
+    width: 24px;
+    height: 21px;
+    background-position: -302px -661px;
+}
+
+.icon-large-new_window {
+    width: 26px;
+    height: 22px;
+    background-position: -564px -534px;
+}
+
+.icon-large-more_windows {
+    width: 23px;
+    height: 23px;
+    background-position: -527px -601px;
+}
+
+.icon-large-show_big_thumbnails {
+    width: 22px;
+    height: 22px;
+    background-position: -706px -432px;
+}
+
+.icon-large-show_thumbnails {
+    width: 22px;
+    height: 22px;
+    background-position: -706px -399px;
+}
+
+.icon-large-show_thumbnails_with_lines {
+    width: 24px;
+    height: 15px;
+    background-position: -35px -697px;
+}
+
+.icon-large-show_lines {
+    width: 24px;
+    height: 15px;
+    background-position: -0px -697px;
+}
+
+.icon-large-playlist {
+    width: 29px;
+    height: 24px;
+    background-position: -120px -106px;
+}
+
+.icon-large-picture {
+    width: 24px;
+    height: 20px;
+    background-position: -709px -36px;
+}
+
+.icon-large-imac {
+    width: 26px;
+    height: 22px;
+    background-position: -527px -534px;
+}
+
+.icon-large-macbook {
+    width: 28px;
+    height: 15px;
+    background-position: -253px -328px;
+}
+
+.icon-large-ipad {
+    width: 20px;
+    height: 27px;
+    background-position: -335px -601px;
+}
+
+.icon-large-iphone {
+    width: 14px;
+    height: 24px;
+    background-position: -290px -697px;
+}
+
+.icon-large-iphone_transfer {
+    width: 29px;
+    height: 24px;
+    background-position: -80px -106px;
+}
+
+.icon-large-iphone_exchange {
+    width: 29px;
+    height: 24px;
+    background-position: -40px -106px;
+}
+
+.icon-large-ipod {
+    width: 14px;
+    height: 22px;
+    background-position: -527px -697px;
+}
+
+.icon-large-ipod_shuffle {
+    width: 15px;
+    height: 13px;
+    background-position: -149px -726px;
+}
+
+.icon-large-ear_plugs {
+    width: 20px;
+    height: 24px;
+    background-position: -137px -668px;
+}
+
+.icon-large-albums {
+    width: 28px;
+    height: 18px;
+    background-position: -669px -567px;
+}
+
+.icon-large-step_backward {
+    width: 14px;
+    height: 18px;
+    background-position: -27px -726px;
+}
+
+.icon-large-fast_backward {
+    width: 25px;
+    height: 18px;
+    background-position: -0px -328px;
+}
+
+.icon-large-rewind {
+    width: 23px;
+    height: 18px;
+    background-position: -363px -328px;
+}
+
+.icon-large-play {
+    width: 16px;
+    height: 18px;
+    background-position: -662px -697px;
+}
+
+.icon-large-pause {
+    width: 10px;
+    height: 16px;
+    background-position: -175px -726px;
+}
+
+.icon-large-stop {
+    width: 14px;
+    height: 14px;
+    background-position: -124px -726px;
+}
+
+.icon-large-forward {
+    width: 23px;
+    height: 18px;
+    background-position: -329px -328px;
+}
+
+.icon-large-fast_forward {
+    width: 25px;
+    height: 18px;
+    background-position: -731px -299px;
+}
+
+.icon-large-step_forward {
+    width: 14px;
+    height: 18px;
+    background-position: -748px -697px;
+}
+
+.icon-large-eject {
+    width: 18px;
+    height: 17px;
+    background-position: -552px -697px;
+}
+
+.icon-large-facetime_video {
+    width: 24px;
+    height: 16px;
+    background-position: -575px -328px;
+}
+
+.icon-large-download_alt {
+    width: 24px;
+    height: 24px;
+    background-position: -385px -499px;
+}
+
+.icon-large-mute {
+    width: 22px;
+    height: 16px;
+    background-position: -199px -697px;
+}
+
+.icon-large-volume_down {
+    width: 16px;
+    height: 16px;
+    background-position: -0px -733px;
+}
+
+.icon-large-volume_up {
+    width: 24px;
+    height: 26px;
+    background-position: -72px -290px;
+}
+
+.icon-large-screenshot {
+    width: 27px;
+    height: 27px;
+    background-position: -415px -0px;
+}
+
+.icon-large-move {
+    width: 24px;
+    height: 24px;
+    background-position: -350px -499px;
+}
+
+.icon-large-more {
+    width: 22px;
+    height: 7px;
+    background-position: -0px -270px;
+}
+
+.icon-large-brightness_reduce {
+    width: 20px;
+    height: 20px;
+    background-position: -736px -533px;
+}
+
+.icon-large-brightness_increase {
+    width: 24px;
+    height: 24px;
+    background-position: -315px -499px;
+}
+
+.icon-large-circle_plus {
+    width: 26px;
+    height: 26px;
+    background-position: -222px -143px;
+}
+
+.icon-large-circle_minus {
+    width: 26px;
+    height: 26px;
+    background-position: -185px -143px;
+}
+
+.icon-large-circle_remove {
+    width: 26px;
+    height: 26px;
+    background-position: -148px -143px;
+}
+
+.icon-large-circle_ok {
+    width: 26px;
+    height: 26px;
+    background-position: -111px -143px;
+}
+
+.icon-large-circle_question_mark {
+    width: 26px;
+    height: 26px;
+    background-position: -74px -143px;
+}
+
+.icon-large-circle_info {
+    width: 26px;
+    height: 26px;
+    background-position: -37px -143px;
+}
+
+.icon-large-circle_exclamation_mark {
+    width: 26px;
+    height: 26px;
+    background-position: -0px -143px;
+}
+
+.icon-large-remove {
+    width: 26px;
+    height: 26px;
+    background-position: -615px -106px;
+}
+
+.icon-large-ok {
+    width: 26px;
+    height: 26px;
+    background-position: -578px -106px;
+}
+
+.icon-large-ban {
+    width: 26px;
+    height: 26px;
+    background-position: -541px -106px;
+}
+
+.icon-large-download {
+    width: 26px;
+    height: 26px;
+    background-position: -504px -106px;
+}
+
+.icon-large-upload {
+    width: 26px;
+    height: 26px;
+    background-position: -467px -106px;
+}
+
+.icon-large-shopping_cart {
+    width: 26px;
+    height: 23px;
+    background-position: -282px -359px;
+}
+
+.icon-large-lock {
+    width: 21px;
+    height: 26px;
+    background-position: -303px -601px;
+}
+
+.icon-large-unlock {
+    width: 21px;
+    height: 26px;
+    background-position: -271px -601px;
+}
+
+.icon-large-electricity {
+    width: 11px;
+    height: 24px;
+    background-position: -610px -697px;
+}
+
+.icon-large-ok_2 {
+    width: 25px;
+    height: 19px;
+    background-position: -315px -399px;
+}
+
+.icon-large-remove_2 {
+    width: 18px;
+    height: 18px;
+    background-position: -392px -697px;
+}
+
+.icon-large-cart_out {
+    width: 26px;
+    height: 25px;
+    background-position: -457px -217px;
+}
+
+.icon-large-cart_in {
+    width: 26px;
+    height: 24px;
+    background-position: -35px -290px;
+}
+
+.icon-large-left_arrow {
+    width: 20px;
+    height: 18px;
+    background-position: -168px -697px;
+}
+
+.icon-large-right_arrow {
+    width: 20px;
+    height: 18px;
+    background-position: -184px -328px;
+}
+
+.icon-large-down_arrow {
+    width: 18px;
+    height: 20px;
+    background-position: -95px -697px;
+}
+
+.icon-large-up_arrow {
+    width: 18px;
+    height: 20px;
+    background-position: -744px -35px;
+}
+
+.icon-large-resize_small {
+    width: 24px;
+    height: 24px;
+    background-position: -280px -499px;
+}
+
+.icon-large-resize_full {
+    width: 24px;
+    height: 24px;
+    background-position: -245px -499px;
+}
+
+.icon-large-circle_arrow_left {
+    width: 26px;
+    height: 26px;
+    background-position: -430px -106px;
+}
+
+.icon-large-circle_arrow_right {
+    width: 26px;
+    height: 26px;
+    background-position: -393px -106px;
+}
+
+.icon-large-circle_arrow_top {
+    width: 26px;
+    height: 26px;
+    background-position: -356px -106px;
+}
+
+.icon-large-circle_arrow_down {
+    width: 26px;
+    height: 26px;
+    background-position: -319px -106px;
+}
+
+.icon-large-play_button {
+    width: 26px;
+    height: 26px;
+    background-position: -237px -106px;
+}
+
+.icon-large-unshare {
+    width: 24px;
+    height: 18px;
+    background-position: -149px -328px;
+}
+
+.icon-large-share {
+    width: 24px;
+    height: 18px;
+    background-position: -114px -328px;
+}
+
+.icon-large-thin_right_arrow {
+    width: 15px;
+    height: 22px;
+    background-position: -366px -697px;
+}
+
+.icon-large-thin_arrow_left {
+    width: 15px;
+    height: 22px;
+    background-position: -340px -697px;
+}
+
+.icon-large-bluetooth {
+    width: 14px;
+    height: 24px;
+    background-position: -265px -697px;
+}
+
+.icon-large-euro {
+    width: 22px;
+    height: 23px;
+    background-position: -671px -522px;
+}
+
+.icon-large-usd {
+    width: 17px;
+    height: 26px;
+    background-position: -738px -174px;
+}
+
+.icon-large-bp {
+    width: 17px;
+    height: 24px;
+    background-position: -737px -467px;
+}
+
+.icon-large-retweet_2 {
+    width: 33px;
+    height: 21px;
+    background-position: -620px -38px;
+}
+
+.icon-large-moon {
+    width: 22px;
+    height: 25px;
+    background-position: -642px -394px;
+}
+
+.icon-large-sun {
+    width: 24px;
+    height: 24px;
+    background-position: -210px -499px;
+}
+
+.icon-large-cloud {
+    width: 27px;
+    height: 17px;
+    background-position: -467px -366px;
+}
+
+.icon-large-direction {
+    width: 26px;
+    height: 26px;
+    background-position: -200px -106px;
+}
+
+.icon-large-brush {
+    width: 25px;
+    height: 23px;
+    background-position: -420px -534px;
+}
+
+.icon-large-pen {
+    width: 24px;
+    height: 24px;
+    background-position: -175px -499px;
+}
+
+.icon-large-zoom_in {
+    width: 25px;
+    height: 25px;
+    background-position: -550px -254px;
+}
+
+.icon-large-zoom_out {
+    width: 25px;
+    height: 25px;
+    background-position: -514px -254px;
+}
+
+.icon-large-pin {
+    width: 10px;
+    height: 25px;
+    background-position: -727px -697px;
+}
+
+.icon-large-riflescope {
+    width: 25px;
+    height: 25px;
+    background-position: -478px -254px;
+}
+
+.icon-large-rotation_lock {
+    width: 27px;
+    height: 24px;
+    background-position: -291px -254px;
+}
+
+.icon-large-flash {
+    width: 14px;
+    height: 25px;
+    background-position: -70px -697px;
+}
+
+.icon-large-google_maps {
+    width: 15px;
+    height: 24px;
+    background-position: -730px -662px;
+}
+
+.icon-large-anchor {
+    width: 24px;
+    height: 25px;
+    background-position: -0px -359px;
+}
+
+.icon-large-conversation {
+    width: 25px;
+    height: 18px;
+    background-position: -729px -270px;
+}
+
+.icon-large-chat {
+    width: 24px;
+    height: 19px;
+    background-position: -493px -399px;
+}
+
+.icon-large-male {
+    width: 22px;
+    height: 22px;
+    background-position: -706px -366px;
+}
+
+.icon-large-female {
+    width: 16px;
+    height: 27px;
+    background-position: -741px -211px;
+}
+
+.icon-large-asterisk {
+    width: 20px;
+    height: 20px;
+    background-position: -736px -502px;
+}
+
+.icon-large-divide {
+    width: 18px;
+    height: 16px;
+    background-position: -581px -697px;
+}
+
+.icon-large-snorkel_diving {
+    width: 27px;
+    height: 25px;
+    background-position: -520px -143px;
+}
+
+.icon-large-scuba_diving {
+    width: 27px;
+    height: 24px;
+    background-position: -253px -254px;
+}
+
+.icon-large-oxygen_bottle {
+    width: 22px;
+    height: 27px;
+    background-position: -504px -359px;
+}
+
+.icon-large-fins {
+    width: 31px;
+    height: 27px;
+    background-position: -129px -0px;
+}
+
+.icon-large-fishes {
+    width: 28px;
+    height: 30px;
+    background-position: -90px -0px;
+}
+
+.icon-large-boat {
+    width: 24px;
+    height: 24px;
+    background-position: -140px -499px;
+}
+
+.icon-large-delete_point {
+    width: 26px;
+    height: 17px;
+    background-position: -36px -328px;
+}
+
+.icon-large-sheriff_star {
+    width: 24px;
+    height: 26px;
+    background-position: -0px -290px;
+}
+
+.icon-large-qrcode {
+    width: 24px;
+    height: 24px;
+    background-position: -105px -499px;
+}
+
+.icon-large-barcode {
+    width: 24px;
+    height: 24px;
+    background-position: -70px -499px;
+}
+
+.icon-large-pool {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -499px;
+}
+
+.icon-large-buoy {
+    width: 24px;
+    height: 24px;
+    background-position: -0px -499px;
+}
+
+.icon-large-spade {
+    width: 24px;
+    height: 24px;
+    background-position: -630px -464px;
+}
+
+.icon-large-bank {
+    width: 24px;
+    height: 24px;
+    background-position: -595px -464px;
+}
+
+.icon-large-vcard {
+    width: 22px;
+    height: 24px;
+    background-position: -594px -634px;
+}
+
+.icon-large-electrical_plug {
+    width: 18px;
+    height: 25px;
+    background-position: -738px -102px;
+}
+
+.icon-large-flag {
+    width: 21px;
+    height: 26px;
+    background-position: -239px -601px;
+}
+
+.icon-large-credit_card {
+    width: 26px;
+    height: 19px;
+    background-position: -694px -336px;
+}
+
+.icon-large-keyboard_wireless {
+    width: 27px;
+    height: 19px;
+    background-position: -665px -492px;
+}
+
+.icon-large-keyboard_wired {
+    width: 27px;
+    height: 25px;
+    background-position: -482px -143px;
+}
+
+.icon-large-shield {
+    width: 22px;
+    height: 24px;
+    background-position: -525px -634px;
+}
+
+.icon-large-ring {
+    width: 21px;
+    height: 24px;
+    background-position: -270px -661px;
+}
+
+.icon-large-cake {
+    width: 22px;
+    height: 24px;
+    background-position: -492px -634px;
+}
+
+.icon-large-drink {
+    width: 23px;
+    height: 24px;
+    background-position: -102px -601px;
+}
+
+.icon-large-beer {
+    width: 23px;
+    height: 24px;
+    background-position: -68px -601px;
+}
+
+.icon-large-fast_food {
+    width: 28px;
+    height: 24px;
+    background-position: -596px -143px;
+}
+
+.icon-large-cutlery {
+    width: 13px;
+    height: 24px;
+    background-position: -503px -697px;
+}
+
+.icon-large-pizza {
+    width: 26px;
+    height: 29px;
+    background-position: -336px -0px;
+}
+
+.icon-large-birthday_cake {
+    width: 26px;
+    height: 29px;
+    background-position: -299px -0px;
+}
+
+.icon-large-tablet {
+    width: 25px;
+    height: 25px;
+    background-position: -442px -254px;
+}
+
+.icon-large-settings {
+    width: 24px;
+    height: 24px;
+    background-position: -560px -464px;
+}
+
+.icon-large-bullets {
+    width: 27px;
+    height: 23px;
+    background-position: -472px -290px;
+}
+
+.icon-large-cardio {
+    width: 25px;
+    height: 26px;
+    background-position: -421px -217px;
+}
+
+.icon-large-t-shirt {
+    width: 28px;
+    height: 23px;
+    background-position: -367px -254px;
+}
+
+.icon-large-pants {
+    width: 19px;
+    height: 24px;
+    background-position: -697px -668px;
+}
+
+.icon-large-sweater {
+    width: 29px;
+    height: 24px;
+    background-position: -0px -106px;
+}
+
+.icon-large-fabric {
+    width: 27px;
+    height: 22px;
+    background-position: -429px -359px;
+}
+
+.icon-large-leather {
+    width: 23px;
+    height: 24px;
+    background-position: -34px -601px;
+}
+
+.icon-large-scissors {
+    width: 24px;
+    height: 27px;
+    background-position: -218px -254px;
+}
+
+.icon-large-podium {
+    width: 28px;
+    height: 21px;
+    background-position: -537px -359px;
+}
+
+.icon-large-skull {
+    width: 22px;
+    height: 24px;
+    background-position: -459px -634px;
+}
+
+.icon-large-celebration {
+    width: 24px;
+    height: 25px;
+    background-position: -620px -323px;
+}
+
+.icon-large-tea_kettle {
+    width: 26px;
+    height: 23px;
+    background-position: -245px -359px;
+}
+
+.icon-large-french_press {
+    width: 23px;
+    height: 25px;
+    background-position: -386px -534px;
+}
+
+.icon-large-coffe_cup {
+    width: 25px;
+    height: 19px;
+    background-position: -210px -399px;
+}
+
+.icon-large-pot {
+    width: 27px;
+    height: 22px;
+    background-position: -391px -359px;
+}
+
+.icon-large-grater {
+    width: 18px;
+    height: 24px;
+    background-position: -739px -361px;
+}
+
+.icon-large-kettle {
+    width: 23px;
+    height: 24px;
+    background-position: -0px -601px;
+}
+
+.icon-large-hospital {
+    width: 24px;
+    height: 24px;
+    background-position: -525px -464px;
+}
+
+.icon-large-hospital_h {
+    width: 24px;
+    height: 24px;
+    background-position: -490px -464px;
+}
+
+.icon-large-microphone {
+    width: 17px;
+    height: 24px;
+    background-position: -739px -432px;
+}
+
+.icon-large-webcam {
+    width: 19px;
+    height: 24px;
+    background-position: -632px -668px;
+}
+
+.icon-large-temple_christianity_church {
+    width: 24px;
+    height: 25px;
+    background-position: -540px -323px;
+}
+
+.icon-large-temple_islam {
+    width: 25px;
+    height: 24px;
+    background-position: -504px -323px;
+}
+
+.icon-large-temple_hindu {
+    width: 24px;
+    height: 24px;
+    background-position: -455px -464px;
+}
+
+.icon-large-temple_buddhist {
+    width: 28px;
+    height: 22px;
+    background-position: -620px -290px;
+}
+
+.icon-large-electrical_socket_eu {
+    width: 23px;
+    height: 23px;
+    background-position: -493px -601px;
+}
+
+.icon-large-electrical_socket_us {
+    width: 23px;
+    height: 23px;
+    background-position: -459px -601px;
+}
+
+.icon-large-bomb {
+    width: 27px;
+    height: 26px;
+    background-position: -76px -70px;
+}
+
+.icon-large-comments {
+    width: 24px;
+    height: 23px;
+    background-position: -634px -567px;
+}
+
+.icon-large-flower {
+    width: 19px;
+    height: 25px;
+    background-position: -473px -668px;
+}
+
+.icon-large-baseball {
+    width: 25px;
+    height: 26px;
+    background-position: -385px -217px;
+}
+
+.icon-large-rugby {
+    width: 23px;
+    height: 24px;
+    background-position: -563px -567px;
+}
+
+.icon-large-ax {
+    width: 27px;
+    height: 25px;
+    background-position: -444px -143px;
+}
+
+.icon-large-table_tennis {
+    width: 24px;
+    height: 24px;
+    background-position: -420px -464px;
+}
+
+.icon-large-bowling {
+    width: 24px;
+    height: 24px;
+    background-position: -385px -464px;
+}
+
+.icon-large-tree_conifer {
+    width: 21px;
+    height: 24px;
+    background-position: -238px -661px;
+}
+
+.icon-large-tree_deciduous {
+    width: 20px;
+    height: 25px;
+    background-position: -707px -128px;
+}
+
+.icon-large-more-items {
+    width: 21px;
+    height: 24px;
+    background-position: -206px -661px;
+}
+
+.icon-large-sort {
+    width: 25px;
+    height: 25px;
+    background-position: -406px -254px;
+}
+
+.icon-large-filter {
+    width: 20px;
+    height: 24px;
+    background-position: -699px -633px;
+}
+
+.icon-large-gamepad {
+    width: 27px;
+    height: 19px;
+    background-position: -319px -39px;
+}
+
+.icon-large-playing_dices {
+    width: 27px;
+    height: 23px;
+    background-position: -434px -290px;
+}
+
+.icon-large-calculator {
+    width: 21px;
+    height: 24px;
+    background-position: -105px -661px;
+}
+
+.icon-large-tie {
+    width: 11px;
+    height: 26px;
+    background-position: -421px -697px;
+}
+
+.icon-large-wallet {
+    width: 25px;
+    height: 20px;
+    background-position: -697px -97px;
+}
+
+.icon-large-share {
+    width: 22px;
+    height: 22px;
+    background-position: -708px -237px;
+}
+
+.icon-large-sampler {
+    width: 27px;
+    height: 22px;
+    background-position: -353px -359px;
+}
+
+.icon-large-piano {
+    width: 23px;
+    height: 24px;
+    background-position: -529px -567px;
+}
+
+.icon-large-web_browser {
+    width: 24px;
+    height: 22px;
+    background-position: -136px -634px;
+}
+
+.icon-large-blog {
+    width: 21px;
+    height: 23px;
+    background-position: -704px -531px;
+}
+
+.icon-large-dashboard {
+    width: 24px;
+    height: 24px;
+    background-position: -350px -464px;
+}
+
+.icon-large-certificate {
+    width: 17px;
+    height: 25px;
+    background-position: -739px -396px;
+}
+
+.icon-large-bell {
+    width: 24px;
+    height: 24px;
+    background-position: -315px -464px;
+}
+
+.icon-large-candle {
+    width: 20px;
+    height: 25px;
+    background-position: -709px -0px;
+}
+
+.icon-large-pin_classic {
+    width: 24px;
+    height: 24px;
+    background-position: -280px -464px;
+}
+
+.icon-large-iphone_shake {
+    width: 24px;
+    height: 24px;
+    background-position: -245px -464px;
+}
+
+.icon-large-pin_flag {
+    width: 30px;
+    height: 22px;
+    background-position: -303px -217px;
+}
+
+.icon-large-turtle {
+    width: 28px;
+    height: 16px;
+    background-position: -593px -668px;
+}
+
+.icon-large-rabbit {
+    width: 26px;
+    height: 22px;
+    background-position: -490px -534px;
+}
+
+.icon-large-globe {
+    width: 24px;
+    height: 24px;
+    background-position: -210px -464px;
+}
+
+.icon-large-briefcase {
+    width: 24px;
+    height: 21px;
+    background-position: -171px -661px;
+}
+
+.icon-large-hdd {
+    width: 24px;
+    height: 21px;
+    background-position: -70px -661px;
+}
+
+.icon-large-thumbs_up {
+    width: 24px;
+    height: 21px;
+    background-position: -35px -661px;
+}
+
+.icon-large-thumbs_down {
+    width: 24px;
+    height: 21px;
+    background-position: -0px -661px;
+}
+
+.icon-large-hand_right {
+    width: 26px;
+    height: 19px;
+    background-position: -694px -306px;
+}
+
+.icon-large-hand_left {
+    width: 26px;
+    height: 19px;
+    background-position: -692px -276px;
+}
+
+.icon-large-hand_up {
+    width: 19px;
+    height: 26px;
+    background-position: -708px -200px;
+}
+
+.icon-large-hand_down {
+    width: 19px;
+    height: 27px;
+    background-position: -665px -454px;
+}
+
+.icon-large-fullscreen {
+    width: 24px;
+    height: 24px;
+    background-position: -175px -464px;
+}
+
+.icon-large-shopping_bag {
+    width: 23px;
+    height: 26px;
+    background-position: -211px -359px;
+}
+
+.icon-large-book_open {
+    width: 25px;
+    height: 23px;
+    background-position: -350px -534px;
+}
+
+.icon-large-nameplate {
+    width: 24px;
+    height: 21px;
+    background-position: -664px -629px;
+}
+
+.icon-large-nameplate_alt {
+    width: 24px;
+    height: 22px;
+    background-position: -629px -601px;
+}
+
+.icon-large-vases {
+    width: 24px;
+    height: 24px;
+    background-position: -140px -464px;
+}
+
+.icon-large-announcement {
+    width: 25px;
+    height: 20px;
+    background-position: -697px -66px;
+}
+
+.icon-large-dumbbell {
+    width: 26px;
+    height: 16px;
+    background-position: -292px -328px;
+}
+
+.icon-large-suitcase {
+    width: 24px;
+    height: 22px;
+    background-position: -594px -601px;
+}
+
+.icon-large-file_import {
+    width: 22px;
+    height: 24px;
+    background-position: -561px -601px;
+}
+
+.icon-large-file_export {
+    width: 23px;
+    height: 24px;
+    background-position: -420px -567px;
+}
+
+.icon-large-pinterest {
+    width: 24px;
+    height: 24px;
+    background-position: -105px -464px;
+}
+
+.icon-large-dropbox {
+    width: 24px;
+    height: 24px;
+    background-position: -70px -464px;
+}
+
+.icon-large-google__alt {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -464px;
+}
+
+.icon-large-jolicloud {
+    width: 24px;
+    height: 24px;
+    background-position: -0px -464px;
+}
+
+.icon-large-yahoo {
+    width: 24px;
+    height: 24px;
+    background-position: -630px -429px;
+}
+
+.icon-large-blogger {
+    width: 24px;
+    height: 24px;
+    background-position: -595px -429px;
+}
+
+.icon-large-picasa {
+    width: 24px;
+    height: 24px;
+    background-position: -560px -429px;
+}
+
+.icon-large-amazon {
+    width: 24px;
+    height: 24px;
+    background-position: -525px -429px;
+}
+
+.icon-large-tumblr {
+    width: 24px;
+    height: 24px;
+    background-position: -490px -429px;
+}
+
+.icon-large-wordpress {
+    width: 24px;
+    height: 24px;
+    background-position: -455px -429px;
+}
+
+.icon-large-instapaper {
+    width: 24px;
+    height: 24px;
+    background-position: -420px -429px;
+}
+
+.icon-large-evernote {
+    width: 24px;
+    height: 24px;
+    background-position: -385px -429px;
+}
+
+.icon-large-xing {
+    width: 24px;
+    height: 24px;
+    background-position: -350px -429px;
+}
+
+.icon-large-zootool {
+    width: 24px;
+    height: 24px;
+    background-position: -315px -429px;
+}
+
+.icon-large-dribbble {
+    width: 24px;
+    height: 24px;
+    background-position: -280px -429px;
+}
+
+.icon-large-deviantart {
+    width: 24px;
+    height: 24px;
+    background-position: -245px -429px;
+}
+
+.icon-large-read_it_later {
+    width: 24px;
+    height: 24px;
+    background-position: -210px -429px;
+}
+
+.icon-large-linked_in {
+    width: 24px;
+    height: 24px;
+    background-position: -175px -429px;
+}
+
+.icon-large-forrst {
+    width: 24px;
+    height: 24px;
+    background-position: -140px -429px;
+}
+
+.icon-large-pinboard {
+    width: 24px;
+    height: 24px;
+    background-position: -105px -429px;
+}
+
+.icon-large-behance {
+    width: 24px;
+    height: 24px;
+    background-position: -70px -429px;
+}
+
+.icon-large-github {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -429px;
+}
+
+.icon-large-youtube {
+    width: 24px;
+    height: 24px;
+    background-position: -0px -429px;
+}
+
+.icon-large-skitch {
+    width: 24px;
+    height: 24px;
+    background-position: -607px -394px;
+}
+
+.icon-large-4square {
+    width: 24px;
+    height: 24px;
+    background-position: -572px -394px;
+}
+
+.icon-large-quora {
+    width: 24px;
+    height: 24px;
+    background-position: -537px -394px;
+}
+
+.icon-large-google_plus {
+    width: 24px;
+    height: 24px;
+    background-position: -458px -394px;
+}
+
+.icon-large-spootify {
+    width: 24px;
+    height: 24px;
+    background-position: -423px -394px;
+}
+
+.icon-large-stumbleupon {
+    width: 24px;
+    height: 24px;
+    background-position: -388px -394px;
+}
+
+.icon-large-readability {
+    width: 24px;
+    height: 24px;
+    background-position: -353px -394px;
+}
+
+.icon-large-facebook {
+    width: 24px;
+    height: 24px;
+    background-position: -280px -394px;
+}
+
+.icon-large-twitter_t {
+    width: 24px;
+    height: 24px;
+    background-position: -245px -394px;
+}
+
+.icon-large-twitter {
+    width: 24px;
+    height: 24px;
+    background-position: -175px -394px;
+}
+
+.icon-large-buzz {
+    width: 24px;
+    height: 24px;
+    background-position: -140px -394px;
+}
+
+.icon-large-vimeo {
+    width: 24px;
+    height: 24px;
+    background-position: -105px -394px;
+}
+
+.icon-large-flickr {
+    width: 24px;
+    height: 24px;
+    background-position: -70px -394px;
+}
+
+.icon-large-last_fm {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -394px;
+}
+
+.icon-large-rss {
+    width: 24px;
+    height: 24px;
+    background-position: -0px -394px;
+}
+
+.icon-large-skype {
+    width: 24px;
+    height: 24px;
+    background-position: -611px -359px;
+}
+
+.icon-large-e-mail {
+    width: 24px;
+    height: 24px;
+    background-position: -576px -359px;
+}

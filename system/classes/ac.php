@@ -427,7 +427,7 @@ class Ac {
 
             case "static":
             case "STATIC": {
-                    return defined("AC_STATIC_ASSETS_URL") ? AC_STATIC_ASSETS_URL : self::request()->directoryUrl() . "content/assets/";
+                    return defined("AC_STATIC_ASSETS_URL") ? AC_STATIC_ASSETS_URL : self::request()->directoryUrl() . "content/static/";
                 }break;
 
             case "assets":
@@ -492,7 +492,7 @@ class Ac {
 
             case "static":
             case "STATIC": {
-                    return defined("AC_STATIC_ASSETS_PATH") ? AC_STATIC_ASSETS_PATH : AC_PATH_CONTENT . "assets" . _DS;
+                    return defined("AC_STATIC_ASSETS_PATH") ? AC_STATIC_ASSETS_PATH : AC_PATH_CONTENT . "static" . _DS;
                 }break;
 
             case "assets":

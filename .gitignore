@@ -27,3 +27,4 @@ Thumbs.db
 wp-config.php
 /app/data/*.txt
 /ignore/
+/content/assets/.TheUnarchiverTemp0/

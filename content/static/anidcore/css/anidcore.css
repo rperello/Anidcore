@@ -1,0 +1,220 @@
+/*ANIDCORE CSS*/
+
+html,body{
+    height: auto;
+    width:auto;
+    color: #777;
+}
+
+*[hidden], * *[hidden]{
+    display:none !important;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover{
+    color:inherit;
+    text-decoration: none;
+}
+
+/* HELPER CLASSES */
+/*
+****************        FLOATS
+*/
+.clear {
+    clear: both;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    padding:0;
+    margin: 0;
+    font-size:0;
+}
+
+.clearfix{
+    width:100%;
+    overflow:auto;
+}
+
+
+.float-left-list,
+.float-right-list{
+    position:relative;
+    margin:0;
+    padding:0;
+}
+
+.float-left-list li,
+.float-right-list li{
+    list-style: none;
+    margin:0;
+    padding:0;
+    margin-right:10px;
+}
+
+.float-left-list li:last-child,
+.float-right-list li:last-child{
+    margin-right:0;
+}
+
+.float-left,
+.float-left-list li{
+    position:relative;
+    display:inline;
+    float:left;
+}
+
+.float-right,
+.float-right-list li{
+    position:relative;
+    display:inline;
+    float:right;
+}
+
+/*
+****************        FONTS
+*/
+
+.bold{
+    font-weight: bold;
+}
+.italic{
+    font-style: italic;
+}
+.underline{
+    text-decoration: underline;
+}
+.strike{
+    text-decoration: line-through;
+}
+.uppercase{
+    text-transform: uppercase;
+}
+.lowercase{
+    text-transform: lowercase;
+}
+
+.text-align-right{
+    text-align: right;
+}
+.text-align-left{
+    text-align: left;
+}
+.text-align-justify{
+    text-align: justify;
+}
+.text-align-center{
+    text-align: center;
+}
+
+.text-wrap{
+    text-wrap: wrap;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    word-wrap: break-word;
+}
+
+.valign-top{
+	vertical-align:top;
+}
+
+.valign-texttop{
+	vertical-align:text-top;
+}
+
+.valign-middle{
+	vertical-align:middle;
+}
+
+.valign-bottom{
+	vertical-align:bottom;
+}
+
+.valign-textbottom{
+	vertical-align:text-bottom;
+}
+
+.valign-baseline{
+	vertical-align:baseline;
+}
+
+/*
+****************        LAYOUTS
+*/
+
+.block{
+    display:block;
+}
+
+.inline{
+    display:inline;
+}
+
+.inline-block{
+    display:inline-block;
+}
+
+
+
+.centered-block{
+    position:relative;
+    display:block;
+    margin:0 auto;
+}
+
+.content-box-sizing{
+    -moz-box-sizing:content-box;
+    -webkit-box-sizing:content-box;
+    -ms-box-sizing:content-box;
+    -o-box-sizing:content-box;
+    box-sizing:content-box;
+}
+
+.border-box-sizing{
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    box-sizing:border-box;
+}
+
+.padding-box-sizing{
+    -moz-box-sizing:padding-box;
+    -webkit-box-sizing:padding-box;
+    -ms-box-sizing:padding-box;
+    -o-box-sizing:padding-box;
+    box-sizing:padding-box;
+}
+
+/*
+****************        UI
+*/
+.ac-note {
+  position:relative;
+  padding:7px 15px;
+  margin-bottom:18px;
+  color:#404040;
+  background-color:#eedc94;
+  background-repeat:repeat-x;
+  background-image:-khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
+  background-image:-moz-linear-gradient(top, #fceec1, #eedc94);
+  background-image:-ms-linear-gradient(top, #fceec1, #eedc94);
+  background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
+  background-image:-webkit-linear-gradient(top, #fceec1, #eedc94);
+  background-image:-o-linear-gradient(top, #fceec1, #eedc94);
+  background-image:linear-gradient(top, #fceec1, #eedc94);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fceec1', endColorstr='#eedc94', GradientType=0);
+  text-shadow:0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color:#eedc94 #eedc94 #e4c652;
+  border-color:rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  text-shadow:0 1px 0 rgba(255, 255, 255, 0.5);
+  border-width:1px;
+  border-style:solid;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  -moz-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}

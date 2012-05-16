@@ -1,0 +1,23 @@
+img {
+  image-rendering: optimizeQuality;
+  -ms-interpolation-mode: bicubic;
+  border: 0;
+  max-width: none;
+}
+
+@media (min-width: 980px) {
+  .nav-collapse.collapse {
+    height: auto !important;
+    overflow:visible;
+  }
+}
+
+a.btn,
+a.btn:hover{
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6, label, legend,
+.hero-unit h1{
+    color: #222;
+}
