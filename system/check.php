@@ -436,7 +436,7 @@ $servertest = new Ac_ServerTest();
         <meta name="googlebot" content="noindex,nofollow" />
 
         <meta name="author" content="Copyright 2012, ANID Internet Estudio, www.anid.es" />
-        <link type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+        <link type="text/css" rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
     </head>
     <body>
         <div id="wrapper" class="container" style="margin:20px auto;">
