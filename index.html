@@ -1,90 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Anidcore is a PHP micro framework built upon RESTFul and HMVC." />
+        <title>Anidcore - RESTFul and HMVC micro framework for PHP</title>
+        <meta name="author" content="Copyright 2012, Javier Aguilar, http://xaguilars.github.com/" />
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Anidcore : PHP micro framework based on RESTFul and HMVC+ patterns. Supports PHP 5.3.0+ and CLI mode." />
+        <link type="text/css" rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+        <style>
+            body{
+                padding:0;
+                margin:0;
+                color:#555;
+            }
+            p{
+                font-size:15px;
+            }
+            #wrapper{
+                padding-bottom:40px;
+            }
+            .container{
+                width:800px;
+            }
 
-    <title>Anidcore</title>
-  </head>
+            .row-fluid{
+                margin-bottom:20px;
 
-  <body>
+            }
+            .hero-unit .black-title,
+            .black-title{
+                color:#222;
+            }
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/xaguilars/Anidcore">View on GitHub</a>
+            .hero-unit2{
+                margin:40px 0 40px 0;
+            }
+            .hero-unit2 h1{
+                font-size:40px;
+                margin-bottom:10px;
+            }
+            .main-title{
+                font-size:36px;
+                font-family:"Monaco", Helvetia, Arial, sans-serif;
+            }
+        </style>
+    </head>
 
-          <h1 id="project_title">Anidcore</h1>
-          <h2 id="project_tagline">PHP micro framework based on RESTFul and HMVC+ patterns. Supports PHP 5.3.0+ and CLI mode.</h2>
+    <body>
+        <div id="wrapper">
+            <div id="main" class="container">
+                <div id="main_wrapper">
+                    <div id="main_content">
+<div class="hero-unit2">
+                                <h1 class="black-title main-title">Anidcore <small><a href="http://xaguilars.github.com">by Javier Aguilar</a></small></h1>
+                                    <p>Anidcore is a PHP micro framework built upon RESTFul and HMVC.</p>
+</div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/xaguilars/Anidcore/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/xaguilars/Anidcore/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+                        <!-- Example row of columns -->
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <section>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>Anidcore Framework</h1>
+                                    <p><strong>IMPORTANT NOTICE:</strong>
+                                        This framework is in an early development stage (some features are still Work-In-Progress).
+                                        This means that code is not stable and is not recommended for a production environment.</p>
 
-<p>Anidcore is a PHP micro framework built upon RESTFul and HMVC+
-It supports PHP 5.3.0+ and PHP in CLI mode.</p>
+                                    <p><strong>Requirements</strong></p>
 
-<p><strong>IMPORTANT NOTICE:</strong>
-This framework is in an early development stage.
-This means that code is not stable and is not recommended for production environments.</p>
+                                    <blockquote>
+                                        <ul>
+                                            <li>PHP 5.3 or greater</li>
+                                            <li>Apache 2.2 or greater with mod_rewrite and mod_include (not tested on other HTTP Servers)</li>
+                                            <li>MySQL 5 or greater for the 'admin' module</li>
+                                        </ul>
+                                    </blockquote>
 
-<p><strong>Technologies that will be used in this framework:</strong></p>
+                                    <p><strong>Technologies / Features:</strong></p>
 
-<blockquote>
-<ul>
-<li>Hierarchical MVC+ (the plus sign means sub-controller support)</li>
-<li>Hooks / Event handlers (Observer pattern)</li>
-<li>DBAL with ActiveRecord pattern</li>
-<li>CLI mode handler</li>
-<li>RESTFul request handler</li>
-<li>JSON-RPC client &amp; server &amp; JSONP</li>
-<li>Oauth 2.0 consumer &amp; provider</li>
-</ul>
-</blockquote>
+                                    <blockquote>
+                                        <ul>
+                                            <li>Hierarchical MVC (with subcontroller support)</li>
+                                            <li>Hooks / Event handlers (Observer pattern)</li>
+                                            <li>CLI mode support</li>
+                                            <li>RESTFul oriented controllers</li>
+                                            <li>JSON-RPC client &amp; server &amp; JSONP</li>
+                                            <li>Oauth 2.0 consumer &amp; provider</li>
+                                            <li>I18n support for urls and strings</li>
+                                            <li>Cache system (file, memcache)</li>
+                                            <li>Log system (file, session flash message)</li>
+                                            <li>PDO abstraction layer and ActiveRecord pattern classes</li>
+                                            <li>Official generic CMS framework</li>
+                                        </ul>
+                                    </blockquote>
 
-<p><strong>Other features:</strong></p>
+                                    <p><strong>Credits</strong></p>
 
-<blockquote>
-<ul>
-<li>Cache system (file, memcache)</li>
-<li>Log system (file, session flash message)</li>
-<li>PDO abstraction layer with magic functions</li>
-</ul>
-</blockquote>
-      </section>
-    </div>
+                                    <blockquote>
+                                        <ul>
+                                            <li>Slim and Kohana frameworks for PHP (which inspired me on writting Anidcore)</li>
+                                            <li>Twitter Bootstrap, jQuery, jQuery UI, Modernizr and Glyphicons (used in the demo app and the admin module)</li>
+                                        </ul>
+                                    </blockquote>
+                                </section>
+                                <p><a class="btn btn-large btn-primary" href="https://github.com/xaguilars/Anidcore">view project on Github »</a></p>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Anidcore maintained by <a href="https://github.com/xaguilars">xaguilars</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+                            </div>
+                        </div>
+<br />
+                        <h1 class="black-title">Modules</h1>
+                        <hr />
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <h2>Oauth 2.0</h2>
+                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                                <p><a class="btn btn-small" href="#">coming soon</a></p>
 
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-31806064-2");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-
-  </body>
+                            </div>
+                            <div class="span4">
+                                <h2>RESTFul JSON API</h2>
+                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                                <p><a class="btn btn-small" href="#">coming soon</a></p>
+                            </div>
+                            <div class="span4">
+                                <h2>CMS Framework</h2>
+                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                                <p><a class="btn btn-small" href="#">coming soon</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
