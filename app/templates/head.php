@@ -16,6 +16,7 @@
 <link rel="shortcut icon" type="image/png" href="<?php echo Ac::url("assets"); ?>img/favicon.gif?r=0" />
 
 <link rel="stylesheet" href="/assets/css/framework-inc.css" type="text/css" media="all" />
+<link rel="stylesheet" href="<?php echo App::admin()->assetsUrl() ?>css/toolbar.css" type="text/css" media="all" />
 <link rel="stylesheet" href="<?php echo Ac::url("assets") ?>css/styles-inc.css" type="text/css" media="all" />
 
 <script type="text/javascript" src="/assets/js/framework-inc.js"></script>

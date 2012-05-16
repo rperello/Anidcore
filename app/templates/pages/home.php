@@ -2,7 +2,7 @@
 <div class="hero-unit">
     <h1>Hello, world!</h1>
     <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-    <p><a class="btn btn-inverse btn-large">Learn more »</a></p>
+    <p><a class="btn btn-inverse btn-large" href="<?php echo App::admin()->url(); ?>"><i class="icon-white icon-briefcase"></i> Admin panel »</a></p>
 
 </div>
 

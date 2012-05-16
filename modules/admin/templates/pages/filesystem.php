@@ -17,7 +17,7 @@ if (isset($_POST["filecontent"]) && isset($_POST["filename"])) {
 }
 
 
-$fileenc = ac_get("f", base64_encode(ac_post("filename", ac_module("app")->viewsPath() . "home.php")));
+$fileenc = ac_get("f", base64_encode(ac_post("filename", ac_module("app")->templatesPath() . "home.php")));
 $filename = base64_decode($fileenc);
 
 $pathenc = ac_get("p",base64_encode(dirname($filename)));

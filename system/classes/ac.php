@@ -113,14 +113,14 @@ class Ac extends Ac_System {
 
     /**
      * Returns the specified path (filesystem)
-     * @param string $of Possible values are: view, static (static assets), assets (theme assets), app, system, content, modules, base, module (default)
+     * @param string $of Possible values are: templates, static (static assets), assets (theme assets), app, system, content, modules, base, module (default)
      * @return string 
      */
     public static function path($of = "module") {
         switch ($of) {
-            case "view":
-            case "VIEW": {
-                    return self::module()->viewsPath();
+            case "templates":
+            case "TEMPLATES": {
+                    return self::module()->templatesPath();
                 }break;
 
             case "static":

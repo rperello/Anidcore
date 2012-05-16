@@ -8,7 +8,7 @@
  * @property string $type varchar(20)
  * @property string $status varchar(20)
  * @property string $function varchar(50)
- * @property string $view varchar(50)
+ * @property string $template varchar(50)
  * @property bool $is_indexable tinyint(1)
  * @property bool $is_page tinyint(1)
  * @property int $parent_fk bigint(20)

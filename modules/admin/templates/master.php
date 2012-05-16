@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="<?php //echo App::htmlClasses($template_name); ?>">
+<html lang="en" class="admintoolbar-visible <?php //echo App::htmlClasses($template_name); ?>">
     <head>
         <?php include "head.php"; ?>
     </head>

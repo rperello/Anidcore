@@ -4,75 +4,67 @@ abstract class I18n_Parser {
 
     protected $texts = array();
 
-    public function get($text, $lang = "en", $realm = "__") {
+    public function __construct($texts = array()) {
+        $this->texts = $texts;
+    }
+
+    /**
+     *
+     * @param string $text
+     * @param string $realm
+     * @return string 
+     */
+    public function get($text, $realm = "_") {
         if (empty($realm))
-            $realm = "__";
-        else
-            $realm = strtolower($realm);
-        $lang = strtolower($lang);
+            $realm = "_";
+        $realm = strtolower($realm);
+
+        if (!isset($this->texts[$realm])) {
+            return $text;
+        }
+
+        $hash = md5($text);
+
+        if (isset($this->texts[$realm][$hash])) {
+            return $this->texts[$realm][$hash];
+        }
+        return $text;
+    }
+
+    /**
+     *
+     * @param string $text
+     * @param string $value
+     * @param string $realm
+     */
+    public function set($text, $value, $realm = "_") {
+        if (empty($realm))
+            $realm = "_";
+        $realm = strtolower($realm);
 
         if (!isset($this->texts[$realm])) {
             $this->texts[$realm] = array();
         }
 
-        if (!isset($this->texts[$realm][$lang])) {
-            $this->texts[$realm][$lang] = array();
-        }
         $hash = md5($text);
-
-        if (isset($this->texts[$realm][$lang][$hash])) {
-            return $this->texts[$realm][$lang][$hash];
-        }
-        return $text;
+        $this->texts[$realm][$hash] = $value;
     }
 
-    public function set($text, $value, $lang = "en", $realm = "__") {
+    /**
+     *
+     * @param string $text
+     * @param string $realm
+     * @return boolean 
+     */
+    public function remove($text, $realm = "_") {
         if (empty($realm))
-            $realm = "__";
-        else
-            $realm = strtolower($realm);
-        $lang = strtolower($lang);
-    }
-
-    public function remove($text, $lang = "en", $realm = "__") {
+            $realm = "_";
         $realm = strtolower($realm);
-        $lang = strtolower($lang);
 
-        //delete realm
-        if (empty($text) && empty($lang) && (!empty($realm))) {
-            if (isset($this->texts[$realm])) {
-                unset($this->texts[$realm]);
-                return true;
-            }
-            return false;
-        }
-
-        //delete lang from realm
-        if (empty($text) && (!empty($lang)) && (!empty($realm))) {
-            if (isset($this->texts[$realm]) && isset($this->texts[$realm][$lang])) {
-                unset($this->texts[$realm][$lang]);
-                return true;
-            }
-            return false;
-        }
-
-        //delete lang from all realms
-        if (empty($text) && (!empty($lang)) && empty($realm)) {
-            $lang_deleted = false;
-            foreach ($this->texts as $realm => $lngs) {
-                if (isset($lngs[$lang])) {
-                    unset($this->texts[$realm][$lang]);
-                    $lang_deleted = true;
-                }
-            }
-            return $lang_deleted;
-        }
-
-        //delete text
         if (!empty($text)) {
             $hash = md5($text);
-            if (isset($this->texts[$realm]) && isset($this->texts[$realm][$lang]) && isset($this->texts[$realm][$lang][$hash])) {
-                unset($this->texts[$realm][$lang][$hash]);
+            if (isset($this->texts[$realm]) && isset($this->texts[$realm][$hash])) {
+                unset($this->texts[$realm][$hash]);
                 return true;
             }
         }
@@ -80,41 +72,13 @@ abstract class I18n_Parser {
         return false;
     }
 
-    abstract public function save();
-}
-
-abstract class I18n_Parser2 {
-
-    protected $texts = array();
-
-    public function key($text, $lang = "en", $realm = "_") {
-        if (empty($realm))
-            $realm = "__";
-        else
-            $realm = strtolower($realm);
-        $lang = strtolower($lang);
-        return implode(".", array($realm, $lang, md5($text)));
+    public function __sleep() {
+        return array("texts");
     }
 
-    public function text($text, $lang = "en", $realm = "_") {
-        $k = $this->key($text, $lang, $realm);
-        if (isset($this->texts[$k])) {
-            return $this->texts[$k];
-        }
-        return $text;
-    }
-
-    public function delete($text, $lang = "en", $realm = "_") {
-        $k = $this->key($text, $lang, $realm);
-        if (isset($this->texts[$k])) {
-            return $this->texts[$k];
-        }
-        return $text;
-    }
-
-    public function modify($text, $value, $lang = null, $realm = null) {
-        
-    }
-
+    /**
+     *
+     * @return boolean 
+     */
     abstract public function save();
 }

@@ -1,9 +1,9 @@
 <div class="container">
     <!-- Main hero unit for a primary marketing message or call to action -->
     <div class="hero-unit">
-        <h1>Hello, world!</h1>
+        <h1>Admin Module</h1>
         <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-inverse btn-large">Learn more »</a></p>
+        <p><a class="btn btn-primary btn-large" href="<?php echo App::main()->url(); ?>"><i class="icon-white icon-home"></i> Back to the main site</a></p>
 
     </div>
 

@@ -6,7 +6,7 @@ class Ac_Module {
     public $path;
     protected $defaults;
     protected $hasAutoload = false;
-    protected $hasViews = false;
+    protected $hasTemplates = false;
     protected $isMultiTheme = false;
     protected $currentTheme = null;
 
@@ -28,12 +28,16 @@ class Ac_Module {
             $this->hasAutoload = (count($files) > 1);
         }
 
-        if (is_dir($this->path . "views")) {
-            $this->hasViews = true;
+        if (is_dir($this->path . "templates")) {
+            $this->hasTemplates = true;
+        }
+
+        if (is_readable($this->path . "functions.php")) {
+            include_once $this->path . "functions.php";
         }
 
         $theme = $this->config("theme", null);
-        if (!empty($theme) && is_dir($this->viewsPath() . $theme)) {
+        if (!empty($theme) && is_dir($this->templatesPath() . $theme)) {
             $this->isMultiTheme = true;
             $this->currentTheme = $theme;
         }
@@ -93,8 +97,8 @@ class Ac_Module {
         return $this->hasAutoload;
     }
 
-    public function hasViews() {
-        return $this->hasViews;
+    public function hasTemplates() {
+        return $this->hasTemplates;
     }
 
     public function isMultiTheme() {
@@ -115,16 +119,16 @@ class Ac_Module {
         }
     }
 
-    public function viewsPath() {
+    public function templatesPath() {
         if ($this->isMultiTheme) {
-            return $this->path . "views" . _DS . $this->currentTheme . _DS;
+            return $this->path . "templates" . _DS . $this->currentTheme . _DS;
         } else {
-            return $this->path . "views" . _DS;
+            return $this->path . "templates" . _DS;
         }
     }
 
     public function assetsPath() {
-        return $this->viewsPath() . "assets" . _DS;
+        return $this->templatesPath() . "assets" . _DS;
     }
 
     public function assetsUrl() {

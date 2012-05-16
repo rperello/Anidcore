@@ -10,22 +10,22 @@ RewriteRule ^(system) - [F,L]
 # App single theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^assets/(.*)$ app/views/assets/$1 [QSA,L]
+RewriteRule ^assets/(.*)$ app/templates/assets/$1 [QSA,L]
 
 # App multi-theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ app/views/$1/assets/$2 [QSA,L]
+RewriteRule ^themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ app/templates/$1/assets/$2 [QSA,L]
 
 # Module single theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/views/assets/$2 [QSA,L]
+RewriteRule ^([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/templates/assets/$2 [QSA,L]
 
 # Module multi-theme
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([0-9a-zA-Z_-]{1,})/themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/views/$2/assets/$3 [QSA,L]
+RewriteRule ^([0-9a-zA-Z_-]{1,})/themes/([0-9a-zA-Z_-]{1,})/assets/(.*)$ modules/$1/templates/$2/assets/$3 [QSA,L]
 
 # index.php
 RewriteCond %{REQUEST_FILENAME} !-f

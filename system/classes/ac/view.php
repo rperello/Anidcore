@@ -28,10 +28,10 @@ class Ac_View extends Ac_Object {
 
         $this->template_name = basename($template, '.php');
         if (empty($path))
-            $path = Ac::path("view");
+            $path = Ac::path("templates");
 
         if (!is_dir($path))
-            Ac::exception("The view directory does not exist: " . $path);
+            Ac::exception("The templates directory does not exist: " . $path);
 
         // To prevent wrong includes, we do a chdir
         chdir($path);
