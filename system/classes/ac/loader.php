@@ -109,7 +109,9 @@ class Ac_Loader extends Ac_Singleton {
             return true;
 
         $class_file = null;
-        $class_name_dir = str_replace("_", _DS, strtolower($class_name));
+
+        //Support underscored and namespaced class names
+        $class_name_dir = str_replace(array("_", '\\'), _DS, $class_name);
 
         /* /modules/<module>/classes/ folder */
         if (isset($this->modules)) {
@@ -134,15 +136,22 @@ class Ac_Loader extends Ac_Singleton {
     }
 
     /**
-     * Includes the class file (once) and verifies that the class is loaded
+     * Includes the class file (once) and verifies that the class is loaded (optional)
      * @param string $class_file Full class file path
      * @param string $class_name Class name to verify
+     * @param string $check_class Check if class exists
      * @return boolean 
      */
-    public function classInclude($class_file, $class_name) {
+    public function classInclude($class_file, $class_name = null, $check_class = true) {
+        if (!is_readable($class_file))
+            $class_file = strtolower($class_file); //support lowercase class naming system
+        
         if (is_readable($class_file)) {
             include_once $class_file;
-            return class_exists($class_name, false);
+            if ($check_class) {
+                return class_exists($class_name, false);
+            }
+            return true;
         }
         return false;
     }

@@ -8,4 +8,6 @@
             <a class="btn btn-large" href="javascript:window.history.back()"> &laquo; Back</a>
         </p>
     </div>
+
+    <?php include App::main()->templatesPath()."debug.php" ?>
 </div>

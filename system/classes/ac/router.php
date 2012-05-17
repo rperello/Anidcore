@@ -135,9 +135,7 @@ class Ac_Router {
         $request = Ac::trigger(__CLASS__ . "_before_" . __FUNCTION__, array('directoryUrl' => Ac::request()->directoryUrl(), 'resource' => Ac::request()->resource()));
         $this->directoryUrl = trim($request["directoryUrl"], ' /') . "/";
 
-        if ($request["resource"] == "/")
-            $request["resource"] = "";
-        $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", $request["resource"]);
+        $this->resource = $rs = empty($request["resource"]) ? array() : explode("/", trim($request["resource"], " /"));
 
         // Prevent? to access duplicated content when accessing '/', '/index' and '/index/index'
         $r = strtolower(implode("/", $this->resource));
@@ -183,7 +181,7 @@ class Ac_Router {
         if (!is_array($resource))
             $resource = explode("/", $resource);
 
-        if (count($resource) > 0) {
+        if ((count($resource) > 0) && (!empty($resource[0]))) {
             $action = "__handle";
             $part = $resource[0];
             $fn = "action_" . strtolower(ac_str_slug($part, "_"));
@@ -241,6 +239,18 @@ class Ac_Router {
         }
         $result = Ac::trigger(__CLASS__ . "_on_" . __FUNCTION__, $result);
         return $result;
+    }
+
+    /**
+     *
+     * @return array 
+     */
+    public function toArray() {
+        return get_object_vars($this);
+    }
+
+    public function __toString() {
+        return print_r($this->toArray(), true);
     }
 
 }

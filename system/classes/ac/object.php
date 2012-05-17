@@ -69,5 +69,9 @@ class Ac_Object implements ArrayAccess {
     public static function constant($name) {
         return defined("static::$name") ? constant("static::$name") : null;
     }
+    
+    public function __toString(){
+        return print_r($this->properties, true);
+    }
 
 }

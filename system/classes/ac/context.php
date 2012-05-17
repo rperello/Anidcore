@@ -213,6 +213,14 @@ class Ac_Context extends Ac_Singleton {
         $this->context[$name] = $value;
         $this->generateId();
     }
+    
+    public function __toString(){
+        return print_r($this->context, true);
+    }
+    
+    public function toArray(){
+        return $this->context;
+    }
 
     protected function generateId() {
         unset($this->context["id"]);

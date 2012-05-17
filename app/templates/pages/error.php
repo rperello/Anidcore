@@ -7,3 +7,5 @@
         <a class="btn btn-large" href="<?php echo Ac::url(); ?>"> « Back</a>
     </p>
 </div>
+
+<?php include "debug.php" ?>
