@@ -67,16 +67,20 @@ abstract class Ac_Controller {
         return $this->view->$name;
     }
 
-    protected function contentType($contentType) {
-        Ac::response()->contentType($contentType);
+    protected function contentType($contentType = null) {
+        return Ac::response()->contentType($contentType);
     }
 
-    protected function body($body) {
-        Ac::response()->body($body);
+    protected function body($body = null) {
+        return Ac::response()->body($body);
     }
 
-    protected function status($status) {
-        Ac::response()->status($status);
+    protected function status($status = null) {
+        return Ac::response()->status($status);
+    }
+
+    protected function header($name = null, $value = null) {
+        return Ac::response()->header($name, $value);
     }
 
 }

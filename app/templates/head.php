@@ -2,7 +2,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $title; ?></title>
 
-<meta name="author" content="Copyright <?php echo date("Y"); ?>, Javier Aguilar, http://github.com/xaguilars/" />
+<meta name="author" content="Copyright <?php echo date("Y"); ?>, Javier Aguilar, http://xaguilars.github.com/" />
 <meta name="generator" content="Anidcore <?php echo Ac::VERSION; ?>" />
 
 <meta name="robots" content="<?php echo $meta_robots; ?>" />

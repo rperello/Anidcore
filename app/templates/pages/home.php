@@ -5,7 +5,7 @@
     <p>
         <a class="btn btn-large" href="<?php echo App::main()->url() ?>demo/"> Demo page</a>
         <a class="btn btn-large btn-inverse" href="<?php echo App::admin()->url() ?>"> Admin backend</a>
-        <a class="btn btn-info btn-large" href="https://github.com/xaguilars/Anidcore/"> watch Anidcore on Github <i class="icon-chevron-right icon-white"></i></a>
+        <a class="btn btn-info btn-large" href="http://xaguilars.github.com/Anidcore/"> watch Anidcore on Github <i class="icon-chevron-right icon-white"></i></a>
     </p>
 
 </div>
