@@ -1,15 +1,9 @@
 <?php
 
-class Ac_Storage_Pdo {
+class Ac_Storage_Database_PDO extends Ac_Storage_Database{
 
     const FETCH_ASSOC_FIRST = 2000;
     const FETCH_OBJ_FIRST = 2001;
-
-    /**
-     * 
-     * @var array[Ac_Storage_Pdo]
-     */
-    protected static $connections = array();
 
     /**
      * 
@@ -104,16 +98,16 @@ class Ac_Storage_Pdo {
     /**
      *
      * @param string $name Instance name
-     * @param Ac_Storage_Pdo The instance
+     * @param Ac_Storage_Database_PDO The instance
      */
-    public static function setConnection($name, Ac_Storage_Pdo $connection) {
+    public static function setConnection($name, Ac_Storage_Database_PDO $connection) {
         static::$connections[$name] = $connection;
     }
 
     /**
      *
      * @param string $name Instance name
-     * @return Ac_Storage_Pdo
+     * @return Ac_Storage_Database_PDO
      */
     public static function getConnection($name = null) {
         if (empty($name)) {

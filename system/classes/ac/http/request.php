@@ -140,6 +140,14 @@ class Ac_Http_Request {
         return $this->context->host;
     }
 
+    public function hostId() {
+        return $this->context->host_id;
+    }
+
+    public function hostUrl() {
+        return $this->context->host_url;
+    }
+
     /**
      * Protocol scheme
      * @return string 
@@ -250,10 +258,6 @@ class Ac_Http_Request {
 
     public function isHead() {
         return $this->context->method == self::METHOD_HEAD;
-    }
-
-    public function hostUrl() {
-        return $this->context->host_url;
     }
 
     public function directoryUrl() {

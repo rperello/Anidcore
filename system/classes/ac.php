@@ -331,14 +331,14 @@ class Ac {
 
     /**
      * 
-     * @return Ac_Storage_Pdo|false Returns a database connection and initializes them if needed
+     * @return Ac_Storage_Database_PDO|false Returns a database connection and initializes them if needed
      */
     public static function db($instanceName = null) {
-        if (Ac_Storage_Pdo::hasConnections()) {
-            return Ac_Storage_Pdo::getConnection($instanceName);
+        if (Ac_Storage_Database_PDO::hasConnections()) {
+            return Ac_Storage_Database_PDO::getConnection($instanceName);
         } elseif (self::config("database")) {
-            Ac_Storage_Pdo::__init(self::config("database"));
-            return Ac_Storage_Pdo::getConnection($instanceName);
+            Ac_Storage_Database_PDO::__init(self::config("database"));
+            return Ac_Storage_Database_PDO::getConnection($instanceName);
         }
         return false;
     }

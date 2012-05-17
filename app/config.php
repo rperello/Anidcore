@@ -9,7 +9,6 @@ return array(
     "modules.autoload" => array(
         'i18n',
         "admin",
-        "mandango",
     ),
     "modules.config" => array(
         "admin" => array(

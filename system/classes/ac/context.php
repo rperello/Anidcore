@@ -5,10 +5,11 @@
  * that Anidcore needs to resolve the request.
  * 
  * @property string $host
+ * @property string $host_id
+ * @property string $host_url
  * @property string $scheme
  * @property string $version
  * @property int $port
- * @property string $host_url
  * @property string $method
  * @property string $directory
  * @property string $resource
@@ -42,12 +43,12 @@ class Ac_Context extends Ac_Singleton {
     );
     protected static $default_context = array(
         'id' => '',
-        'time' => 0,
         'host' => 'localhost',
+        'host_id' => 'localhost',
+        'host_url' => 'http://localhost/',
         'scheme' => 'http',
         'version' => '1.1',
         'port' => 80,
-        'host_url' => 'http://localhost/',
         'origin' => '',
         'method' => 'GET',
         'directory' => '',
@@ -90,6 +91,8 @@ class Ac_Context extends Ac_Singleton {
              * Server name, domain or hostname 
              */
             $con['host'] = $_SERVER['SERVER_NAME'];
+            $con["host_id"] = ac_str_slug($con["host"], "_", array("."));
+            $con["host_url"] = "";
 
             /**
              * Scheme and protocol version 
@@ -103,7 +106,6 @@ class Ac_Context extends Ac_Singleton {
              * Server port 
              */
             $con["port"] = $_SERVER['SERVER_PORT'];
-
             $con["host_url"] = $con["scheme"] . '://' . $con["host"] . (($con["port"] == 80) ? "" : ":" . $con["port"]) . "/";
 
             /**

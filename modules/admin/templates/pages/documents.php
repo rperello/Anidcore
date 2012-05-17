@@ -7,5 +7,7 @@
 
     </div>
 
+    <h2>Documents:</h2>
+    <pre><?php print_r($docs); ?></pre>
     <?php include App::main()->templatesPath()."debug.php" ?>
 </div>

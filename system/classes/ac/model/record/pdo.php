@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Active Record Model for Ac_Storage_PDO connections
+ * Active Record Model for Ac_Storage_Database_PDO connections
  * @property int $id bigint(20) Primary key alias
  */
 abstract class Ac_Model_Record_PDO extends Ac_Model_Record {
@@ -14,7 +14,7 @@ abstract class Ac_Model_Record_PDO extends Ac_Model_Record {
         $this->primary = static::constant("PRIMARY_KEY");
 
         if (is_numeric($data)) {
-            $properties = Ac::db()->findBy($this->table, $this->primary, $data, null, 1, null, Ac_Storage_Pdo::FETCH_ASSOC_FIRST);
+            $properties = Ac::db()->findBy($this->table, $this->primary, $data, null, 1, null, Ac_Storage_Database_PDO::FETCH_ASSOC_FIRST);
             if (!$this->exists($properties)) {
                 Ac::log()->error(array($data, $this), "This $this->table record does not exist", __FILE__, __LINE__);
                 $properties = array();
@@ -49,7 +49,7 @@ abstract class Ac_Model_Record_PDO extends Ac_Model_Record {
         } elseif (!empty($this->properties)) {
             $id = Ac::db()->insert($this->table, $this->properties);
             if ($id > 0) {
-                $this->properties = Ac::db()->findBy($this->table, $this->primary, $id, null, 1, null, Ac_Storage_Pdo::FETCH_ASSOC_FIRST);
+                $this->properties = Ac::db()->findBy($this->table, $this->primary, $id, null, 1, null, Ac_Storage_Database_PDO::FETCH_ASSOC_FIRST);
                 return $id;
             }
         }
